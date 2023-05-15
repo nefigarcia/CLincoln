@@ -1,0 +1,27 @@
+form{
+  display: inherit;
+   text-align: center;
+}:root{
+   --mainDark: #343a40;
+   --mainGray: rgba(109,109,109);
+   --mainLightGrey: rgba(172,172,172);
+   --mainBlue: #007bff;
+   --mainWhite:#fff;
+ }
+ 
+ .navbar-toggler:focus{
+   outline: none;
+ }
+ .navbar-toggler{
+   border: none;
+ }
+ 
+ 
+ .dropdown:hover .dropdown-menu {
+   display: block;
+ }
+ .navbar-toggler:hover .navbar-collapse .navbar:hover{
+ 
+   display: block;
+ }
+ 

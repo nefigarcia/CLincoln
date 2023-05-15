@@ -26,7 +26,8 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Dropdown
+  Dropdown,
+  Button
 } from 'reactstrap';
 
 const NavApp = (props) => {
@@ -42,7 +43,11 @@ const NavApp = (props) => {
       <Navbar color="light" light >
         <NavbarBrand  href="/">CLincoln</NavbarBrand>
         <Nav>
-        <Dropdown isOpen={collapsed} toggle={toggleNavbar}>
+          <Link to="/PreLogin">
+          <Button  outline color="primary">Login</Button>{' '}
+          </Link>
+        
+        <Dropdown hidden='True' isOpen={collapsed} toggle={toggleNavbar}>
       <DropdownToggle><BsPlusLg/>
          <i className="fas fa-caret-up"></i>
 
@@ -64,7 +69,7 @@ const NavApp = (props) => {
         </Nav>
 
         <Nav className="container-fluid">
-        <NavbarToggler className="me-2" onClick={toggle} />
+        <NavbarToggler hidden='True' className="me-2" onClick={toggle} />
         </Nav>
         <Collapse isOpen={isOpen} navbar>
           <Nav  navbar >

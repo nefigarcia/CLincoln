@@ -8,7 +8,7 @@ export const InfoProvider=props=>{
     return(
         <InfoContext.Provider
         value={{
-            da:EstDa("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")//("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+            da:EstDa("http://localhost:3001/Estudiantes")//("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
         }}
         >
             {props.children}

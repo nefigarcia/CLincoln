@@ -6,6 +6,8 @@ import Regestudiante from './Paginas/Regestudiante';
 import Inicio from './Paginas/Inicio';
 import Registros from './Paginas/Registros';
 import PreRegistros from './Paginas/PreRegistros';
+import PreLogin from './Paginas/PreLogin';
+import Login from './Paginas/Login';
 import {Routes, Route} from 'react-router-dom';
 
 
@@ -18,6 +20,8 @@ function App() {
        <Route path='/Regestudiante' element={<Regestudiante/>}/>
        <Route path='/Registros' element={<Registros/>}/>
        <Route path='/PreRegistros' element={<PreRegistros/>}/>
+       <Route path='/PreLogin' element={<PreLogin/>}/>
+       <Route path='/Login' element={<Login/>}/>
       </Routes>
     </div>
   );

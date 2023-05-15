@@ -13,7 +13,7 @@ import {FaArchive} from "react-icons/fa";
 import {BsPlusLg} from "react-icons/bs";
 import {AiOutlineUserAdd} from "react-icons/ai";
 import {IoIosPersonAdd} from "react-icons/io";
-
+import { InfoConsumer } from '../context';
 import {
   Collapse,
   Navbar,
@@ -22,7 +22,7 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledDropdown,
+  Button,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -39,9 +39,14 @@ const NavApp = (props) => {
 
   return (
     <div>    
+      <InfoConsumer>
       <Navbar color="light" light >
         <NavbarBrand  href="/">CLincoln</NavbarBrand>
         <Nav>
+          <Link>
+          <Button to="/PreLogin" color="primary" size="sm">Login</Button>{' '}
+          </Link>
+
         <Dropdown isOpen={collapsed} toggle={toggleNavbar}>
       <DropdownToggle><BsPlusLg/>
          <i className="fas fa-caret-up"></i>
@@ -95,6 +100,7 @@ const NavApp = (props) => {
           </Nav>
         </Collapse>
       </Navbar>
+      </InfoConsumer>
     </div>
   );
 }

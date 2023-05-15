@@ -29,7 +29,8 @@ handleSubmit(e){
 }
 registrar(nombre,apellidos){
     let dat={nombre:nombre,apellidos:apellidos};console.log("nombre",nombre);
-    return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+    //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+    return fetch("http://localhost:3001/Regestudiante",{  
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),

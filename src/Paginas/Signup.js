@@ -1,4 +1,7 @@
 import React,{Component} from 'react';
+import { Media } from 'reactstrap';
+import { InfoConsumer } from '../context';
+
 import {
     MDBBtn,
     MDBContainer,
@@ -20,21 +23,27 @@ class Signup extends Component{
             nombre:'',
             apellidos:'',
             email:'',
-            contrasena:''
-        }
+            contrasena:'',
+            submitted:false
+        };
         this.handleSubmit=this.handleSubmit.bind(this);
+        this.handleChange=this.handleChange.bind(this);
 
     }
 
     handleSubmit(e){
         e.preventDefault();
         const{nombre,apellidos,email,contrasena}=this.state;
-        if(!nombre && apellidos)
-        return;
+        if(!(nombre && apellidos && email && contrasena)){
+            console.log("entrando", nombre)
+            return;
+        }
+        
         this.registrar(nombre,apellidos,email,contrasena);
     }
     registrar(nombre,apellidos,email,contrasena){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena};
+        console.log(dat);
         return fetch('http://localhost:3001/Signup',{
                method:'POST',
                mode:'cors',
@@ -44,34 +53,44 @@ class Signup extends Component{
             .then(res=>res.json())
             .catch(err=>err);
     }
+    handleChange(event){
+        const{name,value}=event.target;
+        this.setState({[name]:value});
+    }
+
     render(){
+        const{nombre,apellidos,email,contrasena,submitted}=this.state;
         return (
-            <MDBContainer onClick={this.handleSubmit} fluid className='my-5'>                      
+            <InfoConsumer>
+                {data=>{
+                    return(
+                        <MDBContainer  fluid className='my-5'>                      
         
-              <MDBRow className='g-0 align-items-center'>
+              <MDBRow  className='g-0 align-items-center'>
                 <MDBCol col='6'>
         
                   <MDBCard className='my-5 cascading-right' style={{background: 'hsla(0, 0%, 100%, 0.55)',  backdropFilter: 'blur(30px)'}}>
-                    <MDBCardBody className='p-5 shadow-5 text-center'>
+                    <MDBCardBody onClick={this.handleSubmit} className='p-5 shadow-5 text-center'>
         
                       <h2 className="fw-bold mb-5">Sign up ahora</h2>
         
                       <MDBRow>
                         <MDBCol col='6'>
-                          <MDBInput wrapperClass='mb-4' label='Nombre' id='form1' type='text' name='nombre'/>
+                            <div className={'form-group'+(submitted && !nombre ? 'has-error':'')}>
+                            <MDBInput onChange={this.handleChange} wrapperClass='mb-4' label='Nombre' id='form1' type='text' name='nombre'/>
+                            {submitted && !nombre &&
+                                <div className="help-block">Nombre es requerido</div>
+                            }
+                            </div>
                         </MDBCol>
         
                         <MDBCol col='6'>
-                          <MDBInput wrapperClass='mb-4' label='Apellidos' id='form2' type='text'/>
+                          <MDBInput onChange={this.handleChange} wrapperClass='mb-4' label='Apellidos' id='form2' type='text'/>
                         </MDBCol>
                       </MDBRow>
         
-                      <MDBInput wrapperClass='mb-4' label='Email' id='form3' type='email' name='email'/>
+                      <MDBInput onChange={this.handleChange} wrapperClass='mb-4' label='Email' id='form3' type='email' name='email'/>
                       <MDBInput wrapperClass='mb-4' label='Contrasena' id='form4' type='password' name='contrasena'/>
-        
-                      <div className='d-flex justify-content-center mb-4'>
-                        <MDBCheckbox name='flexCheck' value='' id='flexCheckDefault' label='Subscribe to our newsletter' />
-                      </div>
         
                       <MDBBtn className='w-100 mb-4' size='md'>sign up</MDBBtn>
         
@@ -109,6 +128,10 @@ class Signup extends Component{
               </MDBRow>
         
             </MDBContainer>
+                    );
+                }}
+            </InfoConsumer>
+            
           );
     }
 }

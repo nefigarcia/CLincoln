@@ -4,7 +4,7 @@ import Login from './Login';
 class PreLogin extends Component{
     render(){
         return(
-            <div><Login/>fdg</div>
+            <div><Login/></div>
             
         );
     }

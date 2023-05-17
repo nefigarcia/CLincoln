@@ -9,6 +9,7 @@ import PreRegistros from './Paginas/PreRegistros';
 import {Routes, Route} from 'react-router-dom';
 import PreLogin from './Paginas/PreLogin';
 import Signup from './Paginas/Signup';
+import Activacion from './Paginas/Activacion';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
        <Route path='/PreRegistros' element={<PreRegistros/>}/>
        <Route path='/PreLogin' element={<PreLogin/>}/>
        <Route path='/Signup' element={<Signup/>}/>
-
+       <Route path='/Activacion' element={<Activacion/>}/>
       </Routes>
     </div>
   );

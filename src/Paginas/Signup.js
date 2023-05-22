@@ -1,7 +1,18 @@
 import React,{Component} from 'react';
-import { Media } from 'reactstrap';
+import { Media, Nav } from 'reactstrap';
 import { InfoConsumer } from '../context';
-
+import { Navigate } from 'react-router-dom';
+import  '../App.css';
+import {
+    Form,
+    FormFeedback,
+    FormGroup,
+    FormText,
+    Label,
+    Input,
+    Button,
+    Alert
+  } from 'reactstrap';
 import {
     MDBBtn,
     MDBContainer,
@@ -24,7 +35,12 @@ class Signup extends Component{
             apellidos:'',
             email:'',
             contrasena:'',
-            submitted:false
+            submitted:false,
+            rolId:'',
+            menuSta:true,
+      validate: {
+        emailState: '',
+      },
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
@@ -33,16 +49,17 @@ class Signup extends Component{
 
     handleSubmit(e){
         e.preventDefault();
-        const{nombre,apellidos,email,contrasena}=this.state;
+        const{nombre,apellidos,email,contrasena,rolId}=this.state;
         if(!(nombre && apellidos && email && contrasena)){
             console.log("entrando", nombre)
             return;
         }
-        
-        this.registrar(nombre,apellidos,email,contrasena);
+        console.log("registrando", contrasena)
+        this.registrar(nombre,apellidos,email,contrasena,rolId)
+        .then(this.setState({submitted:true}));
     }
-    registrar(nombre,apellidos,email,contrasena){
-        let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena};
+    registrar(nombre,apellidos,email,contrasena,rolId){
+        let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
         console.log(dat);
         return fetch('http://localhost:3001/Signup',{
                method:'POST',
@@ -50,7 +67,13 @@ class Signup extends Component{
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>res.json())
+            .then(res=>{
+              if(res.ok){
+                this.setState({menuSta:false},()=>{
+                  console.log("menu es:",this.state.menuSta)
+                })
+              }
+            })
             .catch(err=>err);
     }
     handleChange(event){
@@ -58,19 +81,107 @@ class Signup extends Component{
         this.setState({[name]:value});
     }
 
+    validateEmail(e) {
+        const emailRex =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+     
+        const { validate } = this.state;
+     
+        if (emailRex.test(e.target.value)) {
+          validate.emailState = 'Ha sido exitoso';
+        } else {
+          validate.emailState = 'En peligro';
+        }
+     
+        this.setState({ validate });
+      }
+
     render(){
-        const{nombre,apellidos,email,contrasena,submitted}=this.state;
+        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta}=this.state;
         return (
+           
             <InfoConsumer>
                 {data=>{
                     return(
-                        <MDBContainer  fluid className='my-5'>                      
-        
+
+                        <div className="App">
+                        <h2>Sign Up</h2>
+                        <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
+                        <FormGroup>
+                            <Label for="examplePassword">Nombre</Label>
+                            <Input
+                              type="name"
+                              name="nombre"
+                              id="nameId"
+                              placeholder="Nombre"
+                              value={nombre}
+                              onChange={(e) => this.handleChange(e)}
+                            />{this.state.rolId=data.rol}{console.log("rol id",this.state.rolId)}
+                          </FormGroup> <br/>
+                          <FormGroup>
+                            <Label for="apellidosId">Apellidos</Label>
+                            <Input
+                              type="name"
+                              name="apellidos"
+                              id="apellidosId"
+                              placeholder="********"
+                              value={apellidos}
+                              onChange={(e) => this.handleChange(e)}
+                            />
+                          </FormGroup> <br/>
+                          <FormGroup>
+                            <Label>Email</Label>
+                            <Input
+                              type="email"
+                              name="email"
+                              id="exampleEmail"
+                              placeholder="example@example.com"
+                              valid={this.state.validate.emailState === "Exitoso"}
+                              invalid={this.state.validate.emailState === "Peligro"}
+                              value={email}
+                              onChange={(e) => {
+                                this.validateEmail(e);
+                                this.handleChange(e);
+                              }}
+                            />
+                            <FormFeedback>
+                              Uh oh! Algo esta mal en el formato de tu email. Corrigelo.
+                            </FormFeedback>
+                            <FormFeedback valid>
+                              Correcto.
+                            </FormFeedback>
+                            <FormText>Tu usuario es tu email.</FormText>
+                          </FormGroup>
+                          <FormGroup>
+                            <Label for="examplePassword">Contrasena</Label>
+                            <Input
+                              type="password"
+                              name="contrasena"
+                              id="examplePassword"
+                              placeholder="********"
+                              value={contrasena}
+                              onChange={(e) => this.handleChange(e)}
+                            />
+                          </FormGroup> <br/>
+                          <Button>Submit</Button>
+                          {submitted &&
+              <Alert color="success">Registro exitoso!</Alert>}
+                        </Form>
+                        {data.cambiarEsta(menuSta)}
+                        {!menuSta &&
+                        <Navigate to={"/Escuela"}  
+                        />
+
+                        }
+                      </div>
+
+    /*     <MDBContainer  fluid className='my-5'>                      
+            <Form onClick={this.handleSubmit}>
               <MDBRow  className='g-0 align-items-center'>
                 <MDBCol col='6'>
         
-                  <MDBCard className='my-5 cascading-right' style={{background: 'hsla(0, 0%, 100%, 0.55)',  backdropFilter: 'blur(30px)'}}>
-                    <MDBCardBody onClick={this.handleSubmit} className='p-5 shadow-5 text-center'>
+                  <MDBCard  className='my-5 cascading-right' style={{background: 'hsla(0, 0%, 100%, 0.55)',  backdropFilter: 'blur(30px)'}}>
+                    <MDBCardBody  className='p-5 shadow-5 text-center'>
         
                       <h2 className="fw-bold mb-5">Sign up ahora</h2>
         
@@ -91,7 +202,10 @@ class Signup extends Component{
         
                       <MDBInput onChange={this.handleChange} wrapperClass='mb-4' label='Email' id='form3' type='email' name='email'/>
                       <MDBInput wrapperClass='mb-4' label='Contrasena' id='form4' type='password' name='contrasena'/>
-        
+                        {
+                            this.state.rolId=data.rol
+                            
+                        }    {console.log("valor rol",this.state.rolId)}
                       <MDBBtn className='w-100 mb-4' size='md'>sign up</MDBBtn>
         
                       <div className="text-center">
@@ -115,7 +229,7 @@ class Signup extends Component{
                         </MDBBtn>
         
                       </div>
-        
+      { console.log("sii",data.rol)}
                     </MDBCardBody>
                   </MDBCard>
                 </MDBCol>
@@ -126,12 +240,13 @@ class Signup extends Component{
                 </MDBCol>
         
               </MDBRow>
-        
+              </Form>
             </MDBContainer>
+            */
                     );
                 }}
             </InfoConsumer>
-            
+           
           );
     }
 }

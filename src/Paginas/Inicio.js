@@ -6,18 +6,10 @@ class Inicio extends Component{
     render(){
         return(
             <InfoConsumer>
-            {data=>{
-                const{estaMenu}=data.estaMenu;
-                
+            {data=>{                
 
                 return(
                     <div> Rosystems.
-                    {
-                        this.state.estaMenu && 
-                        data.cambiarEsta(this.state.estaMenu)
-                    }
-                    {                console.log("me=",data.estaMenu)
-}
                     </div>
                    
                 );

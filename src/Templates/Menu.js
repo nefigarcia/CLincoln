@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {Link} from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
 import {FaRegCalendarAlt} from "react-icons/fa";
@@ -37,44 +37,44 @@ const NavApp = (props) => {
 
   const [collapsed, setCollapsed] = useState(true);
   const toggleNavbar = () => setCollapsed(!collapsed);
+const {esta,setEsta,estaMenu}=useContext(InfoConsumer);
 
-
-  return (
-    <InfoConsumer>
-      {data=>{
-        const{estaMenu}=data.estaMenu;console.log("estado==",estaMenu);
+const au=localStorage.getItem('nombre');
+     
         return(
           <div>    
-        <Navbar color="light" light >
+        <Navbar color="light" light >{console.log("au=",au)}
           <NavbarBrand  href="/">CLincoln</NavbarBrand>
           <Nav>
-            <Link to="/PreLogin">
+            <Link to="/Login">
             <Button  outline color="primary">Login</Button>{' '}
             </Link>
-          
-          <Dropdown hidden={estaMenu} isOpen={collapsed} toggle={toggleNavbar}>
-        <DropdownToggle><BsPlusLg/>
-           <i className="fas fa-caret-up"></i>
-  
-          </DropdownToggle>
-        <DropdownMenu>
-          <DropdownItem header>Agregar ...</DropdownItem>
-          <DropdownItem><FaCreditCard/>Pagos</DropdownItem>
-          <DropdownItem disabled>Personal </DropdownItem>
-          <DropdownItem divider />
-          <Link to="/Regestudiante">
-          <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
-          </Link>
-          
-          <DropdownItem><BsBookFill/>Clase</DropdownItem>
-          <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
-          <DropdownItem><FaArchive/>Staff</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+            {esta &&
+              <Dropdown  isOpen={collapsed} toggle={toggleNavbar}>
+              <DropdownToggle><BsPlusLg/>
+                 <i className="fas fa-caret-up"></i>
+        
+                </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem header>Agregar ...</DropdownItem>
+                <DropdownItem><FaCreditCard/>Pagos</DropdownItem>
+                <DropdownItem disabled>Personal </DropdownItem>
+                <DropdownItem divider />
+                <Link to="/Regestudiante">
+                <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
+                </Link>
+                
+                <DropdownItem><BsBookFill/>Clase</DropdownItem>
+                <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                <DropdownItem><FaArchive/>Staff</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            }
+         
           </Nav>
   
-          <Nav className="container-fluid">
-          <NavbarToggler hidden={estaMenu} className="me-2" onClick={toggle} />
+          <Nav className="container-fluid">{console.log("menu est=",esta)}
+          <NavbarToggler hidden={esta} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
@@ -105,12 +105,9 @@ const NavApp = (props) => {
             </Nav>
           </Collapse>
         </Navbar>
+        {setEsta(estaMenu)}
       </div>
         );
-      }}
-    
-    </InfoConsumer>
-  );
 }
 
 

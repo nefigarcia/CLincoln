@@ -12,7 +12,6 @@ import Signup from './Paginas/Signup';
 import Activacion from './Paginas/Activacion';
 import PreinicioEscuela from './Paginas/PreinicioEscuela';
 import { useAuth } from './context';
-import Testlog from './Paginas/Testlog';
 
 
 function App() {

@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';   
 import { InfoProvider } from './context';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <InfoProvider>

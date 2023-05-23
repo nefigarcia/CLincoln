@@ -1,10 +1,22 @@
 import React,{Component} from "react";
+import { InfoConsumer } from "../context";
 
 class Inicio extends Component{
+    state={estaMenu:true}
     render(){
         return(
-            <div>Version 1, testeando get and post API Alumnos registros de db externa para Colegio. Rosystems.</div>
+            <InfoConsumer>
+            {data=>{                
+
+                return(
+                    <div> Rosystems.
+                    </div>
+                   
+                );
+            }}
+        </InfoConsumer>
         );
+        
     }
 }
 

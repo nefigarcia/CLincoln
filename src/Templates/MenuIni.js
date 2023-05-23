@@ -31,7 +31,7 @@ import {
   Button
 } from 'reactstrap';
 
-const NavApp = (props) => {
+const MenuIni = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -39,11 +39,10 @@ const NavApp = (props) => {
   const toggleNavbar = () => setCollapsed(!collapsed);
 const {esta,setEsta,estaMenu}=useContext(InfoConsumer);
 
-const au=localStorage.getItem('nombre');
      
         return(
           <div>    
-        <Navbar color="light" light >{console.log("au=",au)}
+        <Navbar color="light" light >{console.log("au=",esta)}
           <NavbarBrand  href="/">CLincoln</NavbarBrand>
           <Nav>
             <Link to="/Login">
@@ -110,4 +109,4 @@ const au=localStorage.getItem('nombre');
 }
 
 
-export default NavApp;
+export default MenuIni;

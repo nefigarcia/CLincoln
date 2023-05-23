@@ -117,7 +117,7 @@ class Login extends Component{
       {data=>{
         return(
       <div className="App">
-          <h2>Sign Up</h2>
+          <h2>Sign In</h2>
           <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
               <Label>Email</Label>

@@ -1,7 +1,13 @@
-import React,{Component, useState,useEffect} from 'react';
+import React,{Component, useState,useEffect, useContext,createContext} from 'react';
 import EstDa from './Gets';
-const InfoContext=React.createContext();
+//const InfoContext=React.createContext();
 
+const InfoContext = createContext({
+    esta: null,
+    setEsta: () => {},
+    rol: null,
+  });
+  export const useAuth=()=>useContext(InfoContext);
 export const InfoProvider=props=>{
     var estaMenu='True';
     var rolAdmin='';

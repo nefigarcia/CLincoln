@@ -49,6 +49,7 @@ const au=localStorage.getItem('nombre');
             <Link to="/Login">
             <Button  outline color="primary">Login</Button>{' '}
             </Link>
+<<<<<<< HEAD
             {esta &&
               <Dropdown  isOpen={collapsed} toggle={toggleNavbar}>
               <DropdownToggle><BsPlusLg/>
@@ -75,6 +76,34 @@ const au=localStorage.getItem('nombre');
   
           <Nav className="container-fluid">{console.log("menu est=",esta)}
           <NavbarToggler hidden={esta} className="me-2" onClick={toggle} />
+=======
+            
+              <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
+              <DropdownToggle><BsPlusLg/>
+                 <i className="fas fa-caret-up"></i>
+        
+                </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem header>Agregar ...</DropdownItem>
+                <DropdownItem><FaCreditCard/>Pagos</DropdownItem>
+                <DropdownItem disabled>Personal </DropdownItem>
+                <DropdownItem divider />
+                <Link to="/Regestudiante">
+                <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
+                </Link>
+                
+                <DropdownItem><BsBookFill/>Clase</DropdownItem>
+                <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                <DropdownItem><FaArchive/>Staff</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            
+        
+          </Nav>
+  
+          <Nav className="container-fluid">{console.log("menu est=",esta)}
+          <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />
+>>>>>>> origin/main
           </Nav>
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >

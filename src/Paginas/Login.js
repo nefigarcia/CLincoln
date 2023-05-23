@@ -5,7 +5,7 @@ import {Link, redirect} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
 import mafot from '../Fotos/regismaestro.png';
 import esfot from '../Fotos/regisestudiante.png';
-import { InfoConsumer } from '../context';
+import { InfoConsumer,useAuth } from '../context';
 import { Navigate } from 'react-router-dom';
 import {
   Form,
@@ -126,8 +126,8 @@ class Login extends Component{
                 name="emai"
                 id="exampleEmail"
                 placeholder="example@example.com"
-                valid={this.state.validate.emailState === "Exitoso"}
-                invalid={this.state.validate.emailState === "Peligro"}
+                valid={this.state.validate.emailState === "Ha sido exitoso"}
+                invalid={this.state.validate.emailState === "En peligro"}
                 value={emai}
                 onChange={(e) => {
                   this.validateEmail(e);
@@ -158,9 +158,9 @@ class Login extends Component{
             </p>
             <Button>Submit</Button>
             {authen &&
-<Alert color="success">Registro exitoso!</Alert>}
+<Alert color="success">Ingreso exitoso!</Alert>}
 {authen &&
-data.cambiarEsta(authen)}
+data.setEsta(authen)}
 {authen  &&
 <Navigate to={"/Escuela"}/>
 }
@@ -257,9 +257,9 @@ data.cambiarEsta(authen)}
 const Mod=()=>{
     const [gridModal, setGridModal] = useState(false);
     const toggleShow = () => setGridModal(!gridModal);
-    //const {rol,setRol,setRolid}=useContext(InfoConsumer);
 
-    const {rol,setRol}=useContext(InfoConsumer);
+    const {rol,setRol,eata,setEsta}=useContext(InfoConsumer);
+    //const {setEsta}=useAuth();
      
   return(
     <>

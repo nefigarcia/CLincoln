@@ -49,8 +49,8 @@ const au=localStorage.getItem('nombre');
             <Link to="/Login">
             <Button  outline color="primary">Login</Button>{' '}
             </Link>
-            {esta &&
-              <Dropdown  isOpen={collapsed} toggle={toggleNavbar}>
+            
+              <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
               <DropdownToggle><BsPlusLg/>
                  <i className="fas fa-caret-up"></i>
         
@@ -69,12 +69,12 @@ const au=localStorage.getItem('nombre');
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            }
-         
+            
+        
           </Nav>
   
           <Nav className="container-fluid">{console.log("menu est=",esta)}
-          <NavbarToggler hidden={esta} className="me-2" onClick={toggle} />
+          <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >

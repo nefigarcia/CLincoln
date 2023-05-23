@@ -37,7 +37,7 @@ class Signup extends Component{
             contrasena:'',
             submitted:false,
             rolId:'',
-            menuSta:true,
+            menuSta:'',
       validate: {
         emailState: '',
       },
@@ -69,7 +69,7 @@ class Signup extends Component{
             })
             .then(res=>{
               if(res.ok){
-                this.setState({menuSta:false},()=>{
+                this.setState({menuSta:true},()=>{
                   console.log("menu es:",this.state.menuSta)
                 })
               }
@@ -167,8 +167,9 @@ class Signup extends Component{
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
-                        {data.cambiarEsta(menuSta)}
-                        {!menuSta &&
+                        {menuSta &&
+                         data.setEsta(menuSta)}
+                        {menuSta &&
                         <Navigate to={"/Escuela"}  
                         />
 

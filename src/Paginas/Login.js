@@ -61,8 +61,8 @@ class Login extends Component{
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'}
         };
-        //return fetch("http://localhost:3001/Login",requestOpt)
-        return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
+        return fetch("http://localhost:3001/Login",requestOpt)
+        //return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         //.then(response=>response.json())
         .then(response=>{
          // alert(JSON.stringify(response));
@@ -117,7 +117,7 @@ class Login extends Component{
     <InfoConsumer>
       {data=>{
         return(
-      <div className="App">
+      <div className="container">
           <h2>Sign In</h2>
           <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
@@ -159,7 +159,7 @@ class Login extends Component{
             </p>
             <Button>Submit</Button>
             {authen &&
-<Alert color="success">Ingreso exitoso!</Alert>}
+<Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
 {authen &&
 data.setEsta(authen)}
 {authen  &&

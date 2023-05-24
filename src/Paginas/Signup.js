@@ -61,8 +61,8 @@ class Signup extends Component{
     registrar(nombre,apellidos,email,contrasena,rolId){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
         console.log(dat);
-        //return fetch('http://localhost:3001/Signup',{
-          return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+        return fetch('http://localhost:3001/Signup',{
+        //  return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
@@ -105,7 +105,7 @@ class Signup extends Component{
                 {data=>{
                     return(
 
-                        <div className="App">
+                        <div className="container">
                         <h2>Sign Up</h2>
                         <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
                         <FormGroup>
@@ -168,10 +168,9 @@ class Signup extends Component{
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
+                        
                         {menuSta &&
-                         data.setEsta(menuSta)}
-                        {menuSta &&
-                        <Navigate to={"/Escuela"}  
+                        <Navigate to={"/Regescuela"}  
                         />
 
                         }

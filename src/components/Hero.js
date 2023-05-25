@@ -2,8 +2,9 @@ import React from "react";
 
 //import rectangle_1 from '../assets/Rectangle_1.png';
 //import rectangle_2 from '../assets/Rectangle_2.png'; 
-import rectangle_1 from '../Fotos/Rectangle_1.jpg';
-import rectangle_2 from '../Fotos/Rectangle_2.png';
+//import rectangle_1 from '../Fotos/Rectangle_1.jpg';
+//import rectangle_2 from '../Fotos/Rectangle_2.png';
+import cel1 from '../Fotos/cel1.png';
 
 
 
@@ -39,7 +40,7 @@ const Hero = ({appType, tagLine, description, mainActionText, extraActionText}) 
         
       </div>
       <div className="z-0 flex flex-row items-start justify-center w-screen h-screen pt-20 -mb-16 bg-gray-50 lg:bg-white lg:mb-20 lg:w-full lg:h-96 lg:pt-0">
-          <img className="absolute left-0 lg:left-auto lg:-mt-64" src={rectangle_1} alt=""/><img className="absolute right-0 lg:right-auto lg:ml-24 lg:-mt-16" src={rectangle_2} alt=""/>
+          <img className="absolute right-0 lg:right-auto lg:ml-24 lg:-mt-16" src={cel1} alt=""/>
         </div>
     </div>
   );

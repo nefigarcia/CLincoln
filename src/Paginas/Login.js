@@ -32,25 +32,13 @@ class Login extends Component{
             validate: {
               emailState: '',
             },
+      emailCuen:''      
         };
         this.handleChange=this.handleChange.bind(this);
 		this.handleSubmit=this.handleSubmit.bind(this);
     }
 
-    handleResponse(response){
-        return response.text().then(text=>{
-          console.log("handleRespon:",response);
-            const data=text && JSON.parse(text);console.log("d",data);
-            if(!response.ok){
-                if(response.ok===401){
-                    console.log('error 401');
-                }console.log("error401")
-                const error=(data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }this.setState({authen:true});console.log("handleR",this.state.authen)
-            return data;
-        });
-    } 
+   
 
     login(emai,passwor){
       let da={email:emai,contrasena:passwor};
@@ -63,12 +51,17 @@ class Login extends Component{
         };
         return fetch("http://localhost:3001/Login",requestOpt)
         //return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
-        //.then(response=>response.json())
+        .then(response=>response.json())
         .then(response=>{
-         // alert(JSON.stringify(response));
-          if(response.ok){
-            this.setState({authen:true},()=>
-            console.log("login then",this.state.authen)
+          //alert(JSON.stringify(response));
+          let item=response.find(item=>{
+            return item.NOMBRE;
+          });
+          console.log("item:",item)
+          if(response){
+            this.setState({authen:true,emailCuen:item},()=>
+            console.log("login then",this.state.authen),
+
             )
           }
         })
@@ -112,7 +105,7 @@ class Login extends Component{
     }
 
     render(){
-      const{error,submitted,emai,passwor,authen}=this.state;
+      const{error,submitted,emai,passwor,authen,emailCuen}=this.state;
         return(
     <InfoConsumer>
       {data=>{
@@ -154,14 +147,18 @@ class Login extends Component{
                 onChange={(e) => this.handleChange(e)}
               />
             </FormGroup> <br/>
+            <Button>Submit</Button>
             <p className="small fw-bold mt-2 pt-1 mb-2">No tienes cuenta? 
             <Mod/>
             </p>
-            <Button>Submit</Button>
             {authen &&
 <Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
 {authen &&
 data.setEsta(authen)}
+{
+ authen &&
+  data.setCuentaEmail(emailCuen)
+}
 {authen  &&
 <Navigate to={"/Escuela"}/>
 }

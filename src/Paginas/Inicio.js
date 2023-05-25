@@ -1,6 +1,4 @@
 import React,{Component} from "react";
-import rectangle_1 from '../Fotos/Rectangle_1.jpg';
-import rectangle_2 from '../Fotos/Rectangle_2.png';
 
 import Rectangle_3 from '../Fotos/Rectangle_3.jpg';
 import Rectangle_4 from '../Fotos/Rectangle_4.jpg';
@@ -14,38 +12,38 @@ import { InfoConsumer } from "../context";
  function Inicio(){
     const data = {
         hero:{
-          appType: 'Food app',
-          tagLine: 'Why stay hungry when you can order from Bella Onojie',
-          description: 'Download the bella onoje’s food app now on',
-          mainActionText: 'Playstore',
-          extraActionText: 'App Store',
+          appType: 'Sistema Administrativo Escolar',
+          tagLine: 'Por qué no registrar tu escuela?',
+          description: 'Disfruta de todas las herramientas de Rosystems',
+          mainActionText: 'Contacto',
+          extraActionText: 'Cotizacion',
         },
         step1: {
-          title: 'Create an account',
-          heading: 'Create/login to an existing account to get started',
-          description: 'An account is created with your email and a desired password',
+          title: 'Crea una cuenta',
+          heading: 'Crea/login(ingresa) a alguna cuenta existente',
+          description: 'Una cuenta es creada con email y contraseña',
           img: Rectangle_3,
           alternate: false,
         },
         step2: {
-          title: 'Explore while shopping',
-          heading: 'Shop for your favorites meal as e dey hot.',
-          description: 'Shop for your favorite meals or drinks and enjoy while doing it.',
+          title: 'Explora las herramientas',
+          heading: 'Facilidad para administrar tu escuela',
+          description: 'Crea registros de maestros, materias, estudiantes, pagos y más',
           img: Rectangle_4,
           alternate: true,
         },
         step3: {
-          title: 'Checkout',
-          heading: "When you're done, check out and get it delivered.",
-          description: "When you're done, check out and get it  delivered with ease.",
+          title: 'Todo en uno',
+          heading: "Guarda tus registros en una cuenta administrativa",
+          description: "Puedes compartir roles y hacer logout a salvo",
           img: Rectangle_5,
           alternate: false,
         },
         bottomLead: {
-          actionText: 'Download the app now.',
-          description: 'Available on your favourite store. Start your premium experience now.',
-          mainActionText: 'Playstore',
-          extraActionText: 'App Store',
+          actionText: 'No se requiere instalar nada',
+          description: 'Disponible todo el tiempo',
+          mainActionText: 'Contacto',
+          extraActionText: 'Soporte',
         },
       }
       return (
@@ -64,7 +62,7 @@ import { InfoConsumer } from "../context";
             
             <div id="divider" className="rounded-full ring-2 ring-gray-200 lg:w-1/2 lg:mx-auto "></div>
             
-            <div id="faq" className="pt-20 mb-20 text-3xl font-semibold text-center text-blue-800 lg:font-bold">How the app works </div>
+            <div id="faq" className="pt-20 mb-20 text-3xl font-semibold text-center text-blue-800 lg:font-bold">Cómo éste sistema trabaja </div>
             
             <Step
               title={data.step1.title}

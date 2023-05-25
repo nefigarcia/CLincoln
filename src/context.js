@@ -1,5 +1,5 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import EstDa from './Gets';
+import {EstDa,EstCuent} from './Gets';
 //const InfoContext=React.createContext();
 
 const InfoContext = createContext({
@@ -14,9 +14,12 @@ export const InfoProvider=props=>{
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
 
-    console.log("funcion",rol);
-  
+ const[cuentEmail,setCuentaEmail]=useState('');
 
+    console.log("funcion",rol);
+    console.log("cuentUsuContext:",cuentEmail);
+
+    
 
 const cambiarEsta=esta=>{
     estaMenu=esta
@@ -26,14 +29,15 @@ const cambiarEsta=esta=>{
     return(
         <InfoContext.Provider
         value={{
-            da:EstDa("http://localhost:3001/Estudiantes"),//("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+            da:EstDa(),
          //   da:EstDa("https://shielded-brushlands-89617.herokuapp.com/Estudiantes"),
-            cambiarEsta:cambiarEsta,
+         cambiarEsta:cambiarEsta,
             estaMenu:estaMenu,
             rol,
             setRol,
             rolAdmin:rol,
-            esta,setEsta
+            esta,setEsta,
+            setCuentaEmail,cuentEmail
         }}
         >
             {props.children}

@@ -7,7 +7,7 @@ import {FaRegCalendarAlt} from "react-icons/fa";
 import {FaPeopleArrows} from "react-icons/fa";
 import {FaCreditCard} from "react-icons/fa";
 import {BsBookFill} from "react-icons/bs";
-import {BsMegaphone} from "react-icons/bs";
+import {BsMegaphone,BsFillPersonFill} from "react-icons/bs";
 import {FaAddressBook} from "react-icons/fa";
 import {FaArchive} from "react-icons/fa";
 import {BsPlusLg} from "react-icons/bs";
@@ -28,7 +28,8 @@ import {
   DropdownMenu,
   DropdownItem,
   Dropdown,
-  Button
+  Button,
+  List
 } from 'reactstrap';
 
 const NavApp = (props) => {
@@ -37,13 +38,15 @@ const NavApp = (props) => {
 
   const [collapsed, setCollapsed] = useState(true);
   const toggleNavbar = () => setCollapsed(!collapsed);
-const {esta,setEsta,estaMenu}=useContext(InfoConsumer);
 
-const au=localStorage.getItem('nombre');
+  const [collapsedd, setCollapsedd] = useState(true);
+  const toggleNavbarr = () => setCollapsedd(!collapsedd);
+const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
+
      
         return(
           <div>    
-        <Navbar color="light" light >{console.log("au=",au)}
+        <Navbar color="light" light >
           <NavbarBrand  href="/">CLincoln</NavbarBrand>
           <Nav>
             <Link to="/Login">
@@ -55,7 +58,7 @@ const au=localStorage.getItem('nombre');
                  <i className="fas fa-caret-up"></i>
         
                 </DropdownToggle>
-              <DropdownMenu>
+              <DropdownMenu>     
                 <DropdownItem header>Agregar ...</DropdownItem>
                 <DropdownItem><FaCreditCard/>Pagos</DropdownItem>
                 <DropdownItem disabled>Personal </DropdownItem>
@@ -69,9 +72,28 @@ const au=localStorage.getItem('nombre');
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <i className="fas fa-caret-up"> {cuentEmail.NOMBRE} </i>
+            <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
+              <DropdownToggle><BsFillPersonFill/>
+                </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem header>
+                <i className="fas fa-caret-up">Perfil    {cuentEmail.NOMBRE}</i>
+                </DropdownItem>
+                <DropdownItem>Mi perfil</DropdownItem>
+                <DropdownItem disabled>Escuela configuracion </DropdownItem>
+                <DropdownItem divider />
+                
+                <DropdownItem><AiOutlineUserAdd/>Permisos</DropdownItem>
             
-        
+                
+                <DropdownItem>Soporte</DropdownItem>
+                <DropdownItem>logout</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </Nav>
+
+        
   
           <Nav className="container-fluid">{console.log("menu est=",esta)}
           <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />

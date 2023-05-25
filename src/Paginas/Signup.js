@@ -89,9 +89,9 @@ class Signup extends Component{
         const { validate } = this.state;
      
         if (emailRex.test(e.target.value)) {
-          validate.emailState = 'Ha sido exitoso';
+          validate.emailState = 'Exitoso';
         } else {
-          validate.emailState = 'En peligro';
+          validate.emailState = 'Peligroso';
         }
      
         this.setState({ validate });

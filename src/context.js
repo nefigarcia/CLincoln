@@ -1,5 +1,5 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import {EstDa,EstCuent} from './Gets';
+import {EstDa} from './Gets';
 //const InfoContext=React.createContext();
 
 const InfoContext = createContext({
@@ -30,7 +30,6 @@ const cambiarEsta=esta=>{
         <InfoContext.Provider
         value={{
             da:EstDa(),
-         //   da:EstDa("https://shielded-brushlands-89617.herokuapp.com/Estudiantes"),
          cambiarEsta:cambiarEsta,
             estaMenu:estaMenu,
             rol,

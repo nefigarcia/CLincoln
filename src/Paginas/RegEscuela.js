@@ -44,8 +44,8 @@ class RegEscuela extends Component{
     registrar(nombre,escuelaid){
         let dat={nombre:nombre,escuelaid:escuelaid};
         console.log(dat);
-        return fetch('http://localhost:3001/Regescuela',{
-        //  return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+        //return fetch('http://localhost:3001/Regescuela',{
+          return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

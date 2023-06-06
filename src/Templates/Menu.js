@@ -101,28 +101,28 @@ const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
               <NavItem >
-                <Link to="/preTraba"><NavLink ><FaHome/>Portal </NavLink></Link>
+                <Link to="/preTraba"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><FaRegCalendarAlt/>Calendario</NavLink></Link>
+                <Link><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link to="/PreRegistros"><NavLink><FaPeopleArrows/>Registros</NavLink></Link>
+                <Link to="/PreRegistros"><NavLink><i className='icon'><FaPeopleArrows/> Registros</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><BsBookFill/>Clases & Eventos</NavLink></Link>
+                <Link><NavLink><i className='icon'><BsBookFill/>Clases & Eventos</i></NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><FaCreditCard/>Pagos</NavLink></Link>
+                <Link><NavLink><i className='icon'><FaCreditCard/>Pagos</i></NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><BsMegaphone/>Mensajeria grupal</NavLink></Link>
+                <Link><NavLink><i className='icon'><BsMegaphone/>Mensajeria grupal</i></NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><FaAddressBook/>Reportes</NavLink></Link>
+                <Link><NavLink><i className='icon'><FaAddressBook/>Reportes</i></NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><FaArchive/>Administracion escolar</NavLink></Link>
+                <Link><NavLink><i className='icon'><FaArchive/>Administracion escolar</i></NavLink></Link>
               </NavItem>
             </Nav>
           </Collapse>

@@ -61,14 +61,14 @@ class Signup extends Component{
     registrar(nombre,apellidos,email,contrasena,rolId){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
         console.log(dat);
-        //return fetch('http://localhost:3001/Signup',{
-        return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+        return fetch('http://localhost:3001/Signup',{
+        //return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>{
+            .then(res=>{console.log("respon",res)
               if(res.ok){
                 this.setState({menuSta:true},()=>{
                   console.log("menu es:",this.state.menuSta)

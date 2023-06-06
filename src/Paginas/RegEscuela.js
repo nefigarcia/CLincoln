@@ -39,13 +39,16 @@ class RegEscuela extends Component{
         }
         console.log("registrando", nombre)
         this.registrar(nombre,escuelaid)
-        .then(this.setState({submitted:true}));
+        .then(this.setState({submitted:true}))
+        .catch((error)=>{
+          alert(JSON.stringify(error));
+          console.log("hanadleEscErr:",error);
+        });
     }
     registrar(nombre,escuelaid){
         let dat={nombre:nombre,escuelaid:escuelaid};
-        console.log(dat);
-        //return fetch('http://localhost:3001/Regescuela',{
-          return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+        return fetch('http://localhost:3001/Regescuela',{
+        //  return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
@@ -58,7 +61,10 @@ class RegEscuela extends Component{
                 })
               }
             })
-            .catch(err=>err);
+            .catch((error)=>{
+              alert(JSON.stringify(error));
+              console.log("registroEscErr:",error);
+            });
     }
     handleChange(event){
         const{name,value}=event.target;

@@ -44,3 +44,8 @@ form{
 label {
   font-weight: 600;
 }
+.icon{
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+}

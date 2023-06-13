@@ -5,11 +5,7 @@ import {Link, redirect} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
 import mafot from '../Fotos/regismaestro.png';
 import esfot from '../Fotos/regisestudiante.png';
-<<<<<<< HEAD
-import { InfoConsumer } from '../context';
-=======
 import { InfoConsumer,useAuth } from '../context';
->>>>>>> origin/main
 import { Navigate } from 'react-router-dom';
 import {
   Form,

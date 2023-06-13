@@ -30,13 +30,16 @@ handleSubmit(e){
 registrar(nombre,apellidos){
     let dat={nombre:nombre,apellidos:apellidos};console.log("nombre",nombre);
     //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
-      return fetch("https://localhost:3001/Regestudiante",{
+      return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),
         headers:{'content-type': 'application/json'},
     })//.then(this.handleResponse)
     .then(res=>res.json())
+    .then(res=>{
+      console.log("accregEst",res)
+    })
     .catch(err=>err);
 }
 handleChange(event){

@@ -17,7 +17,7 @@ import { useAuth } from './context';
 
 
 function App() {
-  const { auth } = useAuth();
+  //const { auth } = useAuth();
   return (
     <div>
       

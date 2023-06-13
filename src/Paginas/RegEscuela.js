@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import { Media, Nav } from 'reactstrap';
 import { InfoConsumer } from '../context';
 import { Navigate } from 'react-router-dom';
+import { CuentDa } from '../Gets';
 import  '../App.css';
 import {
     Form,
@@ -34,10 +35,8 @@ class RegEscuela extends Component{
         e.preventDefault();
         const{nombre,escuelaid}=this.state;
         if(!(nombre && escuelaid)){
-            console.log("entrando", nombre)
             return;
         }
-        console.log("registrando", nombre)
         this.registrar(nombre,escuelaid)
         .then(this.setState({submitted:true}))
         .catch((error)=>{
@@ -57,7 +56,6 @@ class RegEscuela extends Component{
             .then(res=>{
               if(res.ok){
                 this.setState({menuSta:true},()=>{
-                  console.log("RegEscu:",this.state.menuSta)
                 })
               }
             })
@@ -82,7 +80,7 @@ class RegEscuela extends Component{
                     return(
 
                         <div className="container">
-                        <h2>Registro de Escuela</h2>
+                        <h2>Registro de Escuela, un paso mas {console.log("regEscuel",data.daCuen)}</h2>
                         <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
                         <FormGroup>
                             <Label for="examplePassword">Nombre de Escuela</Label>
@@ -113,11 +111,14 @@ class RegEscuela extends Component{
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
                         {menuSta &&
-                         data.setEsta(menuSta)}
+                         data.setEsta(menuSta)}     
+                                          
                         {menuSta &&
+                          data.getDataCuenta(null)
+                        }
+                        {!data.loading &&
                         <Navigate to={"/Escuela"}  
                         />
-
                         }
                       </div>
 

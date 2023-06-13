@@ -53,11 +53,9 @@ class Login extends Component{
        //return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         .then(response=>response.json())
         .then(response=>{
-          //alert(JSON.stringify(response));
           let item=response.find(item=>{
-            return item.NOMBRE;
+            return item.EMAIL;
           });
-          console.log("item:",item)
           if(response){
             this.setState({authen:true,emailCuen:item},()=>
             console.log("login then",this.state.authen),
@@ -157,11 +155,16 @@ class Login extends Component{
 data.setEsta(authen)}
 {
  authen &&
-  data.setCuentaEmail(emailCuen)
+ data.setCuenta(emailCuen)
 }
-{authen  &&
+{
+ authen &&
+ data.getDataCuenta(emailCuen)
+}
+{!data.loading &&
 <Navigate to={"/Escuela"}/>
 }
+
           </Form>
         </div>
           );
@@ -280,7 +283,6 @@ const Mod=()=>{
                <ul className='list-unstyled list-icons clearfix'>
                    <li><Link to={"/Signup"}>
                         <a  onClick={setRol(1)}  className='list-icons-container'>
-                       {console.log("rolll",rol)}
                             <img src={admfoto}>
                             </img>
                             <p>Dueño escueala/Administrador</p>

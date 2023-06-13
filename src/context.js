@@ -1,25 +1,63 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import {EstDa} from './Gets';
+import {EstDa,CuentDa, EscuelasDa} from './Gets';
 //const InfoContext=React.createContext();
 
-const InfoContext = createContext({
-    esta: null,
-    setEsta: () => {},
-    rol: null,
-  });
-  export const useAuth=()=>useContext(InfoContext);
+export const InfoContext = createContext();
 export const InfoProvider=props=>{
+    var emailCuentav;
     var estaMenu='True';
-    var rolAdmin='';
+    var dataCuentas=CuentDa();
+    var dataEscuelas=EscuelasDa();
+    var dataEscuela=[];
+    var dataCuenta=[];
+const [ban,setBan]=useState(0);
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
+const[cuentEmail,setCuentaEmail]=useState('');
+const[daCuenta,setCuenta]=useState([]);
+const[daEscuela,setEscuela]=useState([]);
+const[emailCuenta,setEmailCuenta]=useState('');//email del usuario
+const[loading,setLoading]=useState(true);
+const[daCuentas,setCuentas]=useState([]);
+const[daEstudiantes,setEstudiantes]=useState([]);
+const[dataChange,setDatachange]=useState(false);
 
- const[cuentEmail,setCuentaEmail]=useState('');
 
-    console.log("funcion",rol);
-    console.log("cuentUsuContext:",cuentEmail);
 
-    
+
+    console.log("renderingContext:");
+
+
+const getDataCuenta=datEmCuent=>{
+    console.log("datfromlog",datEmCuent);
+    if(datEmCuent!==null){
+       getDataEscuela();
+    }else{
+        console.log("aftergetDataCeunta",emailCuenta)
+        console.log("aftedataCuentas",dataCuentas)
+
+        dataCuenta=dataCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
+        console.log("cuenta1",dataCuenta);
+
+        setCuenta(dataCuenta);
+        getDataEscuela();
+    }
+   
+}    
+const getDataEscuela=()=>{
+    console.log("dataEscuelas",dataEscuelas)
+
+    dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
+    console.log("daEscuelaLogin2",dataEscuela);
+
+    setEscuela(dataEscuela);
+    setLoading(false);
+
+    return daEscuela;
+}
+const setEmaCuenta=ema=>{
+    setEmailCuenta(ema);
+}
 
 const cambiarEsta=esta=>{
     estaMenu=esta
@@ -30,13 +68,23 @@ const cambiarEsta=esta=>{
         <InfoContext.Provider
         value={{
             da:EstDa(),
+            daCuen:CuentDa(),
          cambiarEsta:cambiarEsta,
             estaMenu:estaMenu,
             rol,
             setRol,
             rolAdmin:rol,
             esta,setEsta,
-            setCuentaEmail,cuentEmail
+            setCuentaEmail,cuentEmail,
+            getDataCuenta,
+            setEmaCuenta,
+            getDataEscuela,
+            daEscuela,
+            daCuenta,setCuenta,
+            loading,setLoading,
+            daCuentas,setCuentas,
+            daEstudiantes,setEstudiantes,
+            dataChange,setDatachange
         }}
         >
             {props.children}

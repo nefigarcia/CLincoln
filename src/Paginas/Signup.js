@@ -38,6 +38,8 @@ class Signup extends Component{
             submitted:false,
             rolId:'',
             menuSta:'',
+            daCuent:'',
+            loading:true,
       validate: {
         emailState: '',
       },
@@ -51,16 +53,13 @@ class Signup extends Component{
         e.preventDefault();
         const{nombre,apellidos,email,contrasena,rolId}=this.state;
         if(!(nombre && apellidos && email && contrasena)){
-            console.log("entrando", nombre)
             return;
         }
-        console.log("registrando", contrasena)
         this.registrar(nombre,apellidos,email,contrasena,rolId)
         .then(this.setState({submitted:true}));
     }
     registrar(nombre,apellidos,email,contrasena,rolId){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
-        console.log(dat);
         return fetch('http://localhost:3001/Signup',{
         //return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
@@ -70,8 +69,7 @@ class Signup extends Component{
             })
             .then(res=>{console.log("respon",res)
               if(res.ok){
-                this.setState({menuSta:true},()=>{
-                  console.log("menu es:",this.state.menuSta)
+                this.setState({menuSta:true, daCuent:dat,email:email},()=>{
                 })
               }
             })
@@ -98,7 +96,7 @@ class Signup extends Component{
       }
 
     render(){
-        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta}=this.state;
+        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta,daCuent,loading}=this.state;
         return (
            
             <InfoConsumer>
@@ -168,12 +166,18 @@ class Signup extends Component{
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
-                        
                         {menuSta &&
-                        <Navigate to={"/Regescuela"}  
-                        />
-
+                          data.setEmaCuenta(email)
                         }
+                        {menuSta &&
+                          this.setState({loading:false})
+                        }
+                        {!loading &&
+                        <Navigate to={"/Regescuela"}  
+                        />                         
+                        }
+
+                       
                       </div>
 
     /*     <MDBContainer  fluid className='my-5'>                      

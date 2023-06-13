@@ -13,7 +13,7 @@ import {FaArchive} from "react-icons/fa";
 import {BsPlusLg} from "react-icons/bs";
 import {AiOutlineUserAdd} from "react-icons/ai";
 import {IoIosPersonAdd} from "react-icons/io";
-import { InfoConsumer } from '../context';
+import { InfoConsumer, InfoContext } from '../context';
  
 import {
   Collapse,
@@ -41,8 +41,8 @@ const NavApp = (props) => {
 
   const [collapsedd, setCollapsedd] = useState(true);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
-const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
-
+const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
+console.log("renderingMenu:",esta);
      
         return(
           <div>    
@@ -72,13 +72,13 @@ const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <i className="fas fa-caret-up"> {cuentEmail.NOMBRE} </i>
+            <i className="fas fa-caret-up"> {daCuenta.NOMBRE} </i>
             <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
               <DropdownToggle><BsFillPersonFill/>
                 </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>
-                <i className="fas fa-caret-up">Perfil    {cuentEmail.NOMBRE}</i>
+                <i className="fas fa-caret-up">Perfil    {daCuenta.NOMBRE}</i>
                 </DropdownItem>
                 <DropdownItem>Mi perfil</DropdownItem>
                 <DropdownItem disabled>Escuela configuracion </DropdownItem>
@@ -95,7 +95,7 @@ const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
 
         
   
-          <Nav className="container-fluid">{console.log("menu est=",esta)}
+          <Nav className="container-fluid">
           <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
@@ -126,7 +126,11 @@ const {esta,setEsta,estaMenu,cuentEmail}=useContext(InfoConsumer);
               </NavItem>
             </Nav>
           </Collapse>
+          {dataChange &&
+         <div>CAmbio reciente de data</div>
+        }
         </Navbar>
+      
       </div>
         );
 }

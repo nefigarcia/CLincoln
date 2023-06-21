@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText,Alert,Row,Col } from 'reactstrap';
+import { InfoConsumer } from '../context';
+import { Navigate } from 'react-router-dom';
 
 
 class regEstudiante extends Component{
@@ -9,7 +11,7 @@ class regEstudiante extends Component{
             nombre:'',
             apellidos:'',
             submitted:false,
-            log:''
+            dataChange:false
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
@@ -17,7 +19,6 @@ class regEstudiante extends Component{
     }
 handleSubmit(e){
     e.preventDefault();
-    console.log('testing');
     this.setState({submitted:true});
     const{nombre,apellidos}=this.state;
     console.log(nombre,apellidos,"handleSubmit");
@@ -29,14 +30,20 @@ handleSubmit(e){
 }
 registrar(nombre,apellidos){
     let dat={nombre:nombre,apellidos:apellidos};console.log("nombre",nombre);
-    //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
-      return fetch("https://localhost:3001/Regestudiante",{
+   return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+     // return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),
         headers:{'content-type': 'application/json'},
     })//.then(this.handleResponse)
-    .then(res=>res.json())
+    .then(res=>{
+      if(res.ok){
+        console.log('testing',res);
+        this.setState({dataChange:true})
+      }
+      
+    })
     .catch(err=>err);
 }
 handleChange(event){
@@ -59,8 +66,11 @@ handleResponse(response){
 } 
 
     render(){
-   //   const{nombre,apellidos}=this.state;
+      const{nombre,apellidos,dataChange}=this.state;
         return(
+<InfoConsumer> 
+  {data=>{
+  return(        
             <div className="container">
 <Form onSubmit={this.handleSubmit}>
   <Row>
@@ -154,7 +164,16 @@ handleResponse(response){
     Aceptar
   </Button>
 </Form>
+{dataChange &&
+            data.setDatachange(dataChange)}
+{dataChange &&
+<Navigate to={'/Escuela'} />
+
+}            
             </div>
+           
+  );}}
+            </InfoConsumer>           
         );
     }
 }

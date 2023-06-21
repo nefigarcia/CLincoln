@@ -38,6 +38,9 @@ class Signup extends Component{
             submitted:false,
             rolId:'',
             menuSta:'',
+            daCuent:'',
+            loading:false,
+            daCuentas:'',
       validate: {
         emailState: '',
       },
@@ -46,31 +49,43 @@ class Signup extends Component{
         this.handleChange=this.handleChange.bind(this);
 
     }
+    getCuentas(){
+      //fetch("http://localhost:3001/Cuentas")
+      fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
+      .then(res=>res.json())
+      .then(res=>{
+        if(res){//console.log("res:",res)
+          this.setState({daCuentas:res,loading:true},()=>
+            console.log("daCueantsSignUp",this.state.daCuentas)
+          )
+        }
+      })
+    }
 
     handleSubmit(e){
         e.preventDefault();
         const{nombre,apellidos,email,contrasena,rolId}=this.state;
         if(!(nombre && apellidos && email && contrasena)){
-            console.log("entrando", nombre)
             return;
         }
-        console.log("registrando", contrasena)
         this.registrar(nombre,apellidos,email,contrasena,rolId)
         .then(this.setState({submitted:true}));
     }
     registrar(nombre,apellidos,email,contrasena,rolId){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
-        console.log(dat);
-        return fetch('http://localhost:3001/Signup',{
+       // return fetch('http://localhost:3001/Signup',{
+        return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
                headers:{'content-type':'application/json'},
             })
-            .then(res=>{
+            .then(res=>{console.log("respon",res)
+            this.getCuentas();
               if(res.ok){
-                this.setState({menuSta:true},()=>{
-                  console.log("menu es:",this.state.menuSta)
+                
+                this.setState({menuSta:true, daCuent:dat,email:email},()=>{
+                  console.log("stDATACUENTAS:",this.state.daCuentas)
                 })
               }
             })
@@ -88,23 +103,23 @@ class Signup extends Component{
         const { validate } = this.state;
      
         if (emailRex.test(e.target.value)) {
-          validate.emailState = 'Ha sido exitoso';
+          validate.emailState = 'Exitoso';
         } else {
-          validate.emailState = 'En peligro';
+          validate.emailState = 'Peligroso';
         }
      
         this.setState({ validate });
       }
 
     render(){
-        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta}=this.state;
+        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta,daCuent,loading,daCuentas}=this.state;
         return (
            
             <InfoConsumer>
                 {data=>{
                     return(
 
-                        <div className="App">
+                        <div className="container">
                         <h2>Sign Up</h2>
                         <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
                         <FormGroup>
@@ -168,12 +183,19 @@ class Signup extends Component{
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
                         {menuSta &&
-                         data.setEsta(menuSta)}
-                        {menuSta &&
-                        <Navigate to={"/Escuela"}  
-                        />
-
+                          data.setEmaCuenta(email)
                         }
+                        {menuSta &&
+                          data.cambCuentas(daCuentas)
+                        }
+                       
+                        
+                        {loading &&
+                        <Navigate to={"/Regescuela"}  
+                        />                         
+                        }
+
+                       
                       </div>
 
     /*     <MDBContainer  fluid className='my-5'>                      

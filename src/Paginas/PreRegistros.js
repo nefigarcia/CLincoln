@@ -56,7 +56,8 @@ class PreRegistros extends Component{
         <tbody>
               <InfoConsumer>
                     {value=>{
-                        return value.da.map(item=>{ console.log("Pre item=",item.ID);
+                      console.log("renderingPreRegistros:",value.daEstudiantes)
+                        return value.daEstudiantes.map(item=>{
                             return <Registros key={item.ID} item={item}/>;
                             
                         })

@@ -32,42 +32,33 @@ class Login extends Component{
             validate: {
               emailState: '',
             },
+      emailCuen:''      
         };
         this.handleChange=this.handleChange.bind(this);
 		this.handleSubmit=this.handleSubmit.bind(this);
     }
 
-    handleResponse(response){
-        return response.text().then(text=>{
-          console.log("handleRespon:",response);
-            const data=text && JSON.parse(text);console.log("d",data);
-            if(!response.ok){
-                if(response.ok===401){
-                    console.log('error 401');
-                }console.log("error401")
-                const error=(data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }this.setState({authen:true});console.log("handleR",this.state.authen)
-            return data;
-        });
-    } 
+   
 
     login(emai,passwor){
       let da={email:emai,contrasena:passwor};
-      console.log("data:",da);
         const requestOpt={
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'}
         };
-        return fetch("http://localhost:3001/Login",requestOpt)
-        //.then(response=>response.json())
+       // return fetch("http://localhost:3001/Login",requestOpt)
+       return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
+        .then(response=>response.json())
         .then(response=>{
-         // alert(JSON.stringify(response));
-          if(response.ok){
-            this.setState({authen:true},()=>
-            console.log("login then",this.state.authen)
+          let item=response.find(item=>{
+            return item.EMAIL;
+          });
+          if(response){
+            this.setState({authen:true,emailCuen:item},()=>
+            console.log("login then",this.state.authen),
+
             )
           }
         })
@@ -82,7 +73,7 @@ class Login extends Component{
         const{emai,passwor,authen}=this.state;
         if(!(emai && passwor)){
             return;
-        }console.log("handle");
+        }
         this.login(emai,passwor)
         .then(
         this.setState({submitted:true},()=>
@@ -111,12 +102,12 @@ class Login extends Component{
     }
 
     render(){
-      const{error,submitted,emai,passwor,authen}=this.state;
+      const{error,submitted,emai,passwor,authen,emailCuen}=this.state;
         return(
     <InfoConsumer>
       {data=>{
         return(
-      <div className="App">
+      <div className="container">
           <h2>Sign In</h2>
           <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
@@ -153,17 +144,26 @@ class Login extends Component{
                 onChange={(e) => this.handleChange(e)}
               />
             </FormGroup> <br/>
+            <Button>Submit</Button>
             <p className="small fw-bold mt-2 pt-1 mb-2">No tienes cuenta? 
             <Mod/>
             </p>
-            <Button>Submit</Button>
             {authen &&
-<Alert color="success">Ingreso exitoso!</Alert>}
+<Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
 {authen &&
 data.setEsta(authen)}
-{authen  &&
+{
+ authen &&
+ data.setCuenta(emailCuen)
+}
+{
+ authen &&
+ data.getDataCuenta(emailCuen)
+}
+{!data.loading &&
 <Navigate to={"/Escuela"}/>
 }
+
           </Form>
         </div>
           );
@@ -263,7 +263,7 @@ const Mod=()=>{
      
   return(
     <>
-    <MDBBtn onClick={toggleShow}>Registrar</MDBBtn>
+    <Button onClick={toggleShow}>Registrar</Button>
 
     <MDBModal tabIndex='-1' show={gridModal} setShow={setGridModal}>
       <MDBModalDialog>
@@ -282,7 +282,6 @@ const Mod=()=>{
                <ul className='list-unstyled list-icons clearfix'>
                    <li><Link to={"/Signup"}>
                         <a  onClick={setRol(1)}  className='list-icons-container'>
-                       {console.log("rolll",rol)}
                             <img src={admfoto}>
                             </img>
                             <p>Dueño escueala/Administrador</p>

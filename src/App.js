@@ -11,12 +11,13 @@ import Login from './Paginas/Login';
 import Signup from './Paginas/Signup';
 import Activacion from './Paginas/Activacion';
 import PreinicioEscuela from './Paginas/PreinicioEscuela';
+import RegEscuela from './Paginas/RegEscuela';
+import Fotter from './Templates/Fotter';
 import { useAuth } from './context';
-import Testlog from './Paginas/Testlog';
 
 
 function App() {
-  const { auth } = useAuth();
+  //const { auth } = useAuth();
   return (
     <div>
       
@@ -31,8 +32,9 @@ function App() {
        <Route path='/Signup' element={<Signup/>}/>
        <Route path='/Activacion' element={<Activacion/>}/>
        <Route path='/Escuela' element={<PreinicioEscuela/>}/>
-
+       <Route path='/Regescuela' element={<RegEscuela/>}/>
       </Routes>
+      <Fotter/>
     </div>
   );
 }

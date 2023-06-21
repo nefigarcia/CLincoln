@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 
 
-const getEst=()=>fetch("http://localhost:3001/Estudiantes").then(res=>res.json());
-//const getEst=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes").then(res=>res.json());
+//const getEst=()=>fetch("http://localhost:3001/Estudiantes").then(res=>res.json());
+const getEst=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes").then(res=>res.json());
 
-const getCuent=()=>fetch("http://localhost:3001/Cuentas").then(res=>res.json());
+//const getCuent=()=>fetch("http://localhost:3001/Cuentas").then(res=>res.json());
+const getCuent=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas").then(res=>res.json());
 
-const getEscuelas=()=>fetch("http://localhost:3001/Escuelas").then(res=>res.json());
+
+//const getEscuelas=()=>fetch("http://localhost:3001/Escuelas").then(res=>res.json());
+const getEscuelas=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas").then(res=>res.json());
 
 export function EstDa(){
     const [da,setDa]=useState([]);

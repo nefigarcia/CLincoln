@@ -15,7 +15,8 @@ class PreinicioEscuela extends Component{
     }
   }
   getEst(){console.log("getEstudiantesRegEscueal:")
-    fetch("http://localhost:3001/Estudiantes")
+    //fetch("http://localhost:3001/Estudiantes")
+    fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
     .then(res=>res.json())
     .then(res=>{
       if(res){
@@ -26,7 +27,8 @@ class PreinicioEscuela extends Component{
     })
   }
   getEscuelas(){ console.log("getEscuelasRegEscueala:")
-    fetch("http://localhost:3001/Escuelas")
+    //fetch("http://localhost:3001/Escuelas")
+    fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
     .then(res=>res.json())
     .then(res=>{//alert(JSON.stringify(res))
       if(res){

@@ -39,7 +39,8 @@ class Signup extends Component{
             rolId:'',
             menuSta:'',
             daCuent:'',
-            loading:true,
+            loading:false,
+            daCuentas:'',
       validate: {
         emailState: '',
       },
@@ -47,6 +48,17 @@ class Signup extends Component{
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
+    }
+    getCuentas(){
+      fetch("http://localhost:3001/Cuentas")
+      .then(res=>res.json())
+      .then(res=>{
+        if(res){//console.log("res:",res)
+          this.setState({daCuentas:res,loading:true},()=>
+            console.log("daCueantsSignUp",this.state.daCuentas)
+          )
+        }
+      })
     }
 
     handleSubmit(e){
@@ -68,8 +80,11 @@ class Signup extends Component{
                headers:{'content-type':'application/json'},
             })
             .then(res=>{console.log("respon",res)
+            this.getCuentas();
               if(res.ok){
+                
                 this.setState({menuSta:true, daCuent:dat,email:email},()=>{
+                  console.log("stDATACUENTAS:",this.state.daCuentas)
                 })
               }
             })
@@ -96,7 +111,7 @@ class Signup extends Component{
       }
 
     render(){
-        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta,daCuent,loading}=this.state;
+        const{nombre,apellidos,email,contrasena,submitted,rolId,password,menuSta,daCuent,loading,daCuentas}=this.state;
         return (
            
             <InfoConsumer>
@@ -170,9 +185,11 @@ class Signup extends Component{
                           data.setEmaCuenta(email)
                         }
                         {menuSta &&
-                          this.setState({loading:false})
+                          data.cambCuentas(daCuentas)
                         }
-                        {!loading &&
+                       
+                        
+                        {loading &&
                         <Navigate to={"/Regescuela"}  
                         />                         
                         }

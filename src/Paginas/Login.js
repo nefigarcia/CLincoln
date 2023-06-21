@@ -42,7 +42,6 @@ class Login extends Component{
 
     login(emai,passwor){
       let da={email:emai,contrasena:passwor};
-      console.log("data:",da);
         const requestOpt={
             method:'POST',
             mode:'cors',
@@ -74,7 +73,7 @@ class Login extends Component{
         const{emai,passwor,authen}=this.state;
         if(!(emai && passwor)){
             return;
-        }console.log("handle");
+        }
         this.login(emai,passwor)
         .then(
         this.setState({submitted:true},()=>

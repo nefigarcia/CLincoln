@@ -23,13 +23,43 @@ class RegEscuela extends Component{
             nombre:'',
             submitted:false,
             rolId:'',
-            menuSta:'',
-            escuelaid:''
+            menuSta:false,
+            escuelaid:'',
+           // daCuentas:'',
+            daEscuelas:'',
+            loading:false
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
     }
+
+    /*componentDidMount(){
+      fetch("http://localhost:3001/Cuentas")
+      .then(res=>res.json())
+      .then(res=>{
+        if(res){
+          this.setState({daCuentas:res},()=>{
+            console.log("daCueantsRegEScuela",this.state.daCuentas)
+          })
+        }
+      })
+  
+    }*/
+    getEscuelas(){
+    fetch("http://localhost:3001/Escuelas")
+    .then(res=>res.json())
+    .then(res=>{//alert(JSON.stringify(res))
+      if(res){
+        this.setState({daEscuelas:res,loading:true},()=>
+          console.log("daEscuelasGet:",this.state.daEscuelas)
+        )
+      }
+    })
+    .catch(res=>{
+      console.log("error en REGescuela Escuealas:",res)
+    })
+  }
 
     handleSubmit(e){
         e.preventDefault();
@@ -55,8 +85,10 @@ class RegEscuela extends Component{
             })
             .then(res=>{
               if(res.ok){
+                this.getEscuelas();
                 this.setState({menuSta:true},()=>{
                 })
+               
               }
             })
             .catch((error)=>{
@@ -72,7 +104,7 @@ class RegEscuela extends Component{
     
 
     render(){
-        const{nombre,submitted,menuSta,escuelaid}=this.state;
+        const{nombre,submitted,menuSta,escuelaid,daCuentas,daEscuelas,loading}=this.state;
         return (
            
             <InfoConsumer>
@@ -80,7 +112,7 @@ class RegEscuela extends Component{
                     return(
 
                         <div className="container">
-                        <h2>Registro de Escuela, un paso mas {console.log("regEscuel",data.daCuen)}</h2>
+                        <h2>Registro de Escuela, un paso mas </h2>
                         <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
                         <FormGroup>
                             <Label for="examplePassword">Nombre de Escuela</Label>
@@ -110,12 +142,14 @@ class RegEscuela extends Component{
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
-                        {menuSta &&
-                         data.setEsta(menuSta)}     
-                                          
-                        {menuSta &&
-                          data.getDataCuenta(null)
-                        }
+                                                                           
+                         {loading &&
+                          data.setEscuelas(daEscuelas)
+                         }
+                         {loading &&
+                          data.getDataEscuela()
+                         }
+                         
                         {!data.loading &&
                         <Navigate to={"/Escuela"}  
                         />

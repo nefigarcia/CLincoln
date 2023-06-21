@@ -6,10 +6,7 @@ class InicioEscuela extends Component{
 
 
     componentDidMount(){
-        let le=document.querySelector(".loader-count")
-        if(le){
-            le.remove()
-        }
+        
     }
 render(){
     //const{id,nombre}=this.props.item;

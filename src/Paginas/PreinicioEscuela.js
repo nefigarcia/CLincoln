@@ -2,20 +2,53 @@ import React,{Component} from 'react';
 import styled from 'styled-components';
 import InicioEscuela from './InicioEscuela';
 import { InfoConsumer } from '../context';
+import { EstDa } from '../Gets';
 
 
 class PreinicioEscuela extends Component{
   constructor(props){
     super(props);
     this.state={
-      loading:true
+      loading:true,
+      daEstudiantes:'',
+      daEscuelas:''
     }
   }
+  getEst(){console.log("getEstudiantesRegEscueal:")
+    fetch("http://localhost:3001/Estudiantes")
+    .then(res=>res.json())
+    .then(res=>{
+      if(res){
+        this.setState({daEstudiantes:res},()=>{
+          console.log("daEStuIniciEs",this.state.daEstudiantes)
+        })
+      }
+    })
+  }
+  getEscuelas(){ console.log("getEscuelasRegEscueala:")
+    fetch("http://localhost:3001/Escuelas")
+    .then(res=>res.json())
+    .then(res=>{//alert(JSON.stringify(res))
+      if(res){
+        this.setState({daEscuelas:res},()=>{
+          console.log("daEscuelasPreinicioEscuela:",this.state.daEscuelas)
+        })
+      }
+    })
+    .catch(res=>{
+      console.log("error en REGescuela Escuealas:",res)
+    })
+  }
+  componentDidMount(){
+    this.getEst();
+  }
+
   cambLoading(loading){
     this.state.loading=loading;
   }
     render(){
-      const{loading}=this.state; 
+      //this.getEscuelas();
+      const{loading,daEstudiantes,daEscuelas}=this.state; 
         return(
             <div className="container">
                 Plataforma
@@ -28,8 +61,11 @@ class PreinicioEscuela extends Component{
           </React.Fragment>
                 <div className="row mt-5">
                 <InfoConsumer >
-                    {value=>{ value.getDataEscuela();console.log("estEsc",value.daEscuela);
-                      this.cambLoading(value.loading)
+                    {value=>{
+                      value.setEstudiantes(daEstudiantes);
+                     // value.setEscuelas(daEscuelas);
+                      //value.getDataEscuela();
+                      //this.cambLoading(value.loading)
                       //  return value.daEscuela.map(item=>{ 
                        
                             return <InicioEscuela />//key={item.id} item={item}/>;

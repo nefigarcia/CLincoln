@@ -4,51 +4,58 @@ import {EstDa,CuentDa, EscuelasDa} from './Gets';
 
 export const InfoContext = createContext();
 export const InfoProvider=props=>{
-    var emailCuentav;
     var estaMenu='True';
-    var dataCuentas=CuentDa();
     var dataEscuelas=EscuelasDa();
     var dataEscuela=[];
     var dataCuenta=[];
-const [ban,setBan]=useState(0);
+    var daEstudiantess=EstDa();
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
 const[cuentEmail,setCuentaEmail]=useState('');
 const[daCuenta,setCuenta]=useState([]);
 const[daEscuela,setEscuela]=useState([]);
+const[daEscuelas,setEscuelas]=useState([]);
 const[emailCuenta,setEmailCuenta]=useState('');//email del usuario
 const[loading,setLoading]=useState(true);
 const[daCuentas,setCuentas]=useState([]);
-const[daEstudiantes,setEstudiantes]=useState([]);
+const[daEstudiantes,setEstudiantes]=useState(daEstudiantess);
 const[dataChange,setDatachange]=useState(false);
 
-
-
-
-    console.log("renderingContext:");
+    console.log("renderingContext:",daCuentas);
+    console.log("renderingContextEmail:",emailCuenta);
 
 
 const getDataCuenta=datEmCuent=>{
+    setEstudiantes(daEstudiantess)
     console.log("datfromlog",datEmCuent);
+    console.log("datCuentasfromlog",daCuentas);
+
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
         console.log("aftergetDataCeunta",emailCuenta)
-        console.log("aftedataCuentas",dataCuentas)
 
-        dataCuenta=dataCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
-        console.log("cuenta1",dataCuenta);
+        dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
 
         setCuenta(dataCuenta);
-        getDataEscuela();
+
+        dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
+        setEscuela(dataEscuela);
+
+        setLoading(true);
+        console.log("cuenta1",dataCuenta);
+
+        //getDataEscuela();
     }
    
 }    
 const getDataEscuela=()=>{
-    console.log("dataEscuelas",dataEscuelas)
-
+    console.log("emailUseContextREges",emailCuenta)
     dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
+        console.log("daEscuelaLogin2",dataEscuela);
+
     console.log("daEscuelaLogin2",dataEscuela);
+    console.log("daEStudian",daEstudiantes);
 
     setEscuela(dataEscuela);
     setLoading(false);
@@ -58,7 +65,10 @@ const getDataEscuela=()=>{
 const setEmaCuenta=ema=>{
     setEmailCuenta(ema);
 }
-
+const cambCuentas=cuent=>{
+    console.log(cuent)
+    setCuentas(cuent)
+}
 const cambiarEsta=esta=>{
     estaMenu=esta
     setEsta(esta);
@@ -67,7 +77,7 @@ const cambiarEsta=esta=>{
     return(
         <InfoContext.Provider
         value={{
-            da:EstDa(),
+            //da:EstDa(),
             daCuen:CuentDa(),
          cambiarEsta:cambiarEsta,
             estaMenu:estaMenu,
@@ -78,13 +88,15 @@ const cambiarEsta=esta=>{
             setCuentaEmail,cuentEmail,
             getDataCuenta,
             setEmaCuenta,
+            cambCuentas,
             getDataEscuela,
             daEscuela,
             daCuenta,setCuenta,
             loading,setLoading,
             daCuentas,setCuentas,
             daEstudiantes,setEstudiantes,
-            dataChange,setDatachange
+            dataChange,setDatachange,
+            daEscuelas,setEscuelas
         }}
         >
             {props.children}

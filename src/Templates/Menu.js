@@ -50,7 +50,7 @@ console.log("renderingMenu:",esta);
           <NavbarBrand  href="/">CLincoln</NavbarBrand>
           <Nav>
             <Link to="/Login">
-            <Button  outline color="primary">Login</Button>{' '}
+            <Button hidden={esta} outline color="primary">Login</Button>{' '}
             </Link>
             
               <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>

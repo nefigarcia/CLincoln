@@ -147,8 +147,8 @@ class RegEscuela extends Component{
                           data.setEscuelas(daEscuelas)
                          }
                          {loading &&
-                          data.getDataEscuela()
-                         }
+                         data.getDataCuenta(null)}
+                        
                          
                         {!data.loading &&
                         <Navigate to={"/Escuela"}  

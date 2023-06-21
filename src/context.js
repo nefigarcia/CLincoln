@@ -22,7 +22,6 @@ const[daEstudiantes,setEstudiantes]=useState(daEstudiantess);
 const[dataChange,setDatachange]=useState(false);
 
     console.log("renderingContext:",daCuentas);
-    console.log("renderingContextEmail:",emailCuenta);
 
 
 const getDataCuenta=datEmCuent=>{
@@ -34,15 +33,16 @@ const getDataCuenta=datEmCuent=>{
        getDataEscuela();
     }else{
         console.log("aftergetDataCeunta",emailCuenta)
-
+        console.log("daEscuelas",daEscuelas)
         dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
 
         setCuenta(dataCuenta);
-
-        dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
+        console.log("daCuenta",daCuenta)
+        dataEscuela=daEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
         setEscuela(dataEscuela);
-
-        setLoading(true);
+        console.log("daEScuela",dataEscuela)
+        setEsta(true)
+        setLoading(false);
         console.log("cuenta1",dataCuenta);
 
         //getDataEscuela();

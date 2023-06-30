@@ -24,9 +24,9 @@ const Perfmaestro=()=>{
                 </div>
                 </Col>
                 <Col md={3}>
-                    <div>{daMaestro.nombre}</div>
-                    <p>{daMaestro.email}</p>
-                    <p>{daMaestro.tel}</p>
+                    <div>{daMaestro.NOMBRE}</div>
+                    <p>{daMaestro.EMAIL}</p>
+                    <p>{daMaestro.TEL}</p>
                 </Col>
             </Row>
             <Row>
@@ -55,15 +55,15 @@ const Perfmaestro=()=>{
         <tbody className='border'>
             <tr>
                 <td>
-                   <div ><div>Tel.</div><div>{daMaestro.tel}</div></div> 
+                   <div ><div>Tel.</div><div>{daMaestro.TEL}</div></div> 
                 </td>
                 <td>
-                <div ><div>Email</div><div>{daMaestro.email}</div></div> 
+                <div ><div>Email</div><div>{daMaestro.EMAIL}</div></div> 
                 </td>
             </tr>
             <tr>
                 <td>
-                <div ><div>Nacimiento</div><div>{daMaestro.nacimiento}</div></div> 
+                <div ><div>Nacimiento</div><div>{daMaestro.NACIMIENTO}</div></div> 
                 </td>
                 <td>
                 <div ><div>Id Num.</div><div></div></div> 
@@ -71,7 +71,7 @@ const Perfmaestro=()=>{
             </tr>
             <tr>
                 <td>
-                <div ><div>Direccion</div><div>{daMaestro.direccion}</div></div> 
+                <div ><div>Direccion</div><div>{daMaestro.DIRECCION}</div></div> 
                 </td>
                 <td>
                 <div ><div>Metodo Pago</div><div></div></div> 

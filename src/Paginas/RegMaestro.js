@@ -64,7 +64,7 @@ const RegMaestro=(props)=>{
       }
     }
     const registrar=(nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad)=>{
-        let da={nombre:nombre,apellidos:apellidos,nacimiento:nacimiento,num:num,tel:tel,email:email,estado:estado,cp:cp,direccion:direccion,ciudad:ciudad};
+        let da={NOMBRE:nombre,APELLIDOS:apellidos,NACIMIENTO:nacimiento,NUM:num,TEL:tel,EMAIL:email,ESTADO:estado,CP:cp,DIRECCION:direccion,CIUDAD:ciudad};
         setFormValue({loading:true})
         return fetch('http://localhost:3001/Regmaestro',{
             method:'POST',

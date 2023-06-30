@@ -40,7 +40,7 @@ export function Registros(props){
         <tr>
           <th scope="row">{props.item.ID}</th>
           <Link to='/PerfEstudiante' >
-          <td onClick={setIdEstudiante(props.item.ID)}>{props.item.NOMBRE}</td>
+          <td onClick={()=>setIdEstudiante(props.item.ID)}>{props.item.NOMBRE}</td>
           </Link>
           <td>{props.item.TELEFONO}</td>
           <td>{props.item.EMAIL}</td>
@@ -55,7 +55,7 @@ export function RegistrosMaestros(props){
         <tr>
           <th scope="row">{props.item.ID}</th>
           <Link to='/PerfMaestro' >
-          <td onClick={setIdMaestro(props.item.ID)}>{props.item.NOMBRE}</td>
+          <td onClick={()=>setIdMaestro(props.item.ID)}>{props.item.NOMBRE}</td>
           </Link>
           <td>{props.item.TELEFONO}</td>
           <td>{props.item.EMAIL}</td>

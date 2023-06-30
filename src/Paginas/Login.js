@@ -1,5 +1,5 @@
 import React,{Component,useContext,useState} from 'react';
-import { Media } from 'reactstrap';
+import { Card, CardBody, Col, Container, Media, Row } from 'reactstrap';
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox,MDBModalContent,MDBModalHeader,MDBModalTitle,MDBModalBody,MDBModalFooter,MDBModal,MDBModalDialog } from 'mdb-react-ui-kit';
 import {Link, redirect} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
@@ -15,7 +15,7 @@ import {
   Label,
   Input,
   Button,
-  Alert
+  Alert, Jumbotron
 } from 'reactstrap';
 
 
@@ -48,8 +48,8 @@ class Login extends Component{
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'}
         };
-       // return fetch("http://localhost:3001/Login",requestOpt)
-       return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
+       return fetch("http://localhost:3001/Login",requestOpt)
+       //return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         .then(response=>response.json())
         .then(response=>{
           let item=response.find(item=>{
@@ -107,9 +107,10 @@ class Login extends Component{
     <InfoConsumer>
       {data=>{
         return(
-      <div className="container">
-          <h2>Sign In</h2>
-          <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
+      <div  className='div-center'>         
+         <h1><span className='text-center'>Ingreso</span></h1>
+
+             <Form className='login-form border' onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
               <Label>Email</Label>
               <Input
@@ -133,6 +134,7 @@ class Login extends Component{
               </FormFeedback>
               <FormText>Tu usuario es tu email.</FormText>
             </FormGroup>
+    
             <FormGroup>
               <Label for="examplePassword">Contrasena</Label>
               <Input
@@ -143,13 +145,18 @@ class Login extends Component{
                 value={passwor}
                 onChange={(e) => this.handleChange(e)}
               />
-            </FormGroup> <br/>
-            <Button>Submit</Button>
+            </FormGroup>
+            <div className='d-grid'><button className="btn-md btn btn-primary">Aceptar</button></div>
+            
+                <div className='text-center pt-3'>--O--</div>
             <p className="small fw-bold mt-2 pt-1 mb-2">No tienes cuenta? 
             <Mod/>
             </p>
             {authen &&
 <Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
+{!authen &&
+  <Alert color="warning">Revisa email o contrasena!!!.</Alert>}
+
 {authen &&
 data.setEsta(authen)}
 {
@@ -165,6 +172,7 @@ data.setEsta(authen)}
 }
 
           </Form>
+                       
         </div>
           );
         }}
@@ -263,7 +271,7 @@ const Mod=()=>{
      
   return(
     <>
-    <Button onClick={toggleShow}>Registrar</Button>
+    <Button className='btn-sm' onClick={toggleShow}>Registrar</Button>
 
     <MDBModal tabIndex='-1' show={gridModal} setShow={setGridModal}>
       <MDBModalDialog>

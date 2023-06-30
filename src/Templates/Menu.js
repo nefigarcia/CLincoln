@@ -66,9 +66,10 @@ console.log("renderingMenu:",esta);
                 <Link to="/Regestudiante">
                 <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
                 </Link>
-                
-                <DropdownItem><BsBookFill/>Clase</DropdownItem>
+                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                <Link to="/Regmaestro">
                 <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                </Link>
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>

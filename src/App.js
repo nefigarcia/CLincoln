@@ -4,7 +4,7 @@ import './App.css';
 import Menu from './Templates/Menu';
 import Regestudiante from './Paginas/Regestudiante';
 import Inicio from './Paginas/Inicio';
-import Registros from './Paginas/Registros';
+import {Registros} from './Paginas/Registros';
 import PreRegistros from './Paginas/PreRegistros';
 import {Routes, Route} from 'react-router-dom';
 import Login from './Paginas/Login';
@@ -14,6 +14,10 @@ import PreinicioEscuela from './Paginas/PreinicioEscuela';
 import RegEscuela from './Paginas/RegEscuela';
 import Fotter from './Templates/Fotter';
 import { useAuth } from './context';
+import RegClase from './Paginas/RegClase';
+import RegMaestro from './Paginas/RegMaestro';
+import Perfmaestro from './Paginas/PerfMaestro';
+import Perfestudiante from './Paginas/PerfEstudiante';
 
 
 function App() {
@@ -33,6 +37,10 @@ function App() {
        <Route path='/Activacion' element={<Activacion/>}/>
        <Route path='/Escuela' element={<PreinicioEscuela/>}/>
        <Route path='/Regescuela' element={<RegEscuela/>}/>
+       <Route path='/Regclase' element={<RegClase/>}/>
+       <Route path='/Regmaestro' element={<RegMaestro/>}/>
+       <Route path='/Perfmaestro' element={<Perfmaestro/>}/>
+       <Route path='/Perfestudiante' element={<Perfestudiante/>}/>
       </Routes>
       <Fotter/>
     </div>

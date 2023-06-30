@@ -14,36 +14,7 @@ class PreinicioEscuela extends Component{
       daEscuelas:''
     }
   }
-  getEst(){console.log("getEstudiantesRegEscueal:")
-    //fetch("http://localhost:3001/Estudiantes")
-    fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
-    .then(res=>res.json())
-    .then(res=>{
-      if(res){
-        this.setState({daEstudiantes:res},()=>{
-          console.log("daEStuIniciEs",this.state.daEstudiantes)
-        })
-      }
-    })
-  }
-  getEscuelas(){ console.log("getEscuelasRegEscueala:")
-    //fetch("http://localhost:3001/Escuelas")
-    fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
-    .then(res=>res.json())
-    .then(res=>{//alert(JSON.stringify(res))
-      if(res){
-        this.setState({daEscuelas:res},()=>{
-          console.log("daEscuelasPreinicioEscuela:",this.state.daEscuelas)
-        })
-      }
-    })
-    .catch(res=>{
-      console.log("error en REGescuela Escuealas:",res)
-    })
-  }
-  componentDidMount(){
-    this.getEst();
-  }
+  
 
   cambLoading(loading){
     this.state.loading=loading;
@@ -64,7 +35,7 @@ class PreinicioEscuela extends Component{
                 <div className="row mt-5">
                 <InfoConsumer >
                     {value=>{
-                      value.setEstudiantes(daEstudiantes);
+                     // value.setEstudiantes(daEstudiantes);
                      // value.setEscuelas(daEscuelas);
                       //value.getDataEscuela();
                       //this.cambLoading(value.loading)

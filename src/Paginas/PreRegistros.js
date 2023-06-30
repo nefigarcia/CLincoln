@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import Registros from './Registros';
+import {Registros,RegistrosMaestros} from './Registros';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoConsumer } from '../context';
@@ -49,14 +49,16 @@ class PreRegistros extends Component{
           <tr>
             <th>#</th>
             <th>Nombre</th>
-            <th>Apellidos</th>
             <th>Telefono</th>
+            <th>Email</th>
+            <th>Reg.fecha</th>
+            <th>Pagos</th>
+
           </tr>
         </thead>
         <tbody>
               <InfoConsumer>
                     {value=>{
-                      console.log("renderingPreRegistros:",value.daEstudiantes)
                         return value.daEstudiantes.map(item=>{
                             return <Registros key={item.ID} item={item}/>;
                             
@@ -66,16 +68,28 @@ class PreRegistros extends Component{
                 </tbody>       
                 </Table>
               </TabPane>
+
               <TabPane tabId="2">
-                <Row>
-                  <Col sm="6">
-                    <Card body>
-                      <CardTitle>En proceso</CardTitle>
-                      <CardText>En desarrollo.</CardText>
-                      <Button>Proximamente</Button>
-                    </Card>
-                  </Col>
-                </Row>
+              <Table>
+                <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Telefono</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+              <InfoConsumer>
+                    {value=>{
+                        return value.daMaestros.map(item=>{
+                            return <RegistrosMaestros key={item.ID} item={item}/>;
+                            
+                        })
+                    }}
+                </InfoConsumer> 
+                </tbody>       
+                </Table>
               </TabPane>
             </TabContent>
           </div>

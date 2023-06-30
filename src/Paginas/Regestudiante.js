@@ -10,28 +10,56 @@ class regEstudiante extends Component{
         this.state={
             nombre:'',
             apellidos:'',
+            registro:'',
+            nacimiento:'',
+            tel:'',
+            email:'',
+            direccion:'',
+            municipio:'',
+            estado:'',
+            cp:'',
+            estado:'',
             submitted:false,
-            dataChange:false
+            dataChange:false,
+            daEstudiantes:'',
+            daEstudiante:'',
+            nextpagina:false
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
     }
+    getEst(){
+    fetch("http://localhost:3001/Estudiantes")
+    //fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+    .then(res=>res.json())
+    .then(res=>{
+      if(res){
+        this.setState({daEstudiantes:res, dataChange:true},()=>{
+        })
+        this.getEstudiante(this.state.email)
+      }
+    })
+  }
+  getEstudiante(email){
+    const estudiante=this.state.daEstudiantes.find(item=>item.EMAIL===email)
+    this.setState({daEstudiante:estudiante})
+    this.setState({nextpagina:true})
+  }
 handleSubmit(e){
     e.preventDefault();
     this.setState({submitted:true});
-    const{nombre,apellidos}=this.state;
-    console.log(nombre,apellidos,"handleSubmit");
-    if(!(nombre && apellidos)){
+    const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp}=this.state;
+    if(!(nombre && apellidos && registro && email)){
         return;
     }
-    this.registrar(nombre,apellidos)
+    this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp)
     .then(this.setState({log:true}));
 }
-registrar(nombre,apellidos){
-    let dat={nombre:nombre,apellidos:apellidos};console.log("nombre",nombre);
-   return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
-     // return fetch("http://localhost:3001/Regestudiante",{
+registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp){
+    let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp};
+   //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+      return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),
@@ -39,8 +67,7 @@ registrar(nombre,apellidos){
     })//.then(this.handleResponse)
     .then(res=>{
       if(res.ok){
-        console.log('testing',res);
-        this.setState({dataChange:true})
+        this.getEst();
       }
       
     })
@@ -51,35 +78,26 @@ handleChange(event){
   this.setState({[name]:value});
 }
 
-handleResponse(response){
-	return response.text().then(text=>{
-		const data=text && JSON.parse(text);
-		if(!response.ok){
-			if(response.ok===401){
-				console.log('error 401');
-			}console.log("error401")
-			const error=(data && data.message) || response.statusText;
-			return Promise.reject(error);
-		}
-		return data;
-	});
-} 
-
     render(){
-      const{nombre,apellidos,dataChange}=this.state;
+      const{nombre,apellidos,dataChange,estado,daEstudiantes,nextpagina,daEstudiante}=this.state;
         return(
 <InfoConsumer> 
   {data=>{
   return(        
-            <div className="container">
-<Form onSubmit={this.handleSubmit}>
+<div className="container">
+<h5>Agregar Estudiante</h5>
+ <hr/>
+<Form className='border formas-registros' onSubmit={this.handleSubmit}>
+<div className="p-2 bg-light border">Ingresa datos de estudiante</div>
+
   <Row>
-    <Col md={6}>
+    <Col md={4}>
       <FormGroup>
         <Label for="Nombre">
           Nombre
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
-        <Input onChange={this.handleChange} 
+        <Input onChange={this.handleChange} style={{backgroundColor:"#fffde3"}}
           id="nombre"
           name="nombre"
           placeholder="Obligatorio"
@@ -87,12 +105,13 @@ handleResponse(response){
         />
       </FormGroup>
     </Col>
-    <Col md={6}>
+    <Col md={4}>
       <FormGroup>
         <Label for="exApellidos">
           Apellidos
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
-        <Input onChange={this.handleChange}
+        <Input onChange={this.handleChange} style={{backgroundColor:"#fffde3"}}
           id="nombre"
           name="apellidos"
           placeholder=" "
@@ -101,38 +120,119 @@ handleResponse(response){
       </FormGroup>
     </Col>
   </Row>
-  <FormGroup>
-    <Label for="exDireccion">
+  <hr/>
+  <Row>
+    <Col md={4}>
+    <FormGroup>
+        <Label>Fecha registro
+        <span className='required' style={{color:"red"}}>*</span>
+        </Label>
+        <Input style={{backgroundColor:"#fffde3"}}
+          //bsSize="lg"
+          type="date"
+          name="registro"
+         // value={date}
+          onChange={this.handleChange}
+   />
+           </FormGroup>
+    </Col>
+    <Col md={4}>
+    <FormGroup>
+        <Label>Nacimiento
+        <span >(Opcional)</span>
+        </Label>
+        <Input
+          //bsSize="lg"
+          type="date"
+          name="nacimiento"
+         // value={date}
+          onChange={this.handleChange}
+   />
+           </FormGroup>
+    </Col>
+  </Row>
+  <div className='p-2 bg-light'>Datos Contacto</div>
+  <Row>
+  <Col md={4}>
+    <FormGroup>
+    <Label for="tel">
+      Num. Tel.
+    </Label>
+    <Input
+      id="tel"
+      name="tel"
+      placeholder="Tel."
+      type='number'
+      onChange={this.handleChange}
+    />
+  </FormGroup>
+    </Col>
+    <Col md={4}>
+    <FormGroup>
+    <Label for="email">
+      Email
+      <span className='required' style={{color:"red"}}>*</span>
+    </Label>
+    <Input style={{backgroundColor:"#fffde3"}}
+      id="email"
+      name="email"
+      placeholder="email@xx.com"
+      type='email'
+      onChange={this.handleChange}
+    />
+  </FormGroup>
+    </Col>
+  </Row>
+  <hr/>
+    <Row>
+    <Col md={6}>
+    <FormGroup>
+    <Label for="direccion">
       Direccion
     </Label>
     <Input
-      id="exDireccion"
+      id="direccion"
       name="direccion"
       placeholder="1234 San Marcos"
+      type='text'
+      onChange={this.handleChange}
     />
   </FormGroup>
- 
+    </Col>
+    </Row>
   <Row>
-    <Col md={6}>
+    <Col md={4}>
       <FormGroup>
-        <Label for="exCiudad">
-          Ciudad
+        <Label for="municipio">
+          Municipio
         </Label>
         <Input
-          id="exCiudad"
-          name="ciudad"
+          id="municipio"
+          name="municipio"
+          onChange={this.handleChange}
         />
       </FormGroup>
     </Col>
     <Col md={4}>
       <FormGroup>
-        <Label for="exEstado">
+        <Label for="estado">
           Estado
         </Label>
-        <Input
-          id="exEstado"
+        <Input  
+          id="estado"
           name="estado"
-        />
+          type="select"
+          value={estado}
+          onChange={this.handleChange}
+        >
+          <option>Hidalgo</option>
+          <option>Michoacan</option>
+          <option>Yucatan</option>
+          <option>Nuevo Leon</option>
+          <option>Viernes</option>
+          <option>Zacatecas</option>
+          <option>Durango</option>
+        </Input>
       </FormGroup>
     </Col>
     <Col md={2}>
@@ -143,31 +243,23 @@ handleResponse(response){
         <Input
           id="exCP"
           name="cp"
+          onChange={this.handleChange}
         />
       </FormGroup>
     </Col>
   </Row>
-  <FormGroup check>
-    <Input
-      id="exampleCheck"
-      name="check"
-      type="checkbox"
-    />
-    <Label
-      check
-      for="exampleCheck"
-    >
-      Click
-    </Label>
-  </FormGroup>
-  <Button>
+  <Button >
     Aceptar
   </Button>
 </Form>
 {dataChange &&
             data.setDatachange(dataChange)}
 {dataChange &&
-<Navigate to={'/Escuela'} />
+data.setEstudiantes(daEstudiantes)} 
+{nextpagina &&
+data.setEstudiante(daEstudiante)}             
+{nextpagina &&
+<Navigate to={'/Perfestudiante'} />
 
 }            
             </div>

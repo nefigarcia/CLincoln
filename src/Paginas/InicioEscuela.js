@@ -3,11 +3,6 @@ import styled from 'styled-components'
 import { InfoConsumer } from '../context'
 class InicioEscuela extends Component{
 
-
-
-    componentDidMount(){
-        
-    }
 render(){
     //const{id,nombre}=this.props.item;
     return(

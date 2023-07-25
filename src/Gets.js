@@ -12,7 +12,7 @@ const getEscuelas=()=>fetch("http://localhost:3001/Escuelas").then(res=>res.json
 //const getEscuelas=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas").then(res=>res.json());
 
 const getMaestros=()=>fetch("http://localhost:3001/Maestros").then(res=>res.json());
-//const getEscuelas=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas").then(res=>res.json());
+//const getMaestros=()=>fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros").then(res=>res.json());
 
 export function EstDa(){
     const [da,setDa]=useState([]);

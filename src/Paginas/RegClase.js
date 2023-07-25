@@ -1,5 +1,6 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useContext, useState} from 'react';
 import {DropdownToggle, Button, Form, FormGroup, Label, Input, FormText,Alert,Row,Col, DropdownItem, Dropdown, DropdownMenu } from 'reactstrap';
+import { InfoContext } from '../context';
 
 
 const RegClase=(props)=>{
@@ -8,38 +9,53 @@ const RegClase=(props)=>{
   const toggle=()=>setOpen(!open);
   const [diaDiv,setdiaDiv]=useState(['nDia']);
   const [likes,setLikes]=useState(0);
+  const {daMaestros}=useContext(InfoContext)
+  const [estado,setEstado]=useState(false);
   const [formValue, setFormValue] = useState({
     nombre: "",
     nivel: "",
-    date: "",
-    date2: "",
+    maestro:"",
+    salon:"",
+    fecha: "",
+    fecha2: "",
     maestro: "",
     salon:"",
     hora:"",
     hora2:"",
     dia:""
-
   });
-  function addDia(){
+  function addDia(){console.log("mas")
     setLikes(likes+1)
-    console.log("array")
     let cloneDia=diaDiv;
     cloneDia.push('nDia');
     setdiaDiv(cloneDia);
-    console.log("array",cloneDia)
 
   }
-
+const registrar=async()=>{console.log("regis")
+  let da={nombre:nombre,nivel:nivel,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,dia:dia,hora:hora,hora2:hora2};
+ try {
+  let res=await fetch("http://localhost:3001/Regclase",{
+      method:'POST',
+      mode:'cors',
+      body:JSON.stringify(da),
+      headers:{'content-type':'application/json'},}
+  )
+  .then(res=>{
+    if(res.ok){console.log("res",res)
+      setEstado(true);
+    }
+  })
+ } catch (error) {
+  
+ }
+}
  function handleSubmit(e){
-        e.preventDefault();
-        this.setState({submitted:true});
-        const{nombre,apellidos}=this.state;
-        console.log(nombre,apellidos,"handleSubmit");
-        if(!(nombre && apellidos)){
+        e.preventDefault();console.log("handle",formValue)
+        if(!(nombre && maestro)){
             return;
         }
-        this.registrar(nombre,apellidos)
-        .then(this.setState({log:true}));
+        registrar()
+        .then();
     }
     const handleChange = (event) => {
       const { name, value } = event.target;
@@ -51,7 +67,7 @@ const RegClase=(props)=>{
       });
     };
    
-const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
+const { nombre, nivel, fecha,fecha2,maestro,salon,hora,hora2 ,dia} = formValue;
 
     return(
 <div className="container">
@@ -60,8 +76,8 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
 <Form className='border ' onSubmit={handleSubmit}>
 <div className="p-2 bg-light border">Ingresa datos de clase</div>
 
-  <Row>
-    <Col md={4}>
+  <Row md={2}>
+    <Col >
       <FormGroup>
         <Label for="Nombre">
           Nombre Clase
@@ -75,7 +91,7 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
         />
       </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
       <FormGroup>
         <Label for="exApellidos">
           Nivel
@@ -93,8 +109,8 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
  
  
   <div className="p-2 bg-light border">Maestro & Salon de clases</div>
-      <Row>
-        <Col md={3}>
+      <Row md={2}>
+        <Col >
        
         <FormGroup>
         <Label>Maestro
@@ -105,12 +121,16 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
           name="maestro"
           value={maestro}
           onChange={handleChange}
-   />
-           </FormGroup>
-       
-          
+   >
+
+        
+        {daMaestros.map((item)=>{console.log("maesmap",item)
+          return <option key={item}>{item.NOMBRE}</option>
+    })} 
+        </Input>
+           </FormGroup>   
         </Col>
-         <Col md={3}>
+         <Col >
          <FormGroup>
         <Label>Salon de clase
         <span className='required' style={{color:"red"}}>*</span>
@@ -121,6 +141,7 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
           name="salon"
           value={salon}
           onChange={handleChange}
+          
    />
            </FormGroup>
         </Col>
@@ -128,8 +149,8 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
 <div className="p-2 bg-light border">Horario Clase</div>
     <h5>Clase semanal</h5>
 
-    <Row>
-        <Col md={3}>      
+    <Row md={2}>
+        <Col >      
         <FormGroup>
         <Label>Fecha inicio
         <span className='required' style={{color:"red"}}>*</span>
@@ -137,15 +158,15 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
         <Input style={{backgroundColor:"#fffde3"}}
           //bsSize="lg"
           type="date"
-          name="date"
-          value={date}
+          name="fecha"
+          value={fecha}
           onChange={handleChange}
    />
            </FormGroup>
        
           
         </Col>
-         <Col md={3}>
+         <Col >
         
         <FormGroup>
         <Label>Fecha termino
@@ -154,8 +175,8 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
         <Input style={{backgroundColor:"#fffde3"}}
          // bsSize="lg"
           type="date"
-          name="date2"
-          value={date2}
+          name="fecha2"
+          value={fecha2}
           onChange={handleChange}
         />
            </FormGroup>
@@ -164,8 +185,8 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
       </Row>
 
 {diaDiv.map(item=>{
-   return   <Row key={item}>
-      <Col md={3}>
+   return   <Row md={3} key={item}>
+      <Col>
       <FormGroup>
         <Label for="Nombre">
           Dia de la clase
@@ -183,11 +204,10 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
           <option>Jueves</option>
           <option>Viernes</option>
           <option>Sabado</option>
-          <option>Domingo</option>
         </Input>
       </FormGroup>
     </Col>
-    <Col md={3}>        
+    <Col >        
         <FormGroup>
         <Label for="Nombre">
           <>Hora inicio</>
@@ -202,7 +222,7 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
            </FormGroup>
 
         </Col>
-        <Col md={3}>        
+        <Col >        
         <FormGroup>
         <Label for="Nombre">
           <>Hora final</>
@@ -218,10 +238,13 @@ const { nombre, nivel, date,date2,maestro,salon,hora,hora2 ,dia} = formValue;
 
         </Col>
       </Row>
+      
 }
 )}    
  
  <a className='label d-flex justify-content-start' onClick={addDia}>+ Agregar dia</a>
+ <div className="p-2 bg-light border">Estudiantes</div>
+    <h9>Selecciona estudiantes</h9>
   <Button>
     Aceptar
   </Button>

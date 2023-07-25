@@ -10,8 +10,7 @@ import styled from 'styled-components';
 
 const RegMaestro=(props)=>{
   const{setMaestros,daMaestros,daMaestro,setMaestro}=useContext(InfoContext)
-
-    const [formValue, setFormValue] = useState({
+  const [formValue, setFormValue] = useState({
         nombre: "",
         apellidos: "",
         nacimiento: "",
@@ -52,6 +51,7 @@ const RegMaestro=(props)=>{
     const getMaestros=async()=>{
       try{
         const res=await fetch("http://localhost:3001/Maestros")
+      //  const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
       .then((res)=>res.json())
       setMaestros(res)
       if(res){      
@@ -67,12 +67,13 @@ const RegMaestro=(props)=>{
         let da={NOMBRE:nombre,APELLIDOS:apellidos,NACIMIENTO:nacimiento,NUM:num,TEL:tel,EMAIL:email,ESTADO:estado,CP:cp,DIRECCION:direccion,CIUDAD:ciudad};
         setFormValue({loading:true})
         return fetch('http://localhost:3001/Regmaestro',{
+       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Regmaestro',{
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'},
          })
-         .then(res=>{
+         .then(res=>{console.log("maes",res)
           setMaestro(da)
           getMaestros();
             if(res.ok){

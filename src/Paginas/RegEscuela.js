@@ -36,8 +36,8 @@ class RegEscuela extends Component{
 
     
     getEscuelas(){
-    fetch("http://localhost:3001/Escuelas")
-    //fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+   // fetch("http://localhost:3001/Escuelas")
+    fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
     .then(res=>res.json())
     .then(res=>{//alert(JSON.stringify(res))
       if(res){
@@ -67,7 +67,7 @@ class RegEscuela extends Component{
     registrar(nombre,escuelaid){
         let dat={nombre:nombre,escuelaid:escuelaid};
         return fetch('http://localhost:3001/Regescuela',{
-          //return fetch('https://shielded-brushlands-89617.herokuapp.com/Regescuela',{
+       //   return fetch('https://shielded-brushlands-89617.herokuapp.com/Regescuela',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

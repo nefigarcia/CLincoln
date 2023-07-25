@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import styled from 'styled-components';
 import React, { useState, useContext } from 'react';
 import {Link} from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
@@ -36,13 +35,12 @@ const NavApp = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const toggleNavbar = () => setCollapsed(!collapsed);
 
-  const [collapsedd, setCollapsedd] = useState(true);
+  const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
 const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
-console.log("renderingMenu:",esta);
      
         return(
           <div>    
@@ -53,10 +51,9 @@ console.log("renderingMenu:",esta);
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
             </Link>
             
-              <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
-              <DropdownToggle><BsPlusLg/>
-                 <i className="fas fa-caret-up"></i>
-        
+            
+            <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
+              <DropdownToggle><BsPlusLg/>        
                 </DropdownToggle>
               <DropdownMenu>     
                 <DropdownItem header>Agregar ...</DropdownItem>
@@ -73,6 +70,7 @@ console.log("renderingMenu:",esta);
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+             
             <i className="fas fa-caret-up"> {daCuenta.NOMBRE} </i>
             <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
               <DropdownToggle><BsFillPersonFill/>
@@ -91,7 +89,7 @@ console.log("renderingMenu:",esta);
                 <DropdownItem>Soporte</DropdownItem>
                 <DropdownItem>logout</DropdownItem>
               </DropdownMenu>
-            </Dropdown>
+            </Dropdown>           
           </Nav>
 
         
@@ -127,9 +125,6 @@ console.log("renderingMenu:",esta);
               </NavItem>
             </Nav>
           </Collapse>
-          {dataChange &&
-         <div>CAmbio reciente de data</div>
-        }
         </Navbar>
       
       </div>

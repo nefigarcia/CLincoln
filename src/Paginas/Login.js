@@ -5,7 +5,7 @@ import {Link, redirect} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
 import mafot from '../Fotos/regismaestro.png';
 import esfot from '../Fotos/regisestudiante.png';
-import { InfoConsumer,useAuth } from '../context';
+import { InfoConsumer,InfoContext,useAuth } from '../context';
 import { Navigate } from 'react-router-dom';
 import {
   Form,
@@ -37,10 +37,11 @@ class Login extends Component{
         this.handleChange=this.handleChange.bind(this);
 		this.handleSubmit=this.handleSubmit.bind(this);
     }
+static contextType=InfoContext;
 
-   
 
     login(emai,passwor){
+      
       let da={email:emai,contrasena:passwor};
         const requestOpt={
             method:'POST',
@@ -49,12 +50,14 @@ class Login extends Component{
             headers:{'content-type':'application/json'}
         };
       return fetch("http://localhost:3001/Login",requestOpt)
-      // return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
+     // return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         .then(response=>response.json())
         .then(response=>{
-          let item=response.find(item=>{
+          const contex=this.context;   
+          var item=response.find(item=>{
             return item.EMAIL;
           });
+          contex.setCuenta(item)
           if(response){
             this.setState({authen:true,emailCuen:item},()=>
             console.log("login then",this.state.authen),
@@ -154,15 +157,15 @@ class Login extends Component{
             </p>
             {authen &&
 <Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
-{!authen &&
+{error=='error' &&
   <Alert color="warning">Revisa email o contrasena!!!.</Alert>}
 
 {authen &&
 data.setEsta(authen)}
-{
+{/*{
  authen &&
  data.setCuenta(emailCuen)
-}
+}*/}
 {
  authen &&
  data.getDataCuenta(emailCuen)

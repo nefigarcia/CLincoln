@@ -18,6 +18,8 @@ import RegClase from './Paginas/RegClase';
 import RegMaestro from './Paginas/RegMaestro';
 import Perfmaestro from './Paginas/PerfMaestro';
 import Perfestudiante from './Paginas/PerfEstudiante';
+import Ajustes from './components/Ajustes';
+import { Clases, Perfclase } from './Paginas/Clases';
 
 
 function App() {
@@ -41,6 +43,9 @@ function App() {
        <Route path='/Regmaestro' element={<RegMaestro/>}/>
        <Route path='/Perfmaestro' element={<Perfmaestro/>}/>
        <Route path='/Perfestudiante' element={<Perfestudiante/>}/>
+       <Route path='/Ajustes'element={<Ajustes/>}/>
+       <Route path='/Clases' element={<Clases/>}/>
+       <Route path='/Perfclase' element={<Perfclase/>}/>
       </Routes>
       <Fotter/>
     </div>

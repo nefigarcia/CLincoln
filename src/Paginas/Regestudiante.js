@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText,Alert,Row,Col } from 'reactstrap';
 import { InfoConsumer } from '../context';
 import { Navigate } from 'react-router-dom';
-
+import {InfoContext} from '../context'
 
 class regEstudiante extends Component{
     constructor(props){
@@ -23,15 +23,23 @@ class regEstudiante extends Component{
             dataChange:false,
             daEstudiantes:'',
             daEstudiante:'',
-            nextpagina:false
+            nextpagina:false,
+            daEscuela:''
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
     }
+    static contextType=InfoContext;
+    componentDidMount(){
+      const contex=this.context;
+      this.setState({daEscuela:contex.daEscuela})
+      
+    }
     getEst(){
+      
     fetch("http://localhost:3001/Estudiantes")
-   // fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+  //  fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
     .then(res=>res.json())
     .then(res=>{
       if(res){
@@ -49,16 +57,16 @@ class regEstudiante extends Component{
 handleSubmit(e){
     e.preventDefault();
     this.setState({submitted:true});
-    const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp}=this.state;
+    const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela}=this.state;
     if(!(nombre && apellidos && registro && email)){
         return;
     }
-    this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp)
+    this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela.ID)
     .then(this.setState({log:true}));
 }
-registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp){
-    let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp};
-   //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,ID){
+    let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp,ID_ESCUELA:ID};
+  // return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
      return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
@@ -90,8 +98,8 @@ handleChange(event){
 <Form className='border formas-registros' onSubmit={this.handleSubmit}>
 <div className="p-2 bg-light border">Ingresa datos de estudiante</div>
 
-  <Row>
-    <Col md={4}>
+  <Row md={2}>
+    <Col >
       <FormGroup>
         <Label for="Nombre">
           Nombre
@@ -105,7 +113,7 @@ handleChange(event){
         />
       </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
       <FormGroup>
         <Label for="exApellidos">
           Apellidos
@@ -121,8 +129,8 @@ handleChange(event){
     </Col>
   </Row>
   <hr/>
-  <Row>
-    <Col md={4}>
+  <Row md={2}>
+    <Col >
     <FormGroup>
         <Label>Fecha registro
         <span className='required' style={{color:"red"}}>*</span>
@@ -136,7 +144,7 @@ handleChange(event){
    />
            </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
     <FormGroup>
         <Label>Nacimiento
         <span >(Opcional)</span>
@@ -152,8 +160,8 @@ handleChange(event){
     </Col>
   </Row>
   <div className='p-2 bg-light'>Datos Contacto</div>
-  <Row>
-  <Col md={4}>
+  <Row md={2}>
+  <Col>
     <FormGroup>
     <Label for="tel">
       Num. Tel.
@@ -167,7 +175,7 @@ handleChange(event){
     />
   </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
     <FormGroup>
     <Label for="email">
       Email
@@ -200,8 +208,8 @@ handleChange(event){
   </FormGroup>
     </Col>
     </Row>
-  <Row>
-    <Col md={4}>
+  <Row md={3}>
+    <Col>
       <FormGroup>
         <Label for="municipio">
           Municipio
@@ -213,7 +221,7 @@ handleChange(event){
         />
       </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
       <FormGroup>
         <Label for="estado">
           Estado
@@ -235,7 +243,7 @@ handleChange(event){
         </Input>
       </FormGroup>
     </Col>
-    <Col md={2}>
+    <Col >
       <FormGroup>
         <Label for="exCp">
           C.P

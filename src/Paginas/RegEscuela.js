@@ -36,8 +36,8 @@ class RegEscuela extends Component{
 
     
     getEscuelas(){
-   // fetch("http://localhost:3001/Escuelas")
-    fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+    fetch("http://localhost:3001/Escuelas")
+   // fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
     .then(res=>res.json())
     .then(res=>{//alert(JSON.stringify(res))
       if(res){

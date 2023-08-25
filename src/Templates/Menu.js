@@ -80,7 +80,9 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
                 <i className="fas fa-caret-up">Perfil    {daCuenta.NOMBRE}</i>
                 </DropdownItem>
                 <DropdownItem>Mi perfil</DropdownItem>
-                <DropdownItem disabled>Escuela configuracion </DropdownItem>
+                <Link to={"/Ajustes"}>
+                <DropdownItem >Escuela configuracion </DropdownItem>
+                </Link>
                 <DropdownItem divider />
                 
                 <DropdownItem><AiOutlineUserAdd/>Permisos</DropdownItem>
@@ -100,7 +102,7 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
               <NavItem >
-                <Link to="/preTraba"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
+                <Link to="/Escuela"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
@@ -109,7 +111,7 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
                 <Link to="/PreRegistros"><NavLink><i className='icon'><FaPeopleArrows/> Registros</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><i className='icon'><BsBookFill/>Clases & Eventos</i></NavLink></Link>
+                <Link to="/Clases"><NavLink><i className='icon'><BsBookFill/>Clases & Eventos</i></NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link><NavLink><i className='icon'><FaCreditCard/>Pagos</i></NavLink></Link>

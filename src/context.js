@@ -23,17 +23,17 @@ const[daEstudiantes,setEstudiantes]=useState();
 const[dataChange,setDatachange]=useState(false);
 const[daEstudiante,setEstudiante]=useState([]);
 const[daMaestros,setMaestros]=useState();
-const[daMaestro,setMaestro]=useState([])
+const[daMaestro,setMaestro]=useState([]);
+const[daClases,setClases]=useState([]);
+const[daClase,setClase]=useState([]);
+const[leccionesDate,setleccDate]=useState([]);
+const[daClasesdias,setClasesdias]=useState([]);
 
-console.log("maestros",daMaestros)
-console.log("maestro",daMaestro)
-
-console.log("estudiantes",daEstudiantes)
 
 
 const getDataCuenta=datEmCuent=>{
-    setEstudiantes(daEstudiantess)
-    setMaestros(daMaestross)
+    //setEstudiantes(daEstudiantess)
+   // setMaestros(daMaestross)
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
@@ -51,13 +51,17 @@ const getDataCuenta=datEmCuent=>{
    
 }    
 const getDataEscuela=()=>{
-    console.log("emailUseContextREges",emailCuenta)
+    
     dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
-        console.log("daEscuelaLogin2",dataEscuela);
-
-    console.log("daEscuelaLogin2",dataEscuela);
-    console.log("daEStudian",daEstudiantes);
-
+    const estudiantesIdescuela=daEstudiantess.filter(function(item){
+       return item.ID_ESCUELA==dataEscuela.ID;
+    });
+    const maestrosIdescuela=daMaestross.filter(function(item){
+        return item.ID_ESCUELA==dataEscuela.ID;
+    })
+    console.log("DAESC:",estudiantesIdescuela);
+    setEstudiantes(estudiantesIdescuela);
+    setMaestros(maestrosIdescuela);
     setEscuela(dataEscuela);
     setLoading(false);
 
@@ -115,7 +119,11 @@ const cambiarEsta=esta=>{
             daEscuelas,setEscuelas,
             daEstudiante,setEstudiante,
             daMaestros,setMaestros,
-            daMaestro,setMaestro
+            daMaestro,setMaestro,
+            daClases,setClases,
+            daClase,setClase,
+            leccionesDate,setleccDate
+           
         }}
         >
             {props.children}

@@ -6,7 +6,7 @@ class Activacion extends Component{
     render(){
         return (
             
-            <Form inline>
+            <Form >
               <div className="form-title">
             <h1>Ingresa tu codigo de activacion</h1>
             <p>

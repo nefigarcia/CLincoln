@@ -9,7 +9,7 @@ import styled from 'styled-components';
 
 
 const RegMaestro=(props)=>{
-  const{setMaestros,daMaestros,daMaestro,setMaestro}=useContext(InfoContext)
+  const{setMaestros,daMaestros,daMaestro,setMaestro,daEscuela}=useContext(InfoContext)
   const [formValue, setFormValue] = useState({
         nombre: "",
         apellidos: "",
@@ -51,9 +51,12 @@ const RegMaestro=(props)=>{
     const getMaestros=async()=>{
       try{
         const res=await fetch("http://localhost:3001/Maestros")
-      //  const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
+       // const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
       .then((res)=>res.json())
-      setMaestros(res)
+      const maestrosIdescuela=res.filter(function(item){
+        return item.ID_ESCUELA==daEscuela.ID;
+      })
+      setMaestros(maestrosIdescuela)
       if(res){      
         setFormValue({loading:false,nextpagina:true})
       console.log("da",daMaestro)
@@ -64,10 +67,10 @@ const RegMaestro=(props)=>{
       }
     }
     const registrar=(nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad)=>{
-        let da={NOMBRE:nombre,APELLIDOS:apellidos,NACIMIENTO:nacimiento,NUM:num,TEL:tel,EMAIL:email,ESTADO:estado,CP:cp,DIRECCION:direccion,CIUDAD:ciudad};
+        let da={NOMBRE:nombre,APELLIDOS:apellidos,NACIMIENTO:nacimiento,NUM:num,TEL:tel,EMAIL:email,ESTADO:estado,CP:cp,DIRECCION:direccion,CIUDAD:ciudad,ID_ESCUELA:daEscuela.ID};
         setFormValue({loading:true})
-        return fetch('http://localhost:3001/Regmaestro',{
-       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Regmaestro',{
+       return fetch('http://localhost:3001/Regmaestro',{
+       //return fetch('https://shielded-brushlands-89617.herokuapp.com/Regmaestro',{
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),
@@ -100,8 +103,8 @@ const RegMaestro=(props)=>{
           </div>
           </Header>
           </React.Fragment>
-  <Row>
-    <Col md={4}>
+  <Row md={2}>
+    <Col >
       <FormGroup>
         <Label for="Nombre">
           Nombre
@@ -116,7 +119,7 @@ const RegMaestro=(props)=>{
         />
       </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
       <FormGroup>
         <Label for="exApellidos">
           Apellidos
@@ -132,8 +135,8 @@ const RegMaestro=(props)=>{
     </Col>
   </Row>
   <hr/>
-  <Row>
-    <Col md={4}>
+  <Row md={2}>
+    <Col >
     <FormGroup>
         <Label>Nacimiento
         </Label>
@@ -146,7 +149,7 @@ const RegMaestro=(props)=>{
    />
            </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
     <FormGroup>
         <Label>Identificacion
         </Label>
@@ -161,8 +164,8 @@ const RegMaestro=(props)=>{
     </Col>
   </Row>
   <div className='p-2 bg-light'>Datos Contacto</div>
-  <Row>
-  <Col md={4}>
+  <Row md={2}>
+  <Col>
     <FormGroup>
     <Label for="exDireccion">
       Num. Tel.
@@ -177,7 +180,7 @@ const RegMaestro=(props)=>{
     />
   </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col>
     <FormGroup>
     <Label for="exDireccion">
       Email
@@ -211,8 +214,8 @@ const RegMaestro=(props)=>{
   </FormGroup>
     </Col>
     </Row>
-  <Row>
-    <Col md={4}>
+  <Row md={3}>
+    <Col>
       <FormGroup>
         <Label for="exCiudad">
           Ciudad
@@ -226,7 +229,7 @@ const RegMaestro=(props)=>{
         />
       </FormGroup>
     </Col>
-    <Col md={4}>
+    <Col >
       <FormGroup>
         <Label for="exEstado">
           Estado
@@ -248,7 +251,7 @@ const RegMaestro=(props)=>{
         </Input>
       </FormGroup>
     </Col>
-    <Col md={2}>
+    <Col>
       <FormGroup>
         <Label for="exCp">
           C.P

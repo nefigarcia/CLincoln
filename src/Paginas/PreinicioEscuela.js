@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import styled from 'styled-components';
-import InicioEscuela from './InicioEscuela';
+import {InicioEscuela} from './InicioEscuela';
 import { InfoConsumer } from '../context';
 import { EstDa } from '../Gets';
 
@@ -24,30 +24,20 @@ class PreinicioEscuela extends Component{
       const{loading,daEstudiantes,daEscuelas}=this.state; 
         return(
             <div className="container">
-                Plataforma
+              <h5>Panel</h5>
+              <hr/>
             <React.Fragment>
             <Header hidden={loading} className="container-fluid align-items-center">
           <div className="loader-cont" >
               <div className="loader"></div>
           </div>
           </Header>
-          </React.Fragment>
-                <div className="row mt-5">
+          </React.Fragment>            
                 <InfoConsumer >
-                    {value=>{
-                     // value.setEstudiantes(daEstudiantes);
-                     // value.setEscuelas(daEscuelas);
-                      //value.getDataEscuela();
-                      //this.cambLoading(value.loading)
-                      //  return value.daEscuela.map(item=>{ 
-                       
-                            return <InicioEscuela />//key={item.id} item={item}/>;
-                      //  })
-                      
-                    } }
-                   
-                </InfoConsumer>
-                </div>
+                    {value=>{                 
+                            return <InicioEscuela />                 
+                    } }                  
+                </InfoConsumer>               
             </div>
         );
     }

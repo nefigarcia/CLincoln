@@ -1,5 +1,5 @@
 import React, {Component, useContext, useState} from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoContext } from '../context';
 import { Link } from "react-router-dom";
@@ -85,8 +85,7 @@ export const Clasess=(props)=>{
   const{setClase}=useContext(InfoContext);
   function setIdclase(id){
     setClase(props.clasesunic.find(item=>item.ID_CLASE===id))
-    console.log("unic",props.clasesunic);
-    console.log("propItem",props.item)
+    
   }
     return(
         <tr>
@@ -105,7 +104,7 @@ export const Clasess=(props)=>{
 export const Perfclase=(props)=>{
 
   const[activeTab,setActiveTab]=useState('1');
-  const{daClase,daClases,leccionesDate}=useContext(InfoContext);
+  const{daClase,daClases,leccionesDate,daLeccion,setLeccion}=useContext(InfoContext);
   const lecciones=leccionesDate.filter(function(item){
   return  item.ID_CLASE==daClase.ID_CLASE
   });
@@ -114,6 +113,9 @@ export const Perfclase=(props)=>{
     if(activeTab!==tab){
         setActiveTab(tab)
     }
+}
+function setIdleccion(id){
+ console.log("LECCION:",id)
 }
   return(
     <div className='container'>
@@ -142,7 +144,7 @@ export const Perfclase=(props)=>{
                   className={classnames({ active: activeTab === '1' })}
                   onClick={() => {toggle('1'); }}
                 >
-                  Clases
+                  Lecciones
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -160,17 +162,17 @@ export const Perfclase=(props)=>{
                 <Table>
                 <thead>
           <tr>
-             Lecciones
+             
           </tr>
         </thead>
-        <tbody>{console.log("LEC",lecciones)}
+        <tbody>
            {lecciones.map(item=>{
-             return <tr>
+             return <tr >
+             
+             <Link to='/Modalleccion' >
+             <td onClick={()=>setLeccion(item)}>{item.NOMBRE}</td>
+           </Link>
              <th scope="row">{moment(item.FECHA).format("DD/MM/YYYY")}</th>
-             {/*<Link to='/Perfclase' >
-             <td onClick={()=>setIdclase(item.ID)}>{item.NOMBRE}</td>
-           </Link>*/}
-        
              <td>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)}</td>
              <td>{item.MAESTRO}</td>
            </tr>
@@ -195,4 +197,53 @@ export const Perfclase=(props)=>{
     </div>
    
   );
+}
+export const Modalleccion=()=>{
+
+  const[modal,setModal]=useState(true);
+  const{daLeccion}=useContext(InfoContext);
+  const toggle=()=>{
+    setModal(!modal);
+  }
+ return(
+  <>
+  <Modal isOpen={modal} toggle={toggle}>
+          <ModalHeader toggle={toggle}>
+          {moment(daLeccion.FECHA2).format("dddd") }
+            {moment(daLeccion.FECHA2).format("DD-MM-YYYY")}
+            <br/>
+            <i>{moment(daLeccion.FECHA).format("hh:mm")}-</i>
+            <i>{moment(daLeccion.FECHA2).format("hh:mm")}</i>
+            </ModalHeader>
+          <ModalBody>
+
+          <div >
+    <h1><span className='text-center'>{daLeccion.NOMBRE}</span></h1>
+   
+    <div className="card shadow " >
+           
+            <div className="card-body">
+                <h6 className="card-title text-uppercase">
+                   Estudiantes
+                </h6>
+                <p className="card-text">Notas del maestro</p>
+                <p className="card-text"> </p>
+                <p className="card-text fa fa-usd"> </p>
+                <i>: </i>
+            </div>
+        </div>
+
+</div>    
+          </ModalBody>
+         {/* <ModalFooter>
+            <Button color="primary" onClick={toggle}>
+              Do Something
+            </Button>{' '}
+            <Button color="secondary" onClick={toggle}>
+              Cancel
+            </Button>
+      </ModalFooter>*/}
+        </Modal>
+  </>
+ )
 }

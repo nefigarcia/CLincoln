@@ -222,9 +222,9 @@ const itemTemplate = (item) => {
          <Col >
          <FormGroup>
         <Label>Salon de clase
-        <span className='required' style={{color:"red"}}>*</span>
+       
         </Label>
-        <Input style={{backgroundColor:"#fffde3"}}
+        <Input 
           //bsSize="lg"
           type="select"
           name="salon"

@@ -28,6 +28,7 @@ const[daClases,setClases]=useState([]);
 const[daClase,setClase]=useState([]);
 const[leccionesDate,setleccDate]=useState([]);
 const[daClasesdias,setClasesdias]=useState([]);
+const[daLeccion,setLeccion]=useState('');
 
 
 
@@ -122,7 +123,8 @@ const cambiarEsta=esta=>{
             daMaestro,setMaestro,
             daClases,setClases,
             daClase,setClase,
-            leccionesDate,setleccDate
+            leccionesDate,setleccDate,
+            daLeccion,setLeccion
            
         }}
         >

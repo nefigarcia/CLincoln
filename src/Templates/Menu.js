@@ -45,7 +45,7 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
         return(
           <div>    
         <Navbar color="light" light >
-          <NavbarBrand  href="/">CLincoln</NavbarBrand>
+          <NavbarBrand  href="/">Rosystems</NavbarBrand>
           <Nav>
             <Link to="/Login">
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
@@ -105,7 +105,7 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
                 <Link to="/Escuela"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
+                <Link to="/Calendario"><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link to="/PreRegistros"><NavLink><i className='icon'><FaPeopleArrows/> Registros</i> </NavLink></Link>

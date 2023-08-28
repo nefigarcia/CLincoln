@@ -19,7 +19,8 @@ import RegMaestro from './Paginas/RegMaestro';
 import Perfmaestro from './Paginas/PerfMaestro';
 import Perfestudiante from './Paginas/PerfEstudiante';
 import Ajustes from './components/Ajustes';
-import { Clases, Perfclase } from './Paginas/Clases';
+import { Clases, Modalleccion, Perfclase } from './Paginas/Clases';
+import { Calendario } from './Templates/Calendario';
 
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
        <Route path='/Ajustes'element={<Ajustes/>}/>
        <Route path='/Clases' element={<Clases/>}/>
        <Route path='/Perfclase' element={<Perfclase/>}/>
+       <Route path='/Calendario' element={<Calendario/>}/>
+       <Route path='/Modalleccion' element={<Modalleccion/>}/>
+
       </Routes>
       <Fotter/>
     </div>

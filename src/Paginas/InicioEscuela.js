@@ -12,63 +12,21 @@ export const InicioEscuela=(props)=>{
     const [startDate, setStartDate] = useState(new Date());
     const[estado,setEstado]=useState(false);
     const mondays=[];
-    const[mon,setMon]=useState([]);
+    //const[arrlec,setArrlec]=useState([]);
     const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <Button outline size='sm' className='pull-right' onClick={onClick} ref={ref}> 
     <small className='muted text-muted'>Fecha:</small>
    <span>{value}</span>
    </Button>
      ));
-  const arrlec=arrmon();  
-  function setMondays(){
-    console.log("mond:",mondays);
-   setleccDate(mondays);
-  };
-  function arrmon(){    
-    daClases.forEach(function(item){
-        var fi=new Date(item.FECHAI.replace(/-/g, '\/'));
-        var ff=new Date(item.FECHAF.replace(/-/g, '\/'));
-        while(fi<=ff){
-            if(item.DIA==="Lunes"){
-                if(fi.getDay()===1){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            } 
-            if(item.DIA==="Martes"){
-                if(fi.getDay()===2){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            }  
-            if(item.DIA==="Miercoles"){
-                if(fi.getDay()===3){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            }      
-            if(item.DIA==="Jueves"){
-                if(fi.getDay()===4){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            } 
-            if(item.DIA==="Viernes"){
-                if(fi.getDay()===5){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            } 
-            if(item.DIA==="Sabado"){
-                if(fi.getDay()===6){
-                    mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
-                }   
-            } 
-          fi.setDate(fi.getDate()+1);
-        }
-        
-    });  console.log("mon:",mondays)
-      const diaclases=mondays.filter(function(item) {
+     const arrlec= arrmon();
+   function arrmon(){
+    const diaclases=leccionesDate.filter(function(item) {
         return item.FECHA.getDate()==startDate.getDate()
-      }); 
-    
+      });
+      console.log("mon:",mondays)
       return diaclases;
-    }
+   }
 
    const registrar=async()=>{console.log("useEffec:")
     try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
@@ -83,11 +41,57 @@ export const InicioEscuela=(props)=>{
         })
         .then(res=>res.json())
         .then(res=>{
-            setClases(res);
+            try {
+                res.forEach(function(item){
+                    var fi=new Date(item.FECHAI.replace(/-/g, '\/'));
+                    var ff=new Date(item.FECHAF.replace(/-/g, '\/'));
+                    while(fi<=ff){
+                        if(item.DIA==="Lunes"){
+                            if(fi.getDay()===1){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        } 
+                        if(item.DIA==="Martes"){
+                            if(fi.getDay()===2){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        }  
+                        if(item.DIA==="Miercoles"){
+                            if(fi.getDay()===3){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        }      
+                        if(item.DIA==="Jueves"){
+                            if(fi.getDay()===4){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        } 
+                        if(item.DIA==="Viernes"){
+                            if(fi.getDay()===5){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        } 
+                        if(item.DIA==="Sabado"){
+                            if(fi.getDay()===6){
+                                mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF})
+                            }   
+                        } 
+                      fi.setDate(fi.getDate()+1);
+                    }
+                    
+                });
+               
+      setleccDate(mondays);
+          //setArrlec(diaclases);
+          setClases(res)  
+            } catch (error) {
+                console.log("error en:",error)
+            }
+           // setClases(res);
 
             //setleccDate(mondays);
            // setArreglos({clas:res,mon:mondays})
-            console.log("daclases:",daClases);                   
+           // console.log("daclases:",daClases);                   
             //console.log("leccDate:",mondays)
         })
     } catch (error) {
@@ -104,8 +108,8 @@ export const InicioEscuela=(props)=>{
       selected={startDate}
       onChange={(date) => setStartDate(date)}
       customInput={<ExampleCustomInput />}
-    />
-    {daClases.length>0 ?
+    /> 
+    {leccionesDate.length>0 ?
      <>   
     {arrlec.map((mon,index)=>{   
      return <>{console.log("rendering:",leccionesDate)}
@@ -129,7 +133,8 @@ export const InicioEscuela=(props)=>{
      </>:null
     } 
     {mondays.length>0 &&
-    console.log("MON",mondays.length)}
+    console.log("MON",mondays.length)
+    }
     
     </>
     );

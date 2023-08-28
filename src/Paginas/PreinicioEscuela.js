@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import styled from 'styled-components';
 import {InicioEscuela} from './InicioEscuela';
-import { InfoConsumer } from '../context';
+import { InfoConsumer, InfoContext } from '../context';
 import { EstDa } from '../Gets';
 
 
@@ -15,7 +15,7 @@ class PreinicioEscuela extends Component{
     }
   }
   
-
+static contextType=InfoContext;
   cambLoading(loading){
     this.state.loading=loading;
   }
@@ -24,8 +24,9 @@ class PreinicioEscuela extends Component{
       const{loading,daEstudiantes,daEscuelas}=this.state; 
         return(
             <div className="container">
-              <h5>Panel</h5>
+              <h5>{this.context.daEscuela.NOMBRE}</h5>
               <hr/>
+              <i>Lecciones </i>            
             <React.Fragment>
             <Header hidden={loading} className="container-fluid align-items-center">
           <div className="loader-cont" >

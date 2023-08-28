@@ -213,23 +213,27 @@ const Mod=()=>{
                         <a  onClick={setRol(1)}  className='list-icons-container'>
                             <img src={admfoto}>
                             </img>
-                            <p>Dueño escueala/Administrador</p>
+                            <p>Directivo escuela/Administrador</p>
                         </a>
                         </Link>
                     </li>
-                     <li>
-                        <a href="/Activacion" className='list-icons-container'>
+                     <li><Link to={"/Activacion"}>
+                     <a className='list-icons-container'>
                             <img src={mafot}>        
                             </img>
                             <p>Maestro</p>
                         </a>
+                        </Link>
+                        
                     </li>
-                    <li>
-                        <a href="/Activacion" className='list-icons-container'>
+                    <li><Link to={"/Activacion"}>
+                    <a className='list-icons-container'>
                             <img src={esfot}>
                             </img>
                             <p>Estudiante</p>
                         </a>
+                        </Link>
+                        
                     </li> 
                 </ul>
             </div>

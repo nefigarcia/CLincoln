@@ -50,8 +50,8 @@ class Signup extends Component{
 
     }
     getCuentas(){
-      //fetch("http://localhost:3001/Cuentas")
-      fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
+      fetch("http://localhost:3001/Cuentas")
+      //fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
       .then(res=>res.json())
       .then(res=>{
         if(res){//console.log("res:",res)
@@ -73,8 +73,8 @@ class Signup extends Component{
     }
     registrar(nombre,apellidos,email,contrasena,rolId){
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
-       // return fetch('http://localhost:3001/Signup',{
-        return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+        return fetch('http://localhost:3001/Signup',{
+       // return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),
@@ -119,11 +119,11 @@ class Signup extends Component{
                 {data=>{
                     return(
 
-                        <div className="container">
-                        <h2>Sign Up</h2>
-                        <Form className="form" onSubmit={(e) => this.handleSubmit(e)}>
+                        <div className=" div-center">
+                        <h1><span className='text-center'>Registro</span></h1>
+
+                        <Form className="border signup-form" onSubmit={(e) => this.handleSubmit(e)}>
                         <FormGroup>
-                            <Label for="examplePassword">Nombre</Label>
                             <Input
                               type="name"
                               name="nombre"
@@ -131,26 +131,24 @@ class Signup extends Component{
                               placeholder="Nombre"
                               value={nombre}
                               onChange={(e) => this.handleChange(e)}
-                            />{this.state.rolId=data.rol}{console.log("rol id",this.state.rolId)}
-                          </FormGroup> <br/>
+                            />{this.state.rolId=data.rol}
+                          </FormGroup> 
                           <FormGroup>
-                            <Label for="apellidosId">Apellidos</Label>
                             <Input
                               type="name"
                               name="apellidos"
                               id="apellidosId"
-                              placeholder="********"
+                              placeholder="Apellidos"
                               value={apellidos}
                               onChange={(e) => this.handleChange(e)}
                             />
-                          </FormGroup> <br/>
+                          </FormGroup> 
                           <FormGroup>
-                            <Label>Email</Label>
                             <Input
                               type="email"
                               name="email"
                               id="exampleEmail"
-                              placeholder="example@example.com"
+                              placeholder="email@ejemplo.com"
                               valid={this.state.validate.emailState === "Exitoso"}
                               invalid={this.state.validate.emailState === "Peligro"}
                               value={email}
@@ -168,17 +166,16 @@ class Signup extends Component{
                             <FormText>Tu usuario es tu email.</FormText>
                           </FormGroup>
                           <FormGroup>
-                            <Label for="examplePassword">Contrasena</Label>
                             <Input
                               type="password"
                               name="contrasena"
                               id="examplePassword"
-                              placeholder="********"
+                              placeholder="Contrasena"
                               value={contrasena}
                               onChange={(e) => this.handleChange(e)}
                             />
-                          </FormGroup> <br/>
-                          <Button>Submit</Button>
+                          </FormGroup> 
+                          <div className='d-grid'><button className="btn-md btn btn-primary">Aceptar</button></div>
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>

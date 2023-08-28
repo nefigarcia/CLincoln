@@ -13,7 +13,7 @@ import { InfoConsumer } from "../context";
     const data = {
         hero:{
           appType: 'Sistema Administrativo Escolar',
-          tagLine: 'Por qué no registrar tu escuela?',
+          tagLine: 'Por qué registrar tu escuela?',
           description: 'Disfruta de todas las herramientas de Rosystems',
           mainActionText: 'Contacto',
           extraActionText: 'Cotizacion',

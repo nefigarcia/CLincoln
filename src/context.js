@@ -1,5 +1,5 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import {EstDa,CuentDa, EscuelasDa} from './Gets';
+import {EstDa,CuentDa, EscuelasDa, MaestrosDa} from './Gets';
 //const InfoContext=React.createContext();
 
 export const InfoContext = createContext();
@@ -9,6 +9,7 @@ export const InfoProvider=props=>{
     var dataEscuela=[];
     var dataCuenta=[];
     var daEstudiantess=EstDa();
+    var daMaestross=MaestrosDa();
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
 const[cuentEmail,setCuentaEmail]=useState('');
@@ -18,22 +19,25 @@ const[daEscuelas,setEscuelas]=useState([]);
 const[emailCuenta,setEmailCuenta]=useState('');//email del usuario
 const[loading,setLoading]=useState(true);
 const[daCuentas,setCuentas]=useState([]);
-const[daEstudiantes,setEstudiantes]=useState(daEstudiantess);
+const[daEstudiantes,setEstudiantes]=useState();
 const[dataChange,setDatachange]=useState(false);
+const[daEstudiante,setEstudiante]=useState([]);
+const[daMaestros,setMaestros]=useState();
+const[daMaestro,setMaestro]=useState([]);
+const[daClases,setClases]=useState([]);
+const[daClase,setClase]=useState([]);
+const[leccionesDate,setleccDate]=useState([]);
+const[daClasesdias,setClasesdias]=useState([]);
+const[daLeccion,setLeccion]=useState('');
 
-    console.log("renderingContext:",daCuentas);
 
 
 const getDataCuenta=datEmCuent=>{
-    setEstudiantes(daEstudiantess)
-    console.log("datfromlog",datEmCuent);
-    console.log("datCuentasfromlog",daCuentas);
-
+    //setEstudiantes(daEstudiantess)
+   // setMaestros(daMaestross)
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
-        console.log("aftergetDataCeunta",emailCuenta)
-        console.log("daEscuelas",daEscuelas)
         dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
 
         setCuenta(dataCuenta);
@@ -44,24 +48,38 @@ const getDataCuenta=datEmCuent=>{
         setEsta(true)
         setLoading(false);
         console.log("cuenta1",dataCuenta);
-
-        //getDataEscuela();
     }
    
 }    
 const getDataEscuela=()=>{
-    console.log("emailUseContextREges",emailCuenta)
+    
     dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
-        console.log("daEscuelaLogin2",dataEscuela);
-
-    console.log("daEscuelaLogin2",dataEscuela);
-    console.log("daEStudian",daEstudiantes);
-
+    const estudiantesIdescuela=daEstudiantess.filter(function(item){
+       return item.ID_ESCUELA==dataEscuela.ID;
+    });
+    const maestrosIdescuela=daMaestross.filter(function(item){
+        return item.ID_ESCUELA==dataEscuela.ID;
+    })
+    console.log("DAESC:",estudiantesIdescuela);
+    setEstudiantes(estudiantesIdescuela);
+    setMaestros(maestrosIdescuela);
     setEscuela(dataEscuela);
     setLoading(false);
 
     return daEscuela;
 }
+
+const setIdEstudiante=id=>{ 
+    console.log("es",daEstudiante)
+setEstudiante(daEstudiantes.find(item=>item.ID===id))
+}
+
+const setIdMaestro=id=>{
+setMaestro(daMaestros.find(item=>item.ID===id))
+console.log("ma",daMaestro)
+
+}
+
 const setEmaCuenta=ema=>{
     setEmailCuenta(ema);
 }
@@ -90,13 +108,24 @@ const cambiarEsta=esta=>{
             setEmaCuenta,
             cambCuentas,
             getDataEscuela,
+            setIdEstudiante,
+            setIdMaestro,
+            daMaestross,
             daEscuela,
             daCuenta,setCuenta,
             loading,setLoading,
             daCuentas,setCuentas,
             daEstudiantes,setEstudiantes,
             dataChange,setDatachange,
-            daEscuelas,setEscuelas
+            daEscuelas,setEscuelas,
+            daEstudiante,setEstudiante,
+            daMaestros,setMaestros,
+            daMaestro,setMaestro,
+            daClases,setClases,
+            daClase,setClase,
+            leccionesDate,setleccDate,
+            daLeccion,setLeccion
+           
         }}
         >
             {props.children}

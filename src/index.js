@@ -6,6 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';   
 import { InfoProvider } from './context';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "primereact/resources/primereact.min.css";                  //core css
+import "primereact/resources/themes/lara-light-indigo/theme.css";  //theme
+import "primeicons/primeicons.css";                                //icons
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 ReactDOM.render(
   <InfoProvider>

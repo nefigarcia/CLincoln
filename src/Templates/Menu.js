@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import styled from 'styled-components';
 import React, { useState, useContext } from 'react';
 import {Link} from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
@@ -36,27 +35,25 @@ const NavApp = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const toggleNavbar = () => setCollapsed(!collapsed);
 
-  const [collapsedd, setCollapsedd] = useState(true);
+  const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
 const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
-console.log("renderingMenu:",esta);
      
         return(
           <div>    
         <Navbar color="light" light >
-          <NavbarBrand  href="/">CLincoln</NavbarBrand>
+          <NavbarBrand  href="/">Rosystems</NavbarBrand>
           <Nav>
             <Link to="/Login">
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
             </Link>
             
-              <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
-              <DropdownToggle><BsPlusLg/>
-                 <i className="fas fa-caret-up"></i>
-        
+            
+            <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
+              <DropdownToggle><BsPlusLg/>        
                 </DropdownToggle>
               <DropdownMenu>     
                 <DropdownItem header>Agregar ...</DropdownItem>
@@ -66,12 +63,14 @@ console.log("renderingMenu:",esta);
                 <Link to="/Regestudiante">
                 <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
                 </Link>
-                
-                <DropdownItem><BsBookFill/>Clase</DropdownItem>
+                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                <Link to="/Regmaestro">
                 <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                </Link>
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+             
             <i className="fas fa-caret-up"> {daCuenta.NOMBRE} </i>
             <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
               <DropdownToggle><BsFillPersonFill/>
@@ -81,7 +80,9 @@ console.log("renderingMenu:",esta);
                 <i className="fas fa-caret-up">Perfil    {daCuenta.NOMBRE}</i>
                 </DropdownItem>
                 <DropdownItem>Mi perfil</DropdownItem>
-                <DropdownItem disabled>Escuela configuracion </DropdownItem>
+                <Link to={"/Ajustes"}>
+                <DropdownItem >Escuela configuracion </DropdownItem>
+                </Link>
                 <DropdownItem divider />
                 
                 <DropdownItem><AiOutlineUserAdd/>Permisos</DropdownItem>
@@ -90,7 +91,7 @@ console.log("renderingMenu:",esta);
                 <DropdownItem>Soporte</DropdownItem>
                 <DropdownItem>logout</DropdownItem>
               </DropdownMenu>
-            </Dropdown>
+            </Dropdown>           
           </Nav>
 
         
@@ -101,16 +102,16 @@ console.log("renderingMenu:",esta);
           <Collapse isOpen={isOpen} navbar>
             <Nav  navbar >
               <NavItem >
-                <Link to="/preTraba"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
+                <Link to="/Escuela"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
+                <Link to="/Calendario"><NavLink><i className='icon'><FaRegCalendarAlt/>Calendario</i> </NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link to="/PreRegistros"><NavLink><i className='icon'><FaPeopleArrows/> Registros</i> </NavLink></Link>
               </NavItem>
               <NavItem>
-                <Link><NavLink><i className='icon'><BsBookFill/>Clases & Eventos</i></NavLink></Link>
+                <Link to="/Clases"><NavLink><i className='icon'><BsBookFill/>Clases & Eventos</i></NavLink></Link>
               </NavItem>
               <NavItem>
                 <Link><NavLink><i className='icon'><FaCreditCard/>Pagos</i></NavLink></Link>
@@ -126,9 +127,6 @@ console.log("renderingMenu:",esta);
               </NavItem>
             </Nav>
           </Collapse>
-          {dataChange &&
-         <div>CAmbio reciente de data</div>
-        }
         </Navbar>
       
       </div>

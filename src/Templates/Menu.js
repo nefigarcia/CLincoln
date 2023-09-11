@@ -40,12 +40,11 @@ const NavApp = (props) => {
 
   const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
-const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoContext);
-     
+const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange,daEscuela}=useContext(InfoContext);
         return(
-          <div>    
+          <div>    {console.log("DAES:",daEscuela)}
         <Navbar color="light" light >
-          <NavbarBrand  href="/">Rosystems</NavbarBrand>
+          <NavbarBrand  href="/">{esta ? daEscuela.NOMBRE:"Rosystems"}</NavbarBrand>
           <Nav>
             <Link to="/Login">
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
@@ -62,11 +61,11 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
                 <DropdownItem divider />
                 <Link to="/Regestudiante">
                 <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
-                </Link>
-                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                </Link>                
                 <Link to="/Regmaestro">
                 <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
                 </Link>
+                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>

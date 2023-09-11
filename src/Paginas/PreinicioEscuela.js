@@ -24,7 +24,7 @@ static contextType=InfoContext;
       const{loading,daEstudiantes,daEscuelas}=this.state; 
         return(
             <div className="container">
-              <h5>{this.context.daEscuela.NOMBRE}</h5>
+              <h5>Portal</h5>
               <hr/>
               <i>Lecciones </i>            
             <React.Fragment>

@@ -62,11 +62,11 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange}=useContext(InfoCont
                 <DropdownItem divider />
                 <Link to="/Regestudiante">
                 <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
-                </Link>
-                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                </Link>                
                 <Link to="/Regmaestro">
                 <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
                 </Link>
+                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>

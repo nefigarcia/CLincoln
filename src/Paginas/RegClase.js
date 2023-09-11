@@ -20,11 +20,10 @@ const RegClase=(props)=>{
   const [formValue, setFormValue] = useState({
     nombre: "",
     nivel: "",
-    maestro:"",
+    maestro:daMaestros[0].NOMBRE,
     salon:"",
     fecha: "",
     fecha2: "",
-    maestro: "",
     salon:"",
     target:"",
     source:daEstudiantes
@@ -209,11 +208,9 @@ const itemTemplate = (item) => {
           type="select"
           name="maestro"
           value={maestro}
-          onChange={handleChange}
+          onChange={handleChange}      
    >
-
-        
-        {daMaestros.map((item)=>{console.log("maesmap",item)
+        {daMaestros.map((item)=>{
           return <option key={item}>{item.NOMBRE}</option>
     })} 
         </Input>

@@ -53,7 +53,7 @@ static contextType=InfoContext;
      // return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         .then(response=>response.json())
         .then(response=>{
-          const contex=this.context;   
+          if(response!=="Revisa tus datos") { const contex=this.context;   
           var item=response.find(item=>{
             return item.EMAIL;
           });
@@ -64,7 +64,9 @@ static contextType=InfoContext;
 
             )
           }
-        })
+        }else{
+          this.setState({error:response})
+        }})
         .catch((error)=>{
           alert(JSON.stringify(error));
           console.log("err log",error);
@@ -157,8 +159,8 @@ static contextType=InfoContext;
             </p>
             {authen &&
 <Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
-{error=='error' &&
-  <Alert color="warning">Revisa email o contrasena!!!.</Alert>}
+{error=="Revisa tus datos" &&
+  <Alert color="danger">Revisa email o contrasena!!!.</Alert>}
 
 {authen &&
 data.setEsta(authen)}

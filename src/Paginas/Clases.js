@@ -20,6 +20,9 @@ export const Clases=(props)=>{
         ))
     )
     function clasesDias(){
+      daClasesunic.map(item=>{
+        return item.DIAS=[];
+      })
       daClases.forEach(function(element){
        daClasesunic.forEach(function(ele){
         if(ele.ID_CLASE==element.ID_CLASE){
@@ -28,7 +31,6 @@ export const Clases=(props)=>{
        })
         
       })
-      console.log("DAUNIC",daClasesunic)
     }
     
     return(
@@ -58,7 +60,7 @@ export const Clases=(props)=>{
                 <Table>
                 <thead>
           <tr>
-            <th>#</th>
+            
             <th>Nombre</th>
             <th>Maestro</th>
             <th>Inicio</th>
@@ -105,7 +107,6 @@ export const Clasess=(props)=>{
   }
     return(
         <tr>
-          <th scope="row">{props.item.ID}</th>
           <Link to='/Perfclase' >
           <td onClick={()=>setIdclase(props.item.ID_CLASE)}>{props.item.NOMBRE}</td>
           </Link>
@@ -120,10 +121,11 @@ export const Clasess=(props)=>{
 }
 
 export const Perfclase=(props)=>{
+  const[agregar,setAgregar]=useState(false)
   const[editmodal,setEditmodal]=useState(false);
   const[alerta,setAlerta]=useState(false)
   const[modal,setModal]=useState(false);
-  const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:""})
+  const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:""})
   const[activeTab,setActiveTab]=useState('1');
   const{daEscuela,daClase,daClases,setClases, leccionesDate,daLeccion,setLeccion}=useContext(InfoContext);
   const toggl=()=>{
@@ -180,6 +182,7 @@ export const Perfclase=(props)=>{
   }
   const editLeccion=()=>{
     const a=[];
+    console.log("FORMVALUE:",formValue)
     daClases.forEach(function(item){
       if(item.DIA===formValue.dia && item.MAESTRO===formValue.maestro){
         if(item.HORAI.slice(0,-13)==formValue.horai.slice(0,-3) || item.HORAF.slice(0,-13)==formValue.horaf.slice(0,-3)){
@@ -192,8 +195,46 @@ export const Perfclase=(props)=>{
     if(a.length>0){
       return;
     }
-    console.log("sigue")
-    updateLeccion()
+    if(!formValue.id){
+      console.log("AGREGAR")
+      regleccion();
+    }
+    if(formValue.id && formValue.maestro){
+      updateLeccion()
+    }
+  }
+  const agregarLecc=()=>{
+    setAgregar(true)
+    setFormValue({id:"",horai:"",horaf:"",dia:"Lunes",maestro:daClase.MAESTRO,idclase:daClase.ID_CLASE});
+  }
+  const guardarLecc=()=>{
+    if(!(formValue.dia && formValue.horai && formValue.horaf)){
+      console.log("HAND:",formValue.maestro)
+
+      return;
+    }
+      editLeccion()
+    
+  }
+  const regleccion=async()=>{
+    let da={formFields:formValue}
+    try {
+      let res=await fetch("http://localhost:3001/Agregarleccion",{
+     // let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Agregarleccion",{
+        method:'POST',
+        mode:'cors',
+        body:JSON.stringify(da),
+        headers:{'content-type':'application/json'},
+      })
+      .then(res=>{
+        if(res.ok){
+          setModal(false)
+         refreshlecciones()
+        }
+      })
+    } catch (error) {
+      
+    }
   }
   const updateLeccion=async()=>{
     let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
@@ -239,7 +280,7 @@ const handleChange = (event) => {
          <h6>{daClase.NOMBRE}</h6>
          <div>
           <i>{lecciones.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
-          <span onClick={()=>togglelecc()} style={{backgroundColor:"0d6efd"}}>(Editar)</span>
+          <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
          </div>
          
         </Col>
@@ -281,7 +322,7 @@ const handleChange = (event) => {
         }
           
 
-            <Modal isOpen={modal} toggle={toggl} onClosed={()=>setAlerta(false)}>
+            <Modal isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
           <ModalHeader toggle={toggl}>
           Editar Dia y hora
             <br/>
@@ -348,8 +389,12 @@ const handleChange = (event) => {
                </Row>
             </div>
         </div>
-<Button onClick={eliminarLecc}>Eliminar</Button>
-<Button onClick={editLeccion}>Guardar</Button>
+<Button disabled={agregar} size='sm' onClick={eliminarLecc}>Eliminar</Button>
+{" "}
+<Button disabled={agregar} size='sm' onClick={editLeccion}>Guardar</Button>
+{" "}
+<a hidden={agregar} href='#' onClick={()=>{agregarLecc()}}>Nueva leccion</a>
+<Button hidden={!agregar} size='sm' color='primary' onClick={()=>{guardarLecc()}}>Aceptar</Button>
 {alerta &&
 <Alert color='warning'>Revisa el horario, ocupado por maestra: {daClase.MAESTRO}</Alert>}
 </div>    
@@ -396,9 +441,8 @@ const handleChange = (event) => {
              return <tr >
              
              <Link to='/Modalleccion' >
-             <td onClick={()=>setLeccion(item)}>{item.NOMBRE}</td>
+             <th onClick={()=>setLeccion(item)} scope="row">{moment(item.FECHA).format("DD/MM/YYYY")}</th>
            </Link>
-             <th scope="row">{moment(item.FECHA).format("DD/MM/YYYY")}</th>
              <td>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)}</td>
              <td>{item.MAESTRO}</td>
            </tr>

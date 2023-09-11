@@ -168,6 +168,8 @@ export const Perfclase=(props)=>{
   }}
   const eliminarLecc=async()=>{
    await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
+ //   await fetch(`https://shielded-brushlands-89617.herokuapp.com/Eliminarleccion/${formValue.id}`,{
+   
       method:'DELETE'
     })
     .catch(err=>console.error(err))
@@ -197,6 +199,8 @@ export const Perfclase=(props)=>{
     let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
     try {
       let res=await fetch("http://localhost:3001/Updateleccion",{
+      //  let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Updateleccion",{
+
           method:'PUT',
           headers: { 'Content-Type': 'application/json' },
           body:JSON.stringify(da)

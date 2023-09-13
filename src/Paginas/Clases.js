@@ -272,7 +272,7 @@ const handleChange = (event) => {
   });
 };   
   return(
-    <div className='container'>{console.log("hor",formValue.horai)}
+    <div className='container' style={{fontSize:'13px'}}>{console.log("hor",formValue.horai)}
        <h5>Clase</h5>
        <hr/>
        <Row md={2}>
@@ -297,7 +297,7 @@ const handleChange = (event) => {
          <Table striped>
          <thead>
            <tr>
-             <th>#</th>
+           
              <th>InicioFinalFecha</th>
              <th>Dia</th>
              <th>InicioFinalHora</th>
@@ -308,9 +308,8 @@ const handleChange = (event) => {
          <tbody>
            {leccClase.map(item=>{
              return <tr>
-               <th scope='row' onClick={()=>{setModal(true);leccionId(item.ID)}}>{item.ID}</th>
               
-               <td>{item.FECHAI}/{item.FECHAF}</td>
+               <td style={{color:'#1274de'}} onClick={()=>{setModal(true);leccionId(item.ID)}}>{item.FECHAI}/{item.FECHAF}</td>
                <td>{item.DIA}</td>
                <td>{item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)}</td>
                <td>{item.MAESTRO}</td>
@@ -322,7 +321,7 @@ const handleChange = (event) => {
         }
           
 
-            <Modal isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
+            <Modal style={{fontSize:"13px", maxWidth:"380px"}} isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
           <ModalHeader toggle={toggl}>
           Editar Dia y hora
             <br/>
@@ -342,7 +341,7 @@ const handleChange = (event) => {
                         <Label for="Nombre">
                           Dia de la clase
                         </Label>
-                        <Input  style={{backgroundColor:"#fffde3"}}
+                        <Input  style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                           
                           name='dia'
                           type="select"
@@ -363,7 +362,7 @@ const handleChange = (event) => {
                         <Label for="Nombre">
                           <>Hora inicio</>
                         </Label>
-                        <Input style={{backgroundColor:"#fffde3"}}
+                        <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                         // bsSize="lg"
                           type="time"
                           name="horai"
@@ -377,7 +376,7 @@ const handleChange = (event) => {
                     <Label for="Nombre">
                       <>Hora final</>
                     </Label>
-                    <Input style={{backgroundColor:"#fffde3"}}
+                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                     // bsSize="lg"
                       type="time"
                       name="horaf"

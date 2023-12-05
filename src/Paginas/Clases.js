@@ -135,7 +135,7 @@ export const Perfclase=(props)=>{
     setEditmodal(!editmodal)
   }
   const lecciones=leccionesDate.filter(function(item){
-  return  item.ID_CLASE==daClase.ID_CLASE
+  return  item.ID_CLASE==daClase.ID_CLASE && item.DIA!=null
   });
 
   const leccClase=daClases.filter(function(item){
@@ -175,7 +175,9 @@ export const Perfclase=(props)=>{
       method:'DELETE'
     })
     .catch(err=>console.error(err))
-    .then(()=>{setModal(false)
+    .then(()=>{
+      setEditmodal(false)
+      setModal(false)
       refreshlecciones();
       console.log("exitoso")
     })
@@ -278,9 +280,19 @@ const handleChange = (event) => {
        <Row md={2}>
         <Col>
          <h6>{daClase.NOMBRE}</h6>
-         <div>
-          <i>{lecciones.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
-          <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
+         <div>{console.log("lecc",lecciones)}
+          {lecciones.length>0 ?
+          <>
+             <i>{lecciones.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
+          </>
+          :null
+          }
+          {lecciones.length>0 ?
+      <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
+      :   <a href='#' onClick={()=>{agregarLecc();setModal(true)}} >+Agregar leccion</a>
+
+          }
+          
          </div>
          
         </Col>
@@ -294,7 +306,9 @@ const handleChange = (event) => {
        </Row>
         {editmodal ?
         <>
-         <Table striped>
+        {lecciones.length>0 ?
+         <>
+          <Table striped>
          <thead>
            <tr>
            
@@ -317,6 +331,10 @@ const handleChange = (event) => {
            })}
          </tbody>
        </Table>
+         </>
+            :null
+        }
+        
          </>:null
         }
           

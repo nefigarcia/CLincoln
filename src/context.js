@@ -29,6 +29,9 @@ const[daClase,setClase]=useState([]);
 const[leccionesDate,setleccDate]=useState([]);
 const[daClasesdias,setClasesdias]=useState([]);
 const[daLeccion,setLeccion]=useState('');
+const[progresoTool,setProgresotool]=useState(false);
+const[tipoTool,setTipo]=useState('');
+const[progresoTipo,setProgresoTipo]=useState(false)
 
 
 
@@ -124,8 +127,10 @@ const cambiarEsta=esta=>{
             daClases,setClases,
             daClase,setClase,
             leccionesDate,setleccDate,
-            daLeccion,setLeccion
-           
+            daLeccion,setLeccion,
+           progresoTool,setProgresotool,
+           progresoTipo,setProgresoTipo,
+           tipoTool,setTipo
         }}
         >
             {props.children}

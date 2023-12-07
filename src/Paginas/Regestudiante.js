@@ -38,8 +38,8 @@ class regEstudiante extends Component{
     }
     getEst(){
       
-    fetch("http://localhost:3001/Estudiantes")
-  //  fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+    //fetch("http://localhost:3001/Estudiantes")
+    fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
     .then(res=>res.json())
     .then(res=>{
       if(res){
@@ -66,8 +66,8 @@ handleSubmit(e){
 }
 registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,ID){
     let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp,ID_ESCUELA:ID};
-  // return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
-     return fetch("http://localhost:3001/Regestudiante",{
+    //return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
+    return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),

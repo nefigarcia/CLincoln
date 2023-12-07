@@ -51,7 +51,7 @@ const RegMaestro=(props)=>{
     const getMaestros=async()=>{
       try{
         const res=await fetch("http://localhost:3001/Maestros")
-       // const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
+        //const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
       .then((res)=>res.json())
       const maestrosIdescuela=res.filter(function(item){
         return item.ID_ESCUELA==daEscuela.ID;

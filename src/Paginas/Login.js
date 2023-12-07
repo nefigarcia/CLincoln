@@ -17,6 +17,7 @@ import {
   Button,
   Alert, Jumbotron
 } from 'reactstrap';
+import { Loading } from '../components/Loading';
 
 
 class Login extends Component{
@@ -41,7 +42,8 @@ static contextType=InfoContext;
 
 
     login(emai,passwor){
-      
+      const cont=this.context;
+      cont.setLoadinglogo(true)
       let da={email:emai,contrasena:passwor};
         const requestOpt={
             method:'POST',
@@ -49,19 +51,22 @@ static contextType=InfoContext;
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'}
         };
+
       return fetch("http://localhost:3001/Login",requestOpt)
       //return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
         .then(response=>response.json())
         .then(response=>{
-          if(response!=="Revisa tus datos") { const contex=this.context;   
-          var item=response.find(item=>{
-            return item.EMAIL;
+          
+          if(response!=="Revisa tus datos") {
+             const contex=this.context;   
+              var item=response.find(item=>{
+              return item.EMAIL;
           });
           contex.setCuenta(item)
           if(response){
             this.setState({authen:true,emailCuen:item},()=>
             console.log("login then",this.state.authen),
-
+            cont.setLoadinglogo(false)
             )
           }
         }else{
@@ -112,9 +117,9 @@ static contextType=InfoContext;
     <InfoConsumer>
       {data=>{
         return(
-      <div  className='div-center'>         
+      <div  className='div-center'>     <Loading/>     
          <h1><span className='text-center'>Ingreso</span></h1>
-
+        
              <Form className='login-form border' onSubmit={(e) => this.handleSubmit(e)}>
             <FormGroup>
               <Label>Email</Label>
@@ -139,7 +144,7 @@ static contextType=InfoContext;
               </FormFeedback>
               <FormText>Tu usuario es tu email.</FormText>
             </FormGroup>
-    
+                
             <FormGroup>
               <Label for="examplePassword">Contrasena</Label>
               <Input

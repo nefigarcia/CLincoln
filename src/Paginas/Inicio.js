@@ -1,4 +1,4 @@
-import React,{Component} from "react";
+import React,{Component, useContext} from "react";
 
 import Rectangle_3 from '../Fotos/Rectangle_3.jpg';
 import Rectangle_4 from '../Fotos/Rectangle_4.jpg';
@@ -7,9 +7,11 @@ import Hero from "../components/Hero";
 import Step from "../components/Step";
 import BottomLead from "../components/BottomLead";
 
-import { InfoConsumer } from "../context";
+import { InfoConsumer, InfoContext } from "../context";
 
  function Inicio(){
+  const{setLoading}=useContext(InfoContext)
+    //
     const data = {
         hero:{
           appType: 'Sistema Administrativo Escolar',

@@ -32,7 +32,7 @@ const[daLeccion,setLeccion]=useState('');
 const[progresoTool,setProgresotool]=useState(false);
 const[tipoTool,setTipo]=useState('');
 const[progresoTipo,setProgresoTipo]=useState(false)
-
+const[loadinglogo,setLoadinglogo]=useState(false);
 
 
 const getDataCuenta=datEmCuent=>{
@@ -100,7 +100,7 @@ const cambiarEsta=esta=>{
         value={{
             //da:EstDa(),
             daCuen:CuentDa(),
-         cambiarEsta:cambiarEsta,
+            cambiarEsta:cambiarEsta,
             estaMenu:estaMenu,
             rol,
             setRol,
@@ -130,7 +130,8 @@ const cambiarEsta=esta=>{
             daLeccion,setLeccion,
            progresoTool,setProgresotool,
            progresoTipo,setProgresoTipo,
-           tipoTool,setTipo
+           tipoTool,setTipo,
+           loadinglogo,setLoadinglogo
         }}
         >
             {props.children}

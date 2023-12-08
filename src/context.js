@@ -48,8 +48,11 @@ const getDataCuenta=datEmCuent=>{
         dataEscuela=daEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
         setEscuela(dataEscuela);
         console.log("daEScuela",dataEscuela)
-        setEsta(true)
-        setLoading(false);
+        if(dataEscuela!=null){
+            setEsta(true)
+            setLoading(false);
+        }
+        
         console.log("cuenta1",dataCuenta);
     }
    

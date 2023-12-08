@@ -21,13 +21,14 @@ import { InfoContext } from '../context';
   }
   useEffect(()=>{
     var es=25
-    if(daEstudiantes.length>0){
+    if(daEstudiantes!=undefined){
+      console.log("daest:",daEstudiantes)
      es+=25
     }
-    if(daMaestros.length>0){
+    if(daMaestros!=undefined){
       es+=25
     }
-    if(daClases.length>0){
+    if(daClases!=undefined){
       es+=25
     }
     setTotal(es)
@@ -50,9 +51,9 @@ function togg(){
                   <CardText>
                      <ListGroup>
                      <ListGroupItem disabled={progres==!false ? true:false} className="justify-content-between">+Creacion de cuenta ✅</ListGroupItem>
-                     <ListGroupItem disabled={daEstudiantes.length>0 ? true:false} className="justify-content-between" onClick={()=>{changeProgre("es")}}>+Agregar estudiante {daEstudiantes.length>0 ? `✅`:null}</ListGroupItem>
-                     <ListGroupItem disabled={daMaestros.length>0 ? true:false} className="justify-content-between"onClick={()=>{changeProgre("pr")}}>+Agregar profesor {daMaestros.length>0 ? `✅`:null}</ListGroupItem>
-                     <ListGroupItem disabled={daClases.length>0 ? true:false} className="justify-content-between" onClick={()=>{changeProgre("cl")}}>+Agregar clase {daClases.length>0 ? `✅`:null}</ListGroupItem>
+                     <ListGroupItem disabled={daEstudiantes!=undefined ? true:false} className="justify-content-between" onClick={()=>{changeProgre("es")}}>+Agregar estudiante {daEstudiantes!=undefined ? `✅`:null}</ListGroupItem>
+                     <ListGroupItem disabled={daMaestros!=undefined ? true:false} className="justify-content-between"onClick={()=>{changeProgre("pr")}}>+Agregar profesor {daMaestros!=undefined ? `✅`:null}</ListGroupItem>
+                     <ListGroupItem disabled={daClases!=undefined ? true:false} className="justify-content-between" onClick={()=>{changeProgre("cl")}}>+Agregar clase {daClases!=undefined ? `✅`:null}</ListGroupItem>
                      </ListGroup>
                   </CardText>
                   

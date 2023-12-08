@@ -50,8 +50,8 @@ class Signup extends Component{
 
     }
     getCuentas(){
-      //fetch("http://localhost:3001/Cuentas")
-      fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
+      fetch("http://localhost:3001/Cuentas")
+      //fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
       .then(res=>res.json())
       .then(res=>{
         if(res){//console.log("res:",res)

@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { Media, Nav } from 'reactstrap';
-import { InfoConsumer } from '../context';
+import { InfoConsumer, InfoContext } from '../context';
 import { Navigate } from 'react-router-dom';
 import { CuentDa } from '../Gets';
 import  '../App.css';
@@ -33,10 +33,39 @@ class RegEscuela extends Component{
         this.handleChange=this.handleChange.bind(this);
 
     }
-
+static contextType=InfoContext;
     
-    getEscuelas(){
-    fetch("http://localhost:3001/Escuelas")
+   async getEscuelas(){
+    var dataCuenta=[];
+    var dataEscuela=[]
+    const cont=this.context;
+    try {
+      const res=await fetch("http://localhost:3001/Escuelas")
+      //const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+
+      .then((res)=>res.json())
+      //cont.setEscuelas(res)
+      console.log("resescuelas:",res)
+      console.log("emailCuenta:",cont.emailCuenta)
+      console.log("daCuentas:",cont.daCuentas)
+
+      dataCuenta=cont.daCuentas.find(({EMAIL})=>EMAIL===cont.emailCuenta);
+      console.log("dataCeuenta:",dataCuenta);
+
+      dataEscuela=res.find(({ID})=>ID===dataCuenta.ESCUELA_ID);
+      if(dataEscuela!=null){
+        console.log("getescuelas")
+        cont.setCuenta(dataCuenta);
+        cont.setEscuela(dataEscuela);
+        cont.setEsta(true);
+        cont.getDataCuenta(null);
+        cont.setLoading(false);
+       // cont.getDataCuenta(null)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    /*fetch("http://localhost:3001/Escuelas")
    // fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
     .then(res=>res.json())
     .then(res=>{//alert(JSON.stringify(res))
@@ -48,7 +77,7 @@ class RegEscuela extends Component{
     })
     .catch(res=>{
       console.log("error en REGescuela Escuealas:",res)
-    })
+    })*/
   }
 
     handleSubmit(e){
@@ -74,8 +103,10 @@ class RegEscuela extends Component{
                headers:{'content-type':'application/json'},
             })
             .then(res=>{
+              this.getEscuelas();
               if(res.ok){
-                this.getEscuelas();
+               
+                console.log("regis")
                 this.setState({menuSta:true},()=>{
                 })
                
@@ -133,11 +164,11 @@ class RegEscuela extends Component{
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
                                                                            
-                         {loading &&
+                        { /*{loading &&
                           data.setEscuelas(daEscuelas)
                          }
                          {loading &&
-                         data.getDataCuenta(null)}
+                         data.getDataCuenta(null)}*/}
                         
                          
                         {!data.loading &&

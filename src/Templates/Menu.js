@@ -44,7 +44,7 @@ const NavApp = (props) => {
 
   const addToggle=()=>{
     setTool(false)
-
+    setProgresotool(false)
   }
 const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo}=useContext(InfoContext);
 const[toolTip,setTool]=useState(true)

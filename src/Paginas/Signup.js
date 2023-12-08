@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { Media, Nav } from 'reactstrap';
-import { InfoConsumer } from '../context';
+import { InfoConsumer, InfoContext } from '../context';
 import { Navigate } from 'react-router-dom';
 import  '../App.css';
 import {
@@ -49,17 +49,37 @@ class Signup extends Component{
         this.handleChange=this.handleChange.bind(this);
 
     }
-    getCuentas(){
-      fetch("http://localhost:3001/Cuentas")
+    static contextType=InfoContext;
+  async getCuentas(em){
+      
+      const cont=this.context;
+      try {
+        const res=await fetch("http://localhost:3001/Cuentas")
+        //const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
+
+        .then((res)=>res.json())
+        if(res){//console.log("res:",res)
+          cont.cambCuentas(res)
+          cont.setEmaCuenta(em)
+          this.setState({menuSta:true,daCuentas:res,loading:true},()=>
+          console.log("daCueantsSignUp",this.state.daCuentas)
+         
+          )
+        }
+      } catch (error) {
+        console.log(error)
+      }
+     /* fetch("http://localhost:3001/Cuentas")
       //fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
       .then(res=>res.json())
       .then(res=>{
+        
         if(res){//console.log("res:",res)
-          this.setState({daCuentas:res,loading:true},()=>
+          this.setState({menuSta:true,daCuentas:res,loading:true},()=>
             console.log("daCueantsSignUp",this.state.daCuentas)
           )
         }
-      })
+      })*/
     }
 
     handleSubmit(e){
@@ -72,6 +92,7 @@ class Signup extends Component{
         .then(this.setState({submitted:true}));
     }
     registrar(nombre,apellidos,email,contrasena,rolId){
+      const em=email;
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
         return fetch('http://localhost:3001/Signup',{
         //return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
@@ -81,10 +102,10 @@ class Signup extends Component{
                headers:{'content-type':'application/json'},
             })
             .then(res=>{console.log("respon",res)
-            this.getCuentas();
+            this.getCuentas(em);
               if(res.ok){
                 
-                this.setState({menuSta:true, daCuent:dat,email:email},()=>{
+                this.setState({ daCuent:dat,email:email},()=>{
                   console.log("stDATACUENTAS:",this.state.daCuentas)
                 })
               }
@@ -179,12 +200,12 @@ class Signup extends Component{
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
-                        {menuSta &&
+                        {/*{menuSta &&
                           data.setEmaCuenta(email)
-                        }
-                        {menuSta &&
+                        }*/}
+                       {/* {menuSta &&
                           data.cambCuentas(daCuentas)
-                        }
+                        }*/}
                        
                         
                         {loading &&

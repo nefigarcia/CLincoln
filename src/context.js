@@ -16,7 +16,7 @@ const[cuentEmail,setCuentaEmail]=useState('');
 const[daCuenta,setCuenta]=useState([]);
 const[daEscuela,setEscuela]=useState([]);
 const[daEscuelas,setEscuelas]=useState([]);
-const[emailCuenta,setEmailCuenta]=useState('');//email del usuario
+const[emailCuenta,setEmailCuenta]=useState('xxxx');//email del usuario
 const[loading,setLoading]=useState(true);
 const[daCuentas,setCuentas]=useState([]);
 const[daEstudiantes,setEstudiantes]=useState();
@@ -34,26 +34,32 @@ const[tipoTool,setTipo]=useState('');
 const[progresoTipo,setProgresoTipo]=useState(false)
 const[loadinglogo,setLoadinglogo]=useState(false);
 
-
+console.log("context",emailCuenta)
 const getDataCuenta=datEmCuent=>{
     //setEstudiantes(daEstudiantess)
    // setMaestros(daMaestross)
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
-        dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
+      /*  dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
 
         setCuenta(dataCuenta);
-        console.log("daCuenta",daCuenta)
+        console.log("dataCuenta",dataCuenta)
         dataEscuela=daEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
         setEscuela(dataEscuela);
-        console.log("daEScuela",dataEscuela)
+        console.log("dataEScuela",dataEscuela)
         if(dataEscuela!=null){
             setEsta(true)
             setLoading(false);
-        }
-        
-        console.log("cuenta1",dataCuenta);
+        }  */ 
+        const estudiantesIdescuela=daEstudiantess.filter(function(item){
+            return item.ID_ESCUELA==dataEscuela.ID;
+         });
+         const maestrosIdescuela=daMaestross.filter(function(item){
+             return item.ID_ESCUELA==dataEscuela.ID;
+         })     
+         setEstudiantes(estudiantesIdescuela);
+    setMaestros(maestrosIdescuela);
     }
    
 }    
@@ -87,10 +93,11 @@ console.log("ma",daMaestro)
 }
 
 const setEmaCuenta=ema=>{
+    console.log("emacontxcuent",ema)
     setEmailCuenta(ema);
 }
 const cambCuentas=cuent=>{
-    console.log(cuent)
+    console.log("cuencontx:",cuent)
     setCuentas(cuent)
 }
 const cambiarEsta=esta=>{
@@ -117,7 +124,7 @@ const cambiarEsta=esta=>{
             setIdEstudiante,
             setIdMaestro,
             daMaestross,
-            daEscuela,
+            daEscuela,setEscuela,
             daCuenta,setCuenta,
             loading,setLoading,
             daCuentas,setCuentas,
@@ -134,7 +141,8 @@ const cambiarEsta=esta=>{
            progresoTool,setProgresotool,
            progresoTipo,setProgresoTipo,
            tipoTool,setTipo,
-           loadinglogo,setLoadinglogo
+           loadinglogo,setLoadinglogo,
+           emailCuenta
         }}
         >
             {props.children}

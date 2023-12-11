@@ -141,7 +141,7 @@ return(
           <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
-            <Nav  navbar >
+            <Nav  navbar onClick={toggle}>
               <NavItem >
                 <Link to="/Escuela"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>

@@ -56,7 +56,7 @@ const registrar=async()=>{
   let da={nombre:nombre,nivel:nivel,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID};
   try {
   let res=await fetch("http://localhost:3001/Regclase",{
-   //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Regclase",{
+  //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Regclase",{
       method:'POST',
       mode:'cors',
       body:JSON.stringify(da),
@@ -96,7 +96,7 @@ const regclaseid=async()=>{
 const reglecciones=async()=>{
   let da={formFields:formFields}
   try {
-    let res=await fetch("http://localhost:3001/Reglecciones",{
+   let res=await fetch("http://localhost:3001/Reglecciones",{
    //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Reglecciones",{
       method:'POST',
       mode:'cors',

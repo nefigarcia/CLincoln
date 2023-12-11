@@ -20,6 +20,7 @@ const Ajustes=()=>{
         let da={nombre:nombre,capacidad:capacidad};
        try {
         let res=await fetch("http://localhost:3001/Salon",{
+        //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Salon",{          
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),

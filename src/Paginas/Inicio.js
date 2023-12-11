@@ -18,7 +18,7 @@ import { InfoConsumer, InfoContext } from "../context";
           tagLine: 'Por qué registrar tu escuela?',
           description: 'Disfruta de todas las herramientas de Rosystems',
           mainActionText: 'Contacto',
-          extraActionText: 'Cotizacion',
+          extraActionText: 'Prueba 1 mes gratis',
         },
         step1: {
           title: 'Crea una cuenta',

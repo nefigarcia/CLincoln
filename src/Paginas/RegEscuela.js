@@ -40,8 +40,8 @@ static contextType=InfoContext;
     var dataEscuela=[]
     const cont=this.context;
     try {
-      const res=await fetch("http://localhost:3001/Escuelas")
-      //const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+      //const res=await fetch("http://localhost:3001/Escuelas")
+      const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
 
       .then((res)=>res.json())
       //cont.setEscuelas(res)

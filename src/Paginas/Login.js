@@ -1,6 +1,6 @@
 import React,{Component,useContext,useState} from 'react';
 import { Card, CardBody, Col, Container, Media, Row } from 'reactstrap';
-import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBInput, MDBCheckbox,MDBModalContent,MDBModalHeader,MDBModalTitle,MDBModalBody,MDBModalFooter,MDBModal,MDBModalDialog } from 'mdb-react-ui-kit';
+import { MDBBtn, MDBModalContent,MDBModalHeader,MDBModalTitle,MDBModalBody,MDBModal,MDBModalDialog } from 'mdb-react-ui-kit';
 import {Link, redirect} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
 import mafot from '../Fotos/regismaestro.png';
@@ -190,7 +190,7 @@ data.setEsta(authen)}
     }
 }
 
-const Mod=()=>{
+export const Mod=()=>{
     const [gridModal, setGridModal] = useState(false);
     const toggleShow = () => setGridModal(!gridModal);
 

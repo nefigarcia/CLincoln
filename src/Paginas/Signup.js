@@ -94,8 +94,8 @@ class Signup extends Component{
     registrar(nombre,apellidos,email,contrasena,rolId){
       const em=email;
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
-        return fetch('http://localhost:3001/Signup',{
-        //return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+       return fetch('http://localhost:3001/Signup',{
+       //return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

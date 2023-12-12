@@ -27,7 +27,7 @@ import {
   DropdownMenu,
   DropdownItem,
   Dropdown,
-  Button,
+  Button,Alert,
   List,Tooltip,UncontrolledTooltip
 } from 'reactstrap';
 
@@ -41,12 +41,16 @@ const NavApp = (props) => {
 
   const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
-
+   
+  const[maestrosrev,setMaestrosrev]=useState(false);
   const addToggle=()=>{
+    if(maestrosrev==true){
+      console.log("rev",maestrosrev)
+      setMaestrosrev(false)}
     setTool(false)
     setProgresotool(false)
   }
-const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo}=useContext(InfoContext);
+const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,daMaestros}=useContext(InfoContext);
 const[toolTip,setTool]=useState(true)
 const[sty,setSty]=useState(false)
 const toggtool=()=>setSty(!sty);
@@ -66,8 +70,11 @@ function pr(){
  }
   }
   
- 
 }
+function revclase(){
+  setMaestrosrev(true)
+  console.log("sddsd")
+   }
 return(
           <div>
          {console.log("GEN",gen)}
@@ -105,9 +112,21 @@ return(
                 </Link>        
         
                 <Link to="/Regmaestro">
-                <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                <DropdownItem><IoIosPersonAdd/>Profesor</DropdownItem>
                 </Link>
-                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                {esta==true && daMaestros.length>0 ?
+                  <>
+                  <Link to="/RegClase">
+                  <DropdownItem disabled={daMaestros.length>0 ? true:false}><BsBookFill/>Clase</DropdownItem>
+                  </Link>
+                  </>:<>
+                  <DropdownItem >
+                    <div onClick={()=>{revclase();}}>
+                    <BsBookFill/>Clase
+                      </div></DropdownItem>
+                  </>  
+              }
+                
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -169,7 +188,9 @@ return(
             </Nav>
           </Collapse>
         </Navbar>
-      
+      {maestrosrev &&
+        <Alert color='danger' >Primero crea una registro para Profesor</Alert>
+      }
       </div>
         );
 }

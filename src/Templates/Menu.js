@@ -49,6 +49,9 @@ const NavApp = (props) => {
       setMaestrosrev(false)}
     setTool(false)
     setProgresotool(false)
+    if(isOpen){
+      setIsOpen(false)
+    }
   }
 const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,daMaestros}=useContext(InfoContext);
 const[toolTip,setTool]=useState(true)

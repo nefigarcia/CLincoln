@@ -24,7 +24,8 @@ class regEstudiante extends Component{
             daEstudiantes:'',
             daEstudiante:'',
             nextpagina:false,
-            daEscuela:''
+            daEscuela:'',
+            validacionCampos:false
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
@@ -59,6 +60,7 @@ handleSubmit(e){
     this.setState({submitted:true});
     const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela}=this.state;
     if(!(nombre && apellidos && registro && email)){
+      this.setState({validacionCampos:true})
         return;
     }
     this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela.ID)
@@ -87,7 +89,7 @@ handleChange(event){
 }
 
     render(){
-      const{nombre,apellidos,dataChange,estado,daEstudiantes,nextpagina,daEstudiante}=this.state;
+      const{nombre,apellidos,dataChange,estado,daEstudiantes,nextpagina,daEstudiante,validacionCampos}=this.state;
         return(
 <InfoConsumer> 
   {data=>{
@@ -259,6 +261,9 @@ handleChange(event){
   <Button >
     Aceptar
   </Button>
+  {validacionCampos &&
+    <Alert color='warning'>Campos amarillos Obligatorios</Alert>
+  }
 </Form>
 {dataChange &&
             data.setDatachange(dataChange)}
@@ -268,7 +273,6 @@ data.setEstudiantes(daEstudiantes)}
 data.setEstudiante(daEstudiante)}             
 {nextpagina &&
 <Navigate to={'/Perfestudiante'} />
-
 }            
             </div>
            

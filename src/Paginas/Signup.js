@@ -126,7 +126,7 @@ class Signup extends Component{
         if (emailRex.test(e.target.value)) {
           validate.emailState = 'Exitoso';
         } else {
-          validate.emailState = 'Peligroso';
+          validate.emailState = 'Peligro';
         }
      
         this.setState({ validate });

@@ -151,8 +151,8 @@ export const Perfclase=(props)=>{
   const refreshlecciones=async()=>{
   try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
       let dat={escuelaId:daEscuela.ID};
-      let res=await fetch("http://localhost:3001/Clases",{
-      //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
+      //let res=await fetch("http://localhost:3001/Clases",{
+      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
   
           method:'POST',
           mode:'cors',
@@ -169,8 +169,8 @@ export const Perfclase=(props)=>{
     console.log(error)
   }}
   const eliminarLecc=async()=>{
-   await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
-   //await fetch(`https://shielded-brushlands-89617.herokuapp.com/Eliminarleccion/${formValue.id}`,{
+   //await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
+   await fetch(`https://shielded-brushlands-89617.herokuapp.com/Eliminarleccion/${formValue.id}`,{
    
       method:'DELETE'
     })
@@ -221,8 +221,8 @@ export const Perfclase=(props)=>{
   const regleccion=async()=>{
     let da={formFields:formValue}
     try {
-      let res=await fetch("http://localhost:3001/Agregarleccion",{
-      //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Agregarleccion",{
+      //let res=await fetch("http://localhost:3001/Agregarleccion",{
+      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Agregarleccion",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(da),
@@ -241,8 +241,8 @@ export const Perfclase=(props)=>{
   const updateLeccion=async()=>{
     let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
     try {
-      let res=await fetch("http://localhost:3001/Updateleccion",{
-      //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Updateleccion",{
+      //let res=await fetch("http://localhost:3001/Updateleccion",{
+      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Updateleccion",{
 
           method:'PUT',
           headers: { 'Content-Type': 'application/json' },

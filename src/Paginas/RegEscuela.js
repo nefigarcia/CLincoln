@@ -40,8 +40,8 @@ static contextType=InfoContext;
     var dataEscuela=[]
     const cont=this.context;
     try {
-      const res=await fetch("http://localhost:3001/Escuelas")
-      //const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+      //const res=await fetch("http://localhost:3001/Escuelas")
+      const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
 
       .then((res)=>res.json())
       //cont.setEscuelas(res)
@@ -95,8 +95,8 @@ static contextType=InfoContext;
     }
     registrar(nombre,escuelaid){
         let dat={nombre:nombre,escuelaid:escuelaid};
-         return fetch('http://localhost:3001/Regescuela',{
-         //return fetch('https://shielded-brushlands-89617.herokuapp.com/Regescuela',{
+         //return fetch('http://localhost:3001/Regescuela',{
+         return fetch('https://shielded-brushlands-89617.herokuapp.com/Regescuela',{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

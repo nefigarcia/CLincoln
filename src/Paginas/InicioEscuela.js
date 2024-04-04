@@ -32,8 +32,8 @@ export const InicioEscuela=(props)=>{
    const registrar=async()=>{
     try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
         let dat={escuelaId:daEscuela.ID};
-        let res=await fetch("http://localhost:3001/Clases",{
-        //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
+        //let res=await fetch("http://localhost:3001/Clases",{
+        let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
     
             method:'POST',
             mode:'cors',

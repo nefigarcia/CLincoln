@@ -34,27 +34,21 @@ class RegEscuela extends Component{
 
     }
 static contextType=InfoContext;
-    
+ apiUrl=process.env.REACT_APP_API;
+ 
    async getEscuelas(){
     var dataCuenta=[];
     var dataEscuela=[]
     const cont=this.context;
     try {
       //const res=await fetch("http://localhost:3001/Escuelas")
-      const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
+      const res=await fetch(this.apiUrl+`/Escuelas`)
 
       .then((res)=>res.json())
       //cont.setEscuelas(res)
-      console.log("resescuelas:",res)
-      console.log("emailCuenta:",cont.emailCuenta)
-      console.log("daCuentas:",cont.daCuentas)
-
       dataCuenta=cont.daCuentas.find(({EMAIL})=>EMAIL===cont.emailCuenta);
-      console.log("dataCeuenta:",dataCuenta);
-
       dataEscuela=res.find(({ID})=>ID===dataCuenta.ESCUELA_ID);
       if(dataEscuela!=null){
-        console.log("getescuelas")
         cont.setCuenta(dataCuenta);
         cont.setEscuela(dataEscuela);
         cont.setEsta(true);
@@ -96,7 +90,7 @@ static contextType=InfoContext;
     registrar(nombre,escuelaid){
         let dat={nombre:nombre,escuelaid:escuelaid};
          //return fetch('http://localhost:3001/Regescuela',{
-         return fetch('https://shielded-brushlands-89617.herokuapp.com/Regescuela',{
+         return fetch(this.apiUrl+`/Regescuela`,{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

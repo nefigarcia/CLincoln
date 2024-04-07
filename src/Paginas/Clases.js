@@ -2,11 +2,12 @@ import React, {Component, useContext, useState} from 'react';
 import {FormGroup, Label, Input,  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody, Alert } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoContext } from '../context';
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import moment from 'moment';
 import { async } from 'q';
 
 export const Clases=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
     const[activeTab,setActiveTab]=useState('1');
     const{daClases,leccionesDate}=useContext(InfoContext);
     function toggle(tab){
@@ -121,6 +122,8 @@ export const Clasess=(props)=>{
 }
 
 export const Perfclase=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
+  const [nextpagina,setNextpagina]=useState(false)
   const[agregar,setAgregar]=useState(false)
   const[editmodal,setEditmodal]=useState(false);
   const[alerta,setAlerta]=useState(false)
@@ -144,7 +147,6 @@ export const Perfclase=(props)=>{
   
   const leccionId=(ID)=>{
     const lecc=leccClase.find(item=>item.ID===ID);
-    console.log("LE:",lecc);
     setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO})
   }
 
@@ -152,7 +154,7 @@ export const Perfclase=(props)=>{
   try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
       let dat={escuelaId:daEscuela.ID};
       //let res=await fetch("http://localhost:3001/Clases",{
-      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
+      let res=await fetch(apiUrl+`/Clases`,{
   
           method:'POST',
           mode:'cors',
@@ -163,14 +165,17 @@ export const Perfclase=(props)=>{
       .then(res=>{
         setClases(res);
         alert("Operacion exitosa")
-
+        console.log("reslecc",res[0].ID)
+        if(res[0].ID===null){
+          setNextpagina(true)
+        }
    } )
   }catch(error){
     console.log(error)
   }}
   const eliminarLecc=async()=>{
    //await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
-   await fetch(`https://shielded-brushlands-89617.herokuapp.com/Eliminarleccion/${formValue.id}`,{
+   await fetch(apiUrl+`/Eliminarleccion/${formValue.id}`,{
    
       method:'DELETE'
     })
@@ -222,7 +227,7 @@ export const Perfclase=(props)=>{
     let da={formFields:formValue}
     try {
       //let res=await fetch("http://localhost:3001/Agregarleccion",{
-      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Agregarleccion",{
+      let res=await fetch(apiUrl+`/Agregarleccion`,{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(da),
@@ -242,7 +247,7 @@ export const Perfclase=(props)=>{
     let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
     try {
       //let res=await fetch("http://localhost:3001/Updateleccion",{
-      let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Updateleccion",{
+      let res=await fetch(apiUrl+`/Updateleccion`,{
 
           method:'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -280,10 +285,10 @@ const handleChange = (event) => {
        <Row md={2}>
         <Col>
          <h6>{daClase.NOMBRE}</h6>
-         <div>{console.log("lecc",lecciones)}
+         <div>{console.log("lecc",lecciones)}{console.log("leccClase",leccClase)}
           {lecciones.length>0 ?
           <>
-             <i>{lecciones.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
+             <i>{leccClase.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
           </>
           :null
           }
@@ -481,6 +486,8 @@ const handleChange = (event) => {
                 </Table>
               </TabPane>
             </TabContent>
+            {nextpagina &&
+            <Navigate to={"/Escuela"}/>}
     </div>
    
   );

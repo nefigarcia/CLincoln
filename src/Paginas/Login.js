@@ -39,6 +39,7 @@ class Login extends Component{
 		this.handleSubmit=this.handleSubmit.bind(this);
     }
 static contextType=InfoContext;
+ apiUrl=process.env.REACT_APP_API
 
 
     login(emai,passwor){
@@ -53,7 +54,7 @@ static contextType=InfoContext;
         };
 
       //return fetch("http://localhost:3001/Login",requestOpt)
-      return fetch("https://shielded-brushlands-89617.herokuapp.com/Login",requestOpt)
+      return fetch(this.apiUrl+`/Login` ,requestOpt)
         .then(response=>response.json())
         .then(response=>{
           

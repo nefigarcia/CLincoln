@@ -50,12 +50,14 @@ class Signup extends Component{
 
     }
     static contextType=InfoContext;
+     apiUrl=process.env.REACT_APP_API;
+
   async getCuentas(em){
       
       const cont=this.context;
       try {
         //const res=await fetch("http://localhost:3001/Cuentas")
-        const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Cuentas")
+        const res=await fetch(this.apiUrl+`/Cuentas`)
 
         .then((res)=>res.json())
         if(res){//console.log("res:",res)
@@ -95,7 +97,7 @@ class Signup extends Component{
       const em=email;
         let dat={nombre:nombre,apellidos:apellidos,email:email,contrasena:contrasena,rol_id:rolId};
        //return fetch('http://localhost:3001/Signup',{
-       return fetch('https://shielded-brushlands-89617.herokuapp.com/Signup',{
+       return fetch(this.apiUrl+`/Signup`,{
                method:'POST',
                mode:'cors',
                body:JSON.stringify(dat),

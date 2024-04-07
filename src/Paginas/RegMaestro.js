@@ -10,6 +10,8 @@ import { Loading } from '../components/Loading';
 
 
 const RegMaestro=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
+
   const{setMaestros,daMaestros,daMaestro,setMaestro,daEscuela,setLoadinglogo}=useContext(InfoContext)
   const [formValue, setFormValue] = useState({
         nombre: "",
@@ -53,7 +55,7 @@ const RegMaestro=(props)=>{
     const getMaestros=async()=>{
       try{
         //const res=await fetch("http://localhost:3001/Maestros")
-        const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
+        const res=await fetch(apiUrl+`/Maestros`)
       .then((res)=>res.json())
       const maestrosIdescuela=res.filter(function(item){
         return item.ID_ESCUELA==daEscuela.ID;
@@ -74,7 +76,7 @@ const RegMaestro=(props)=>{
         setFormValue({loading:true})
         setLoadinglogo(true)
        //return fetch('http://localhost:3001/Regmaestro',{
-       return fetch('https://shielded-brushlands-89617.herokuapp.com/Regmaestro',{
+       return fetch(apiUrl+`/Regmaestro`,{
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),

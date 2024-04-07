@@ -8,6 +8,7 @@ import { Clases } from './Clases';
 import { Progres } from '../components/Progres';
 
 export const InicioEscuela=(props)=>{
+    const apiUrl=process.env.REACT_APP_API
     const{daEscuela,daClases,setClases}=useContext(InfoContext);
     const{leccionesDate,setleccDate,setClasesdias}=useContext(InfoContext);
     const [startDate, setStartDate] = useState(new Date());
@@ -25,7 +26,6 @@ export const InicioEscuela=(props)=>{
     const diaclases=leccionesDate.filter(function(item) {
         return (item.FECHA.getDate()===startDate.getDate() && item.FECHA.getMonth()===startDate.getMonth() && item.FECHA.getFullYear()===startDate.getFullYear())
       });
-      console.log("mon:",mondays)
       return diaclases;
    }
 
@@ -33,7 +33,7 @@ export const InicioEscuela=(props)=>{
     try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
         let dat={escuelaId:daEscuela.ID};
         //let res=await fetch("http://localhost:3001/Clases",{
-        let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
+        let res=await fetch(apiUrl+`/Clases`,{
     
             method:'POST',
             mode:'cors',
@@ -118,7 +118,7 @@ export const InicioEscuela=(props)=>{
     {leccionesDate.length>0 ?
      <>   
     {arrlec.map((mon,index)=>{   
-     return <>{console.log("rendering:",leccionesDate)}
+     return <>
        <Row className="p-2 bg-light border" key={index} md={4}>
         <Col>
         <h8>{moment(mon.FECHA).format('DD-MM-YYYY')} </h8>   

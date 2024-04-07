@@ -38,7 +38,6 @@ export function Registros(props){
     const{setIdEstudiante}=useContext(InfoContext);
     return(
         <tr>
-          <th scope="row">{props.item.ID}</th>
           <Link to='/PerfEstudiante' >
           <td onClick={()=>setIdEstudiante(props.item.ID)}>{props.item.NOMBRE}</td>
           </Link>
@@ -53,7 +52,6 @@ export function RegistrosMaestros(props){
     const{setIdMaestro}=useContext(InfoContext);
     return(
         <tr>
-          <th scope="row">{props.item.ID}</th>
           <Link to='/PerfMaestro' >
           <td onClick={()=>setIdMaestro(props.item.ID)}>{props.item.NOMBRE}</td>
           </Link>

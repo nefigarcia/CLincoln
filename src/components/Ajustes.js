@@ -5,6 +5,8 @@ import classnames from 'classnames';
 
 
 const Ajustes=()=>{
+    const apiUrl=process.env.REACT_APP_API;
+
     const{daEscuela}=useContext(InfoContext)
     const[open,setOpen]=useState('1')
     const[formValue,setFormValue]=useState({nombre:"",capacidad:""})
@@ -19,7 +21,8 @@ const Ajustes=()=>{
     const registrar=async()=>{
         let da={nombre:nombre,capacidad:capacidad};
        try {
-        let res=await fetch("http://localhost:3001/Salon",{
+        //let res=await fetch("http://localhost:3001/Salon",{
+        let res=await fetch(apiUrl+`/Salon`,{          
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),

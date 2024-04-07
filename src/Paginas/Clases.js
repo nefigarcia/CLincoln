@@ -2,11 +2,12 @@ import React, {Component, useContext, useState} from 'react';
 import {FormGroup, Label, Input,  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody, Alert } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoContext } from '../context';
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import moment from 'moment';
 import { async } from 'q';
 
 export const Clases=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
     const[activeTab,setActiveTab]=useState('1');
     const{daClases,leccionesDate}=useContext(InfoContext);
     function toggle(tab){
@@ -121,6 +122,8 @@ export const Clasess=(props)=>{
 }
 
 export const Perfclase=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
+  const [nextpagina,setNextpagina]=useState(false)
   const[agregar,setAgregar]=useState(false)
   const[editmodal,setEditmodal]=useState(false);
   const[alerta,setAlerta]=useState(false)
@@ -135,7 +138,7 @@ export const Perfclase=(props)=>{
     setEditmodal(!editmodal)
   }
   const lecciones=leccionesDate.filter(function(item){
-  return  item.ID_CLASE==daClase.ID_CLASE
+  return  item.ID_CLASE==daClase.ID_CLASE && item.DIA!=null
   });
 
   const leccClase=daClases.filter(function(item){
@@ -144,15 +147,14 @@ export const Perfclase=(props)=>{
   
   const leccionId=(ID)=>{
     const lecc=leccClase.find(item=>item.ID===ID);
-    console.log("LE:",lecc);
     setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO})
   }
 
   const refreshlecciones=async()=>{
   try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
       let dat={escuelaId:daEscuela.ID};
-      let res=await fetch("http://localhost:3001/Clases",{
-      //let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Clases",{
+      //let res=await fetch("http://localhost:3001/Clases",{
+      let res=await fetch(apiUrl+`/Clases`,{
   
           method:'POST',
           mode:'cors',
@@ -163,19 +165,24 @@ export const Perfclase=(props)=>{
       .then(res=>{
         setClases(res);
         alert("Operacion exitosa")
-
+        console.log("reslecc",res[0].ID)
+        if(res[0].ID===null){
+          setNextpagina(true)
+        }
    } )
   }catch(error){
     console.log(error)
   }}
   const eliminarLecc=async()=>{
-   await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
- //   await fetch(`https://shielded-brushlands-89617.herokuapp.com/Eliminarleccion/${formValue.id}`,{
+   //await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
+   await fetch(apiUrl+`/Eliminarleccion/${formValue.id}`,{
    
       method:'DELETE'
     })
     .catch(err=>console.error(err))
-    .then(()=>{setModal(false)
+    .then(()=>{
+      setEditmodal(false)
+      setModal(false)
       refreshlecciones();
       console.log("exitoso")
     })
@@ -219,8 +226,8 @@ export const Perfclase=(props)=>{
   const regleccion=async()=>{
     let da={formFields:formValue}
     try {
-      let res=await fetch("http://localhost:3001/Agregarleccion",{
-     // let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Agregarleccion",{
+      //let res=await fetch("http://localhost:3001/Agregarleccion",{
+      let res=await fetch(apiUrl+`/Agregarleccion`,{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(da),
@@ -239,8 +246,8 @@ export const Perfclase=(props)=>{
   const updateLeccion=async()=>{
     let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
     try {
-      let res=await fetch("http://localhost:3001/Updateleccion",{
-      //  let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Updateleccion",{
+      //let res=await fetch("http://localhost:3001/Updateleccion",{
+      let res=await fetch(apiUrl+`/Updateleccion`,{
 
           method:'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -272,15 +279,25 @@ const handleChange = (event) => {
   });
 };   
   return(
-    <div className='container'>{console.log("hor",formValue.horai)}
+    <div className='container' style={{fontSize:'13px'}}>{console.log("hor",formValue.horai)}
        <h5>Clase</h5>
        <hr/>
        <Row md={2}>
         <Col>
          <h6>{daClase.NOMBRE}</h6>
-         <div>
-          <i>{lecciones.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
-          <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
+         <div>{console.log("lecc",lecciones)}{console.log("leccClase",leccClase)}
+          {lecciones.length>0 ?
+          <>
+             <i>{leccClase.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
+          </>
+          :null
+          }
+          {lecciones.length>0 ?
+      <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
+      :   <a href='#' onClick={()=>{agregarLecc();setModal(true)}} >+Agregar leccion</a>
+
+          }
+          
          </div>
          
         </Col>
@@ -294,10 +311,12 @@ const handleChange = (event) => {
        </Row>
         {editmodal ?
         <>
-         <Table striped>
+        {lecciones.length>0 ?
+         <>
+          <Table striped>
          <thead>
            <tr>
-             <th>#</th>
+           
              <th>InicioFinalFecha</th>
              <th>Dia</th>
              <th>InicioFinalHora</th>
@@ -308,9 +327,8 @@ const handleChange = (event) => {
          <tbody>
            {leccClase.map(item=>{
              return <tr>
-               <th scope='row' onClick={()=>{setModal(true);leccionId(item.ID)}}>{item.ID}</th>
               
-               <td>{item.FECHAI}/{item.FECHAF}</td>
+               <td style={{color:'#1274de'}} onClick={()=>{setModal(true);leccionId(item.ID)}}>{item.FECHAI}/{item.FECHAF}</td>
                <td>{item.DIA}</td>
                <td>{item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)}</td>
                <td>{item.MAESTRO}</td>
@@ -318,11 +336,15 @@ const handleChange = (event) => {
            })}
          </tbody>
        </Table>
+         </>
+            :null
+        }
+        
          </>:null
         }
           
 
-            <Modal isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
+            <Modal style={{fontSize:"13px", maxWidth:"380px"}} isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
           <ModalHeader toggle={toggl}>
           Editar Dia y hora
             <br/>
@@ -342,7 +364,7 @@ const handleChange = (event) => {
                         <Label for="Nombre">
                           Dia de la clase
                         </Label>
-                        <Input  style={{backgroundColor:"#fffde3"}}
+                        <Input  style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                           
                           name='dia'
                           type="select"
@@ -363,7 +385,7 @@ const handleChange = (event) => {
                         <Label for="Nombre">
                           <>Hora inicio</>
                         </Label>
-                        <Input style={{backgroundColor:"#fffde3"}}
+                        <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                         // bsSize="lg"
                           type="time"
                           name="horai"
@@ -377,7 +399,7 @@ const handleChange = (event) => {
                     <Label for="Nombre">
                       <>Hora final</>
                     </Label>
-                    <Input style={{backgroundColor:"#fffde3"}}
+                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
                     // bsSize="lg"
                       type="time"
                       name="horaf"
@@ -464,6 +486,8 @@ const handleChange = (event) => {
                 </Table>
               </TabPane>
             </TabContent>
+            {nextpagina &&
+            <Navigate to={"/Escuela"}/>}
     </div>
    
   );

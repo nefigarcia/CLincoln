@@ -4,12 +4,15 @@ import {DropdownToggle, Button, Form, FormGroup, Label, Input, FormText,Alert,Ro
 import { InfoContext } from '../context';
 import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Loading } from '../components/Loading';
 
 
 
 
 const RegMaestro=(props)=>{
-  const{setMaestros,daMaestros,daMaestro,setMaestro,daEscuela}=useContext(InfoContext)
+  const apiUrl=process.env.REACT_APP_API;
+
+  const{setMaestros,daMaestros,daMaestro,setMaestro,daEscuela,setLoadinglogo}=useContext(InfoContext)
   const [formValue, setFormValue] = useState({
         nombre: "",
         apellidos: "",
@@ -26,9 +29,10 @@ const RegMaestro=(props)=>{
         nextpagina:false,
         datachange:false,
         loading:false,
-        error:false
+        error:false,
+        validacionCampos:false
       });
-      const { nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad,submitted,loading,error,nextpagina} = formValue;
+      const { nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad,submitted,loading,error,nextpagina,validacionCampos} = formValue;
       const handleChange = (event) => {
         const { name, value } = event.target;
         setFormValue((prevState) => {
@@ -41,8 +45,8 @@ const RegMaestro=(props)=>{
       function handleSubmit(e){
         e.preventDefault();
         setFormValue({submitted:true})
-        console.log("handleSubmit",submitted);
         if(!(nombre && email)){
+          setFormValue({validacionCampos:true})
             return;
         }
         registrar(nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad)
@@ -50,14 +54,15 @@ const RegMaestro=(props)=>{
     }
     const getMaestros=async()=>{
       try{
-        const res=await fetch("http://localhost:3001/Maestros")
-       // const res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Maestros")
+        //const res=await fetch("http://localhost:3001/Maestros")
+        const res=await fetch(apiUrl+`/Maestros`)
       .then((res)=>res.json())
       const maestrosIdescuela=res.filter(function(item){
         return item.ID_ESCUELA==daEscuela.ID;
       })
       setMaestros(maestrosIdescuela)
-      if(res){      
+      if(res){  
+        setLoadinglogo(false)    
         setFormValue({loading:false,nextpagina:true})
       console.log("da",daMaestro)
 
@@ -69,8 +74,9 @@ const RegMaestro=(props)=>{
     const registrar=(nombre, apellidos, nacimiento,num,tel,email,estado,cp,direccion,ciudad)=>{
         let da={NOMBRE:nombre,APELLIDOS:apellidos,NACIMIENTO:nacimiento,NUM:num,TEL:tel,EMAIL:email,ESTADO:estado,CP:cp,DIRECCION:direccion,CIUDAD:ciudad,ID_ESCUELA:daEscuela.ID};
         setFormValue({loading:true})
-       return fetch('http://localhost:3001/Regmaestro',{
-       //return fetch('https://shielded-brushlands-89617.herokuapp.com/Regmaestro',{
+        setLoadinglogo(true)
+       //return fetch('http://localhost:3001/Regmaestro',{
+       return fetch(apiUrl+`/Regmaestro`,{
             method:'POST',
             mode:'cors',
             body:JSON.stringify(da),
@@ -80,7 +86,7 @@ const RegMaestro=(props)=>{
           setMaestro(da)
           getMaestros();
             if(res.ok){
-              
+             
 
             }
          })
@@ -91,7 +97,7 @@ const RegMaestro=(props)=>{
     }
 
     return(
-        <div className="container">
+        <div className="container"><Loading/>
 <h5>Agregar Maestro</h5>
  <hr/>
 <Form className='border formas-registros' onSubmit={handleSubmit}>
@@ -269,6 +275,9 @@ const RegMaestro=(props)=>{
   <Button >
     Aceptar
   </Button>
+  {validacionCampos &&
+    <Alert color='warning'>Campos amarillos Obligatorio</Alert>
+  }
 </Form>
 
 {nextpagina &&

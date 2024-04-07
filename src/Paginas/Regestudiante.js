@@ -24,13 +24,16 @@ class regEstudiante extends Component{
             daEstudiantes:'',
             daEstudiante:'',
             nextpagina:false,
-            daEscuela:''
+            daEscuela:'',
+            validacionCampos:false
         };
         this.handleSubmit=this.handleSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
 
     }
     static contextType=InfoContext;
+     apiUrl=process.env.REACT_APP_API;
+
     componentDidMount(){
       const contex=this.context;
       this.setState({daEscuela:contex.daEscuela})
@@ -38,8 +41,8 @@ class regEstudiante extends Component{
     }
     getEst(){
       
-    fetch("http://localhost:3001/Estudiantes")
-  //  fetch("https://shielded-brushlands-89617.herokuapp.com/Estudiantes")
+    //fetch("http://localhost:3001/Estudiantes")
+    fetch(this.apiUrl+`/Estudiantes`)
     .then(res=>res.json())
     .then(res=>{
       if(res){
@@ -59,6 +62,7 @@ handleSubmit(e){
     this.setState({submitted:true});
     const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela}=this.state;
     if(!(nombre && apellidos && registro && email)){
+      this.setState({validacionCampos:true})
         return;
     }
     this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela.ID)
@@ -66,8 +70,8 @@ handleSubmit(e){
 }
 registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,ID){
     let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp,ID_ESCUELA:ID};
-  // return fetch("https://shielded-brushlands-89617.herokuapp.com/Regestudiante",{
-     return fetch("http://localhost:3001/Regestudiante",{
+    return fetch(this.apiUrl+`/Regestudiante`,{
+    //return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),
@@ -87,7 +91,7 @@ handleChange(event){
 }
 
     render(){
-      const{nombre,apellidos,dataChange,estado,daEstudiantes,nextpagina,daEstudiante}=this.state;
+      const{nombre,apellidos,dataChange,estado,daEstudiantes,nextpagina,daEstudiante,validacionCampos}=this.state;
         return(
 <InfoConsumer> 
   {data=>{
@@ -259,6 +263,9 @@ handleChange(event){
   <Button >
     Aceptar
   </Button>
+  {validacionCampos &&
+    <Alert color='warning'>Campos amarillos Obligatorios</Alert>
+  }
 </Form>
 {dataChange &&
             data.setDatachange(dataChange)}
@@ -268,7 +275,6 @@ data.setEstudiantes(daEstudiantes)}
 data.setEstudiante(daEstudiante)}             
 {nextpagina &&
 <Navigate to={'/Perfestudiante'} />
-
 }            
             </div>
            

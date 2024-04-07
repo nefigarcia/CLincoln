@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
 import {FaRegCalendarAlt} from "react-icons/fa";
@@ -27,11 +27,12 @@ import {
   DropdownMenu,
   DropdownItem,
   Dropdown,
-  Button,
-  List
+  Button,Alert,
+  List,Tooltip,UncontrolledTooltip
 } from 'reactstrap';
 
 const NavApp = (props) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -40,39 +41,102 @@ const NavApp = (props) => {
 
   const [collapsedd, setCollapsedd] = useState(false);
   const toggleNavbarr = () => setCollapsedd(!collapsedd);
-const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange,daEscuela}=useContext(InfoContext);
-        return(
-          <div>    {console.log("DAES:",daEscuela)}
+   
+  const[maestrosrev,setMaestrosrev]=useState(false);
+  const addToggle=()=>{
+    if(maestrosrev==true){
+      console.log("rev",maestrosrev)
+      setMaestrosrev(false)}
+    setTool(false)
+    setProgresotool(false)
+    if(isOpen){
+      setIsOpen(false)
+    }
+  }
+const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,daMaestros}=useContext(InfoContext);
+const[toolTip,setTool]=useState(true)
+const[sty,setSty]=useState(false)
+const toggtool=()=>setSty(!sty);
+var gen;
+
+const pp=pr();
+function pr(){
+  if(esta){
+    var lo=document.getElementById('me').style.inset;
+    console.log("loooo",lo);
+ if(lo=='0px 0px auto auto'){
+  //setSty(true)
+  gen=lo;
+  console.log("siii")
+ }else{
+  gen='no';
+ }
+  }
+  
+}
+function revclase(){
+  setMaestrosrev(true)
+  console.log("sddsd")
+   }
+return(
+          <div>
+         {console.log("GEN",gen)}
         <Navbar color="light" light >
           <NavbarBrand  href="/">{esta ? daEscuela.NOMBRE:"Rosystems"}</NavbarBrand>
-          <Nav>
+          <Nav>{console.log("too",toolTip, progresoTool,sty)}
             <Link to="/Login">
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
             </Link>
-            
-            
-            <Dropdown hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar}>
-              <DropdownToggle><BsPlusLg/>        
+           {progresoTipo ?
+           <>
+            <Tooltip placement="bottom" isOpen={toolTip} autohide={false} target="tool" >
+             Da click aqui!!
+           </Tooltip>
+           </>:null
+           }
+           {/* {progresoTipo && gen!='0px 0px auto auto'?//( document.getElementById('me').style.inset='0px 0px auto auto') ?
+           <>{console.log("pp",gen)}
+            <Tooltip placement="left" isOpen={true} autohide={false} target="est" toggle={toggtool} delay={{ show:250, hide:250  }}>
+             Da !!
+           </Tooltip>
+           </>:null
+           }*/}
+          
+            <Dropdown id="sh" hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar} onClick={addToggle}>
+              <DropdownToggle id='tool'><BsPlusLg/>        
                 </DropdownToggle>
-              <DropdownMenu>     
+              <DropdownMenu id='me'>     
                 <DropdownItem header>Agregar ...</DropdownItem>
-                <DropdownItem><FaCreditCard/>Pagos</DropdownItem>
-                <DropdownItem disabled>Personal </DropdownItem>
+                <DropdownItem ><FaCreditCard/>Pagos</DropdownItem>
+                <DropdownItem disabled >Personal </DropdownItem>
                 <DropdownItem divider />
-                <Link to="/Regestudiante">
-                <DropdownItem><AiOutlineUserAdd/>Estudiante</DropdownItem>
-                </Link>                
+                <Link  to="/Regestudiante">
+               <DropdownItem id="est" title='estu' ><AiOutlineUserAdd />Estudiante</DropdownItem>     
+                </Link>        
+        
                 <Link to="/Regmaestro">
-                <DropdownItem><IoIosPersonAdd/>Maestro</DropdownItem>
+                <DropdownItem><IoIosPersonAdd/>Profesor</DropdownItem>
                 </Link>
-                <Link to="/RegClase"><DropdownItem ><BsBookFill/>Clase</DropdownItem></Link>
+                {esta==true && daMaestros.length>0 ?
+                  <>
+                  <Link to="/RegClase">
+                  <DropdownItem disabled={daMaestros.length>0 ? true:false}><BsBookFill/>Clase</DropdownItem>
+                  </Link>
+                  </>:<>
+                  <DropdownItem >
+                    <div onClick={()=>{revclase();}}>
+                    <BsBookFill/>Clase
+                      </div></DropdownItem>
+                  </>  
+              }
+                
                 <DropdownItem><FaArchive/>Staff</DropdownItem>
               </DropdownMenu>
             </Dropdown>
              
             <i className="fas fa-caret-up"> {daCuenta.NOMBRE} </i>
             <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
-              <DropdownToggle><BsFillPersonFill/>
+              <DropdownToggle id='per'><BsFillPersonFill/>
                 </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>
@@ -99,7 +163,7 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange,daEscuela}=useContex
           <NavbarToggler hidden={!esta} className="me-2" onClick={toggle} />
           </Nav>
           <Collapse isOpen={isOpen} navbar>
-            <Nav  navbar >
+            <Nav  navbar onClick={toggle}>
               <NavItem >
                 <Link to="/Escuela"><NavLink ><i className='icon'><FaHome/>Portal</i> </NavLink></Link>
               </NavItem>
@@ -127,7 +191,9 @@ const {esta,setEsta,estaMenu,cuentEmail,daCuenta,dataChange,daEscuela}=useContex
             </Nav>
           </Collapse>
         </Navbar>
-      
+      {maestrosrev &&
+        <Alert color='danger' >Primero crea una registro para Profesor</Alert>
+      }
       </div>
         );
 }

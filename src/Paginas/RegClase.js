@@ -7,12 +7,14 @@ import { Navigate } from 'react-router-dom';
 
 
 const RegClase=(props)=>{
+  const apiUrl=process.env.REACT_APP_API;
+
   const [dropDownValue,setDropDownValue]=useState();
   const [open,setOpen]=useState(false);
   const toggle=()=>setOpen(!open);
  // const [diaDiv,setdiaDiv]=useState(['0']);
   //const [likes,setLikes]=useState(0);
-  const {daMaestros, daEstudiantes, daEscuela}=useContext(InfoContext)
+  const {daMaestros, daEstudiantes, daEscuela,setLoadinglogo}=useContext(InfoContext)
   const [estado,setEstado]=useState(false);
   const [source, setSource] = useState(daEstudiantes);
   const [target, setTarget] = useState([]);
@@ -26,7 +28,8 @@ const RegClase=(props)=>{
     fecha2: "",
     salon:"",
     target:"",
-    source:daEstudiantes
+    source:daEstudiantes,
+    validacionvalores:false
   });
   const[formFields,setFormFields]=useState([
     {dia:'Lunes',horai:'',horaf:''},
@@ -55,8 +58,8 @@ const RegClase=(props)=>{
 const registrar=async()=>{
   let da={nombre:nombre,nivel:nivel,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID};
   try {
-  let res=await fetch("http://localhost:3001/Regclase",{
- //   let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Regclase",{
+  //let res=await fetch("http://localhost:3001/Regclase",{
+  let res=await fetch(apiUrl+`/Regclase`,{
       method:'POST',
       mode:'cors',
       body:JSON.stringify(da),
@@ -77,8 +80,8 @@ const registrar=async()=>{
 const regclaseid=async()=>{
   let da={target:target}
   try {
-    let res=await fetch("http://localhost:3001/Claseid",{
-   // let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Claseid",{
+    //let res=await fetch("http://localhost:3001/Claseid",{
+    let res=await fetch(apiUrl+`/Claseid`,{
       method:'POST',
       mode:'cors',
       body:JSON.stringify(da),
@@ -96,8 +99,8 @@ const regclaseid=async()=>{
 const reglecciones=async()=>{
   let da={formFields:formFields}
   try {
-    let res=await fetch("http://localhost:3001/Reglecciones",{
-   // let res=await fetch("https://shielded-brushlands-89617.herokuapp.com/Reglecciones",{
+   //let res=await fetch("http://localhost:3001/Reglecciones",{
+   let res=await fetch(apiUrl+`/Reglecciones`,{
       method:'POST',
       mode:'cors',
       body:JSON.stringify(da),
@@ -114,7 +117,9 @@ const reglecciones=async()=>{
 }
  function handleSubmit(e){
         e.preventDefault();
-        if(!(nombre && maestro)){console.log("empty",maestro)
+        if(!(nombre && maestro && fecha && fecha2 )){
+          console.log("vali:",nombre,maestro,fecha,fecha2)
+          setFormValue({validacionvalores:true})
             return;
         }
         if(target){console.log("target")
@@ -233,7 +238,7 @@ const itemTemplate = (item) => {
         </Col>
       </Row>
 <div className="p-2 bg-light border">Horario Clase</div>
-    <h5>Clase semanal</h5>
+    <h5>Recurrencia</h5>
 
     <Row md={2}>
         <Col >      
@@ -368,6 +373,9 @@ const itemTemplate = (item) => {
    <Button>
     Aceptar
   </Button>
+  {formValue.validacionvalores &&
+    <Alert color='warning'>Campos amarillos Obligatorio</Alert>
+  }
 </Form>
     {estado &&
     <Navigate to={'/Escuela'}/>}    

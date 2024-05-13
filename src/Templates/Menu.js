@@ -82,7 +82,7 @@ return(
           <div>
          {console.log("GEN",gen)}
         <Navbar color="light" light >
-          <NavbarBrand  href="/">{esta ? daEscuela.NOMBRE:"Rosystems"}</NavbarBrand>
+          <NavbarBrand  href="/">{esta ? daEscuela.NOMBRE.includes(" ")?daEscuela.NOMBRE.split(" ")[1]:daEscuela.NOMBRE  :"Rosystems"} </NavbarBrand>
           <Nav>{console.log("too",toolTip, progresoTool,sty)}
             <Link to="/Login">
             <Button hidden={esta} outline color="primary">Login</Button>{' '}
@@ -116,7 +116,7 @@ return(
         
                 <Link to="/Regmaestro">
                 <DropdownItem><IoIosPersonAdd/>Profesor</DropdownItem>
-                </Link>
+                </Link>{console.log("ESTA",esta)}{console.log("DAMAESTROS",daMaestros)}
                 {esta==true && daMaestros.length>0 ?
                   <>
                   <Link to="/RegClase">

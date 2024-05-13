@@ -34,24 +34,12 @@ const[tipoTool,setTipo]=useState('');
 const[progresoTipo,setProgresoTipo]=useState(false)
 const[loadinglogo,setLoadinglogo]=useState(false);
 
-console.log("context",emailCuenta)
 const getDataCuenta=datEmCuent=>{
-    //setEstudiantes(daEstudiantess)
-   // setMaestros(daMaestross)
+   
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
-      /*  dataCuenta=daCuentas.find(({EMAIL})=>EMAIL===emailCuenta);
-
-        setCuenta(dataCuenta);
-        console.log("dataCuenta",dataCuenta)
-        dataEscuela=daEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
-        setEscuela(dataEscuela);
-        console.log("dataEScuela",dataEscuela)
-        if(dataEscuela!=null){
-            setEsta(true)
-            setLoading(false);
-        }  */ 
+      
         const estudiantesIdescuela=daEstudiantess.filter(function(item){
             return item.ID_ESCUELA==dataEscuela.ID;
          });
@@ -72,7 +60,6 @@ const getDataEscuela=()=>{
     const maestrosIdescuela=daMaestross.filter(function(item){
         return item.ID_ESCUELA==dataEscuela.ID;
     })
-    console.log("DAESC:",estudiantesIdescuela);
     setEstudiantes(estudiantesIdescuela);
     setMaestros(maestrosIdescuela);
     setEscuela(dataEscuela);
@@ -82,18 +69,15 @@ const getDataEscuela=()=>{
 }
 
 const setIdEstudiante=id=>{ 
-    console.log("es",daEstudiante)
 setEstudiante(daEstudiantes.find(item=>item.ID===id))
 }
 
 const setIdMaestro=id=>{
 setMaestro(daMaestros.find(item=>item.ID===id))
-console.log("ma",daMaestro)
 
 }
 
 const setEmaCuenta=ema=>{
-    console.log("emacontxcuent",ema)
     setEmailCuenta(ema);
 }
 const cambCuentas=cuent=>{
@@ -103,7 +87,6 @@ const cambCuentas=cuent=>{
 const cambiarEsta=esta=>{
     estaMenu=esta
     setEsta(esta);
-    console.log("menuEsta=",esta);
 }
     return(
         <InfoContext.Provider

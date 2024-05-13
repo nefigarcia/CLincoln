@@ -4,24 +4,27 @@ import moment from 'moment/moment';
 import {DropdownToggle, Button, Form, FormGroup, Label, Input, FormText,Alert,Row,Col, DropdownItem, Dropdown, DropdownMenu } from 'reactstrap';
 import { InfoContext } from '../context';
 import { Navigate } from 'react-router-dom';
+import Moment from 'moment'
+import { extendMoment } from 'moment-range';
+
 
 
 const RegClase=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
+  const momen = extendMoment(Moment);
 
   const [dropDownValue,setDropDownValue]=useState();
   const [open,setOpen]=useState(false);
   const toggle=()=>setOpen(!open);
  // const [diaDiv,setdiaDiv]=useState(['0']);
   //const [likes,setLikes]=useState(0);
-  const {daMaestros, daEstudiantes, daEscuela,setLoadinglogo}=useContext(InfoContext)
+  const {daMaestros, daEstudiantes, daEscuela,setLoadinglogo,daClases}=useContext(InfoContext)
   const [estado,setEstado]=useState(false);
   const [source, setSource] = useState(daEstudiantes);
   const [target, setTarget] = useState([]);
   const [listpickest, setListpickest]=useState(false);
   const [formValue, setFormValue] = useState({
     nombre: "",
-    nivel: "",
     maestro:daMaestros[0].NOMBRE,
     salon:"",
     fecha: "",
@@ -32,8 +35,10 @@ const RegClase=(props)=>{
     validacionvalores:false
   });
   const[formFields,setFormFields]=useState([
-    {dia:'Lunes',horai:'',horaf:''},
+    {dia:'Lunes',horai:'',horaf:'',nivel:''},
   ])
+  const [alerta,setAlerta]=useState(false)
+  const[alerMensaje,setAlermensaje]=useState("")
  /* function addDia(){console.log("mas")
     setLikes(likes+1)
     let cloneDia=diaDiv;
@@ -46,6 +51,7 @@ const RegClase=(props)=>{
       dia:'',
       horai:'',
       horaf:'',
+      nivel:''
     }
     setFormFields([...formFields,object])
   }
@@ -56,7 +62,7 @@ const RegClase=(props)=>{
   }
   
 const registrar=async()=>{
-  let da={nombre:nombre,nivel:nivel,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID};
+  let da={nombre:nombre,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID};
   try {
   //let res=await fetch("http://localhost:3001/Regclase",{
   let res=await fetch(apiUrl+`/Regclase`,{
@@ -118,11 +124,61 @@ const reglecciones=async()=>{
  function handleSubmit(e){
         e.preventDefault();
         if(!(nombre && maestro && fecha && fecha2 )){
-          console.log("vali:",nombre,maestro,fecha,fecha2)
           setFormValue({validacionvalores:true})
             return;
         }
-        if(target){console.log("target")
+        let ban=false
+        let banniv=false
+        var grup=" "
+        daClases.map(el => {
+        
+          formFields.map((v,i)=>{
+
+            if(el.DIA===v.dia ){
+          
+              var ho1=[momen(el.HORAI.slice(0,-10),'HH:mm'),momen(el.HORAF.slice(0,-10),'HH:mm')]
+              var ho2=[momen(v.horai,'HH:mm'),momen(v.horaf,'HH:mm')]
+              var range1=momen.range(ho1)
+              var range2=momen.range(ho2)
+              if(el.NIVEL.includes(",")){
+                el.NIVEL.split(",").map(ni=>{
+                  if(v.nivel.includes(ni))
+                  grup=ni
+                  banniv=true
+                })
+              }else{
+                if(v.nivel.includes(el.NIVEL)){
+                  grup=nivel
+                  banniv=true
+                  
+                }            
+              }
+            
+                if(range1.overlaps(range2)){
+                    if(el.MAESTRO===maestro){
+                      ban=true
+                      setAlermensaje(", "+el.MAESTRO+" tiene clase en la misma hora dia: "+el.DIA)
+                      setAlerta(true)
+                      return
+                    }
+                    if(banniv){
+                      setAlermensaje(",grupo "+grup+" ocupado con Maestro(a):"+" "+el.MAESTRO+", dia: "+v.dia)
+                      ban=true
+                      setAlerta(true)
+                      return
+                    }
+                   
+                
+              }
+            }
+          })
+         
+        });
+        if(ban){
+          return
+        }
+
+        if(target){
           regclaseid()
           .then();
         }
@@ -174,6 +230,7 @@ const itemTemplate = (item) => {
       <FormGroup>
         <Label for="Nombre">
           Nombre Clase
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
         <Input onChange={handleChange} style={{backgroundColor:"#fffde3"}}
           id="nombre"
@@ -184,20 +241,7 @@ const itemTemplate = (item) => {
         />
       </FormGroup>
     </Col>
-    <Col >
-      <FormGroup>
-        <Label for="exApellidos">
-          Nivel
-        </Label>
-        <Input onChange={handleChange}
-          id="nivel"
-          name="nivel"
-          placeholder=" "
-          type="text"
-          value={nivel}
-        />
-      </FormGroup>
-    </Col>
+    
   </Row>
  
  
@@ -282,6 +326,7 @@ const itemTemplate = (item) => {
       <FormGroup>
         <Label for="Nombre">
           Dia de la clase
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
         <Input  style={{backgroundColor:"#fffde3"}}
           id={index}
@@ -303,6 +348,7 @@ const itemTemplate = (item) => {
         <FormGroup>
         <Label for="Nombre">
           <>Hora inicio</>
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
         <Input style={{backgroundColor:"#fffde3"}}
          // bsSize="lg"
@@ -318,12 +364,28 @@ const itemTemplate = (item) => {
         <FormGroup>
         <Label for="Nombre">
           <>Hora final</>
+          <span className='required' style={{color:"red"}}>*</span>
         </Label>
         <Input style={{backgroundColor:"#fffde3"}}
          // bsSize="lg"
           type="time"
           name="horaf"
           value={form.horaf}
+          onChange={event=>handleFormChange(event,index)}
+        />
+           </FormGroup>
+        </Col>
+        <Col >        
+        <FormGroup>
+        <Label for="Nombre">
+          <>Nivel</>
+          <span className='required' style={{color:"red"}}>*</span>
+        </Label>
+        <Input style={{backgroundColor:"#fffde3"}}
+         // bsSize="lg"
+          type="text"
+          name="nivel"
+          value={form.nivel}
           onChange={event=>handleFormChange(event,index)}
         />
            </FormGroup>
@@ -378,7 +440,10 @@ const itemTemplate = (item) => {
   }
 </Form>
     {estado &&
-    <Navigate to={'/Escuela'}/>}    
+    <Navigate to={'/Escuela'}/>}
+    {alerta &&
+      <Alert color='danger'>Elije otro horario {alerMensaje}</Alert>
+    }    
  </div>
     );
 }

@@ -11,6 +11,7 @@
     "expo": "^48.0.16",
     "mdb-react-ui-kit": "^6.0.0",
     "moment": "^2.29.4",
+    "moment-range": "^4.0.2",
     "primeicons": "^6.0.1",
     "primereact": "^9.6.0",
     "react": "^18.2.0",

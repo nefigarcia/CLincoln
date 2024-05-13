@@ -49,7 +49,6 @@ class PreRegistros extends Component{
           <tr>
             <th>Nombre</th>
             <th>Telefono</th>
-            <th>Email</th>
             <th>Reg.fecha</th>
             <th>Pagos</th>
 
@@ -74,7 +73,6 @@ class PreRegistros extends Component{
           <tr>
             <th>Nombre</th>
             <th>Telefono</th>
-            <th>Email</th>
           </tr>
         </thead>
         <tbody>

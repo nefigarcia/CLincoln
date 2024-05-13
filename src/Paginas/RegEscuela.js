@@ -23,7 +23,6 @@ class RegEscuela extends Component{
             nombre:'',
             submitted:false,
             rolId:'',
-            menuSta:false,
             escuelaid:'',
            // daCuentas:'',
             daEscuelas:'',
@@ -38,40 +37,42 @@ static contextType=InfoContext;
  
    async getEscuelas(){
     var dataCuenta=[];
-    var dataEscuela=[]
+    var dataEscuela=[];
+    var dataMaestros=[]
+  
     const cont=this.context;
     try {
       //const res=await fetch("http://localhost:3001/Escuelas")
       const res=await fetch(this.apiUrl+`/Escuelas`)
-
       .then((res)=>res.json())
+      .then(res=>{
+        console.log("BUG1",res)
+        if(res.length){
+          console.log("BUG2",res.length)
+
+          dataCuenta=cont.daCuentas.find(({EMAIL})=>EMAIL===cont.emailCuenta);
+          dataEscuela=res.find(({ID})=>ID===dataCuenta.ESCUELA_ID);
+          //dataMaestros=cont.daMaestross.filter(i=>i.ID_ESCUELA==dataEscuela[0].ID)
+          console.log("BUG3",dataEscuela)
+
+          if(dataEscuela!=null){
+            console.log("BUG4")
+
+            cont.setCuenta(dataCuenta);
+            cont.setEscuela(dataEscuela);
+           // cont.setMaestros(dataMaestros)
+            cont.getDataCuenta(null);
+           
+           // cont.getDataCuenta(null)
+          }
+        }
+      })
       //cont.setEscuelas(res)
-      dataCuenta=cont.daCuentas.find(({EMAIL})=>EMAIL===cont.emailCuenta);
-      dataEscuela=res.find(({ID})=>ID===dataCuenta.ESCUELA_ID);
-      if(dataEscuela!=null){
-        cont.setCuenta(dataCuenta);
-        cont.setEscuela(dataEscuela);
-        cont.setEsta(true);
-        cont.getDataCuenta(null);
-        cont.setLoading(false);
-       // cont.getDataCuenta(null)
-      }
+     
     } catch (error) {
       console.log(error)
     }
-    /*fetch("http://localhost:3001/Escuelas")
-   // fetch("https://shielded-brushlands-89617.herokuapp.com/Escuelas")
-    .then(res=>res.json())
-    .then(res=>{//alert(JSON.stringify(res))
-      if(res){
-        this.setState({daEscuelas:res,loading:true},()=>
-          console.log("daEscuelasGet:",this.state.daEscuelas)
-        )
-      }
-    })
-    .catch(res=>{
-      console.log("error en REGescuela Escuealas:",res)
-    })*/
+   
   }
 
     handleSubmit(e){
@@ -87,29 +88,33 @@ static contextType=InfoContext;
           console.log("hanadleEscErr:",error);
         });
     }
-    registrar(nombre,escuelaid){
+    async registrar(nombre,escuelaid){
+      const cont=this.context
         let dat={nombre:nombre,escuelaid:escuelaid};
          //return fetch('http://localhost:3001/Regescuela',{
-         return fetch(this.apiUrl+`/Regescuela`,{
-               method:'POST',
-               mode:'cors',
-               body:JSON.stringify(dat),
-               headers:{'content-type':'application/json'},
+         try {
+        const res = await fetch(this.apiUrl + `/Regescuela`, {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(dat),
+          headers: { 'content-type': 'application/json' },
+        })
+        .then(res=>{
+          if(res.ok){
+            this.getEscuelas()
+            .then(re=>{
+
+              console.log("regis");
+              cont.setEsta(true);
+              cont.setLoading(false);
             })
-            .then(res=>{
-              this.getEscuelas();
-              if(res.ok){
-               
-                console.log("regis")
-                this.setState({menuSta:true},()=>{
-                })
-               
-              }
-            })
-            .catch((error)=>{
-              alert(JSON.stringify(error));
-              console.log("registroEscErr:",error);
-            });
+         
+          }
+        })
+      } catch (error) {
+        alert(JSON.stringify(error));
+        console.log("registroEscErr:", error);
+      }
     }
     handleChange(event){
         const{name,value}=event.target;
@@ -119,7 +124,7 @@ static contextType=InfoContext;
     
 
     render(){
-        const{nombre,submitted,menuSta,escuelaid,daCuentas,daEscuelas,loading}=this.state;
+        const{nombre,submitted,escuelaid,daCuentas,daEscuelas,loading}=this.state;
         return (
            
             <InfoConsumer>
@@ -157,18 +162,10 @@ static contextType=InfoContext;
                           {submitted &&
               <Alert color="success">Registro exitoso!</Alert>}
                         </Form>
-                                                                           
-                        { /*{loading &&
-                          data.setEscuelas(daEscuelas)
-                         }
-                         {loading &&
-                         data.getDataCuenta(null)}*/}
-                        
-                         
-                        {!data.loading &&
+                  {!data.loading &&
                         <Navigate to={"/Escuela"}  
                         />
-                        }
+                  }
                       </div>
 
     

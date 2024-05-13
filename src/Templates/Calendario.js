@@ -10,11 +10,11 @@ const allViews=Object.keys(Views).map((k) => Views[k]);
 export const Calendario=()=>{
     const{leccionesDate}=useContext(InfoContext);
     const handleSelectEvent = useCallback(
-        (event) => window.alert(event.start+" Finaliza "+event.end),
+        (event) => window.alert(" Inicio "+event.start+" Finaliza "+event.end),
         []
       )
     const re=leccionesDate.map(item=>{
-        return {start:item.FECHA,end:item.FECHA2, title:item.NOMBRE}
+        return {start:item.FECHA,end:item.FECHA2, title:item.NOMBRE.slice(0,4)+" "+item.NIVEL}
     })  
     return(
         <div className="App">{console.log("lecc",leccionesDate)}

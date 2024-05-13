@@ -5,6 +5,8 @@ import { InfoContext } from '../context';
 import { Link, Navigate } from "react-router-dom";
 import moment from 'moment';
 import { async } from 'q';
+import Moment from 'moment'
+import { extendMoment } from 'moment-range';
 
 export const Clases=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
@@ -66,7 +68,7 @@ export const Clases=(props)=>{
             <th>Maestro</th>
             <th>Inicio</th>
             <th>Final</th>
-            <th>Dias/horas</th>
+            <th>Dias</th>
           </tr>
         </thead>
         <tbody>{clasesDias()}
@@ -109,14 +111,18 @@ export const Clasess=(props)=>{
     return(
         <tr>
           <Link to='/Perfclase' >
-          <td onClick={()=>setIdclase(props.item.ID_CLASE)}>{props.item.NOMBRE}</td>
+          <td onClick={()=>setIdclase(props.item.ID_CLASE)}>{props.item.NOMBRE.slice(0,3)} {props.item.NIVEL}</td>
           </Link>
           <td>{props.item.MAESTRO}</td>
           <td>{props.item.FECHAI}</td>
-          <td>{props.item.FECHAF}</td>
-          <td>{props.item.DIAS.map(ite=>{
-            return <i>{ite}</i>
-          })}</td>
+          <td>{props.item.FECHAF}</td>{console.log("propsunic",props.item.DIAS)}
+          {props.item.DIAS[0]!==null ?
+             <td>{props.item.DIAS.map(ite=>{
+              return <i>{ite.slice(0,2)}</i>
+            })}</td>
+            :null
+          }
+         
         </tr>
               );
 }
@@ -128,9 +134,14 @@ export const Perfclase=(props)=>{
   const[editmodal,setEditmodal]=useState(false);
   const[alerta,setAlerta]=useState(false)
   const[modal,setModal]=useState(false);
-  const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:""})
+  const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:"",nivel:""})
   const[activeTab,setActiveTab]=useState('1');
-  const{daEscuela,daClase,daClases,setClases, leccionesDate,daLeccion,setLeccion}=useContext(InfoContext);
+  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,daLeccion,setLeccion}=useContext(InfoContext);
+  const[alerMensaje,setAlermensaje]=useState("")
+
+  const mondays=[]
+  const momen = extendMoment(Moment);
+
   const toggl=()=>{
     setModal(!modal)
   }
@@ -147,7 +158,7 @@ export const Perfclase=(props)=>{
   
   const leccionId=(ID)=>{
     const lecc=leccClase.find(item=>item.ID===ID);
-    setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO})
+    setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO,nivel:lecc.NIVEL})
   }
 
   const refreshlecciones=async()=>{
@@ -163,16 +174,71 @@ export const Perfclase=(props)=>{
       })
       .then(res=>res.json())
       .then(res=>{
+           try {
+            res.forEach(function(item){
+              var fi=new Date(item.FECHAI.replace(/-/g, '\/'));
+              var ff=new Date(item.FECHAF.replace(/-/g, '\/'));
+              while(fi<=ff){
+                  if(item.DIA===null){
+                      mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate()),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate()),MAESTRO:item.MAESTRO,HORAI:null,HORAF:null,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:null})
+
+                      break;
+                  }
+                  if(item.DIA==="Lunes"){
+                      if(fi.getDay()===1){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"L"})
+                      }   
+                  } 
+                  if(item.DIA==="Martes"){
+                      if(fi.getDay()===2){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"Ma"})
+                      }   
+                  }  
+                  if(item.DIA==="Miercoles"){
+                      if(fi.getDay()===3){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"Mi"})
+                      }   
+                  }      
+                  if(item.DIA==="Jueves"){
+                      if(fi.getDay()===4){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"J"})
+                      }   
+                  } 
+                  if(item.DIA==="Viernes"){
+                      if(fi.getDay()===5){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"V"})
+                      }   
+                  } 
+                  if(item.DIA==="Sabado"){
+                      if(fi.getDay()===6){
+                          mondays.push({ID_CLASE:item.ID_CLASE, NOMBRE:item.NOMBRE,NIVEL:item.NIVEL,FECHA:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAI.slice(0,-13),item.HORAI.substring(3,5)),FECHA2:new Date(fi.getFullYear(),fi.getMonth(),fi.getDate(),item.HORAF.slice(0,-13),item.HORAF.substring(3,5)),MAESTRO:item.MAESTRO,HORAI:item.HORAI,HORAF:item.HORAF,FECHAI:item.FECHAI,FECHAF:item.FECHAF,DIAS:[],DIA:"S"})
+                      }   
+                  } 
+                fi.setDate(fi.getDate()+1);
+              }
+              
+          });
+          setleccDate(mondays);
+
+           } catch (error) {
+            
+           }
+        
+
         setClases(res);
+        
         alert("Operacion exitosa")
         console.log("reslecc",res[0].ID)
-        if(res[0].ID===null){
+       /* if(res[0].ID===null){
           setNextpagina(true)
-        }
+        }*/
    } )
   }catch(error){
     console.log(error)
   }}
+
+
+
   const eliminarLecc=async()=>{
    //await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
    await fetch(apiUrl+`/Eliminarleccion/${formValue.id}`,{
@@ -181,25 +247,63 @@ export const Perfclase=(props)=>{
     })
     .catch(err=>console.error(err))
     .then(()=>{
+      refreshlecciones()
       setEditmodal(false)
       setModal(false)
-      refreshlecciones();
       console.log("exitoso")
     })
   }
   const editLeccion=()=>{
     const a=[];
-    console.log("FORMVALUE:",formValue)
-    daClases.forEach(function(item){
-      if(item.DIA===formValue.dia && item.MAESTRO===formValue.maestro){
-        if(item.HORAI.slice(0,-13)==formValue.horai.slice(0,-3) || item.HORAF.slice(0,-13)==formValue.horaf.slice(0,-3)){
-          console.log("if")
-          setAlerta(true)
-          a.push("1");
+    let ban=false
+        let banniv=false
+        var grup=" "
+    daClases.forEach(function(el){
+      
+        if(el.DIA===formValue.dia  ){
+          var ho1=[momen(el.HORAI.slice(0,-10),'HH:mm'),momen(el.HORAF.slice(0,-10),'HH:mm')]
+          var ho2=[momen(formValue.horai,'HH:mm'),momen(formValue.horaf,'HH:mm')]
+
+          var range1=momen.range(ho1)
+          var range2=momen.range(ho2)
+
+          if(el.NIVEL.includes(",")){
+            el.NIVEL.split(",").map(ni=>{
+              if(formValue.nivel.includes(ni))
+              grup=ni
+              banniv=true
+              
+            })
+          }else{
+            if(formValue.nivel.includes(el.NIVEL)){
+              grup=formValue.nivel
+              banniv=true
+              
+            }
+            
+          }
+        
+
+          if(range1.overlaps(range2)){
+                if(el.MAESTRO===formValue.maestro){
+                  ban=true
+                  setAlermensaje(", "+el.MAESTRO+" tiene clase en la misma hora dia: "+el.DIA)
+                  setAlerta(true)
+                  return
+                }
+                if(banniv){
+                  setAlermensaje(",grupo "+grup+" ocupado con Maestro(a):"+" "+el.MAESTRO+", dia: "+formValue.dia)
+                  ban=true
+                  setAlerta(true)
+                  return
+                }
+               
+            
+          }
         }
-      }
+     
     })
-    if(a.length>0){
+    if(ban){
       return;
     }
     if(!formValue.id){
@@ -212,7 +316,7 @@ export const Perfclase=(props)=>{
   }
   const agregarLecc=()=>{
     setAgregar(true)
-    setFormValue({id:"",horai:"",horaf:"",dia:"Lunes",maestro:daClase.MAESTRO,idclase:daClase.ID_CLASE});
+    setFormValue({id:"",horai:"",horaf:"",dia:"Lunes",nivel:"",maestro:daClase.MAESTRO,idclase:daClase.ID_CLASE});
   }
   const guardarLecc=()=>{
     if(!(formValue.dia && formValue.horai && formValue.horaf)){
@@ -235,8 +339,11 @@ export const Perfclase=(props)=>{
       })
       .then(res=>{
         if(res.ok){
-          setModal(false)
-         refreshlecciones()
+          refreshlecciones()
+            .then(()=>{
+              setModal(false)
+            })
+         
         }
       })
     } catch (error) {
@@ -244,7 +351,8 @@ export const Perfclase=(props)=>{
     }
   }
   const updateLeccion=async()=>{
-    let da={id:formValue.id,dia:formValue.dia,horai:formValue.horai,horaf:formValue.horaf}
+    let da={id:formValue.id,dia:formValue.dia,nivel:formValue.nivel,horai:formValue.horai,horaf:formValue.horaf}
+    console.log("DA",da)
     try {
       //let res=await fetch("http://localhost:3001/Updateleccion",{
       let res=await fetch(apiUrl+`/Updateleccion`,{
@@ -288,7 +396,7 @@ const handleChange = (event) => {
          <div>{console.log("lecc",lecciones)}{console.log("leccClase",leccClase)}
           {lecciones.length>0 ?
           <>
-             <i>{leccClase.map(item=>{return <>{item.DIA} {item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)} </> })}</i>
+             <i>{leccClase.map(item=>{return <>{item.DIA} {item.HORAI!==null?   item.HORAI.slice(0,-10):''}-{item.HORAF!==null? item.HORAF.slice(0,-10):''} </> })}</i>
           </>
           :null
           }
@@ -321,7 +429,7 @@ const handleChange = (event) => {
              <th>Dia</th>
              <th>InicioFinalHora</th>
              <th>Maestro</th>
-             <th>Salon</th>
+             <th>Nivel</th>
            </tr>
          </thead>
          <tbody>
@@ -332,6 +440,7 @@ const handleChange = (event) => {
                <td>{item.DIA}</td>
                <td>{item.HORAI.slice(0,-10)}-{item.HORAF.slice(0,-10)}</td>
                <td>{item.MAESTRO}</td>
+               <td>{item.NIVEL}</td>
              </tr>
            })}
          </tbody>
@@ -358,7 +467,7 @@ const handleChange = (event) => {
            
             <div className="card-body">
                 
-               <Row md={3}>
+               <Row md={2}>
                 <Col>
                       <FormGroup>
                         <Label for="Nombre">
@@ -379,7 +488,23 @@ const handleChange = (event) => {
                           <option>Sabado</option>
                         </Input>
                       </FormGroup>
-                </Col>                
+                </Col>    
+                <Col>
+                <FormGroup>
+                    <Label for="Nombre">
+                      <>Nivel</>
+                    </Label>
+                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                    // bsSize="lg"
+                      type="text"
+                      name="nivel"
+                      value={formValue.nivel}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                </Col>  
+                </Row>   
+                <Row md={2}>
                 <Col>
                      <FormGroup>
                         <Label for="Nombre">
@@ -407,8 +532,11 @@ const handleChange = (event) => {
                       onChange={handleChange}
                     />
                   </FormGroup>
+                 
                 </Col>
-               </Row>
+                </Row>       
+               
+            
             </div>
         </div>
 <Button disabled={agregar} size='sm' onClick={eliminarLecc}>Eliminar</Button>
@@ -418,7 +546,7 @@ const handleChange = (event) => {
 <a hidden={agregar} href='#' onClick={()=>{agregarLecc()}}>Nueva leccion</a>
 <Button hidden={!agregar} size='sm' color='primary' onClick={()=>{guardarLecc()}}>Aceptar</Button>
 {alerta &&
-<Alert color='warning'>Revisa el horario, ocupado por maestra: {daClase.MAESTRO}</Alert>}
+<Alert color='warning'>Revisa el horario,  {alerMensaje}</Alert>}
 </div>    
           </ModalBody>
          {/* <ModalFooter>

@@ -57,12 +57,16 @@ static contextType=InfoContext;
       return fetch(this.apiUrl+`/Login` ,requestOpt)
         .then(response=>response.json())
         .then(response=>{
-          
+          cont.setLoadinglogo(false)
           if(response!=="Revisa tus datos") {
              const contex=this.context;   
               var item=response.find(item=>{
               return item.EMAIL;
           });
+          if(item.NOMBRE.includes(" ")){
+            const nom=item.NOMBRE.split(" ")
+            item.NOMBRE=nom[0]
+          }
           contex.setCuenta(item)
           if(response){
             this.setState({authen:true,emailCuen:item},()=>
@@ -78,7 +82,27 @@ static contextType=InfoContext;
           console.log("err log",error);
         })
     }
-
+    async getPass(){
+      console.log("emmm",this.state.emai)
+      let da={email:this.state.emai}
+       
+          try {
+        const res = await fetch(this.apiUrl + `/Forpass`, {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(da),
+          headers: { 'content-type': 'application/json' }
+        });
+        const res_1 = await res.json();
+        console.log("res:", res_1);
+        if (res_1.success) {
+          this.setState({ error: res_1.message });
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+    
     handleSubmit(event){
         event.preventDefault();
         const{emai,passwor,authen}=this.state;
@@ -166,8 +190,18 @@ static contextType=InfoContext;
             {authen &&
 <Alert color="success">Ingreso exitoso! Ya puedes ingresar.</Alert>}
 {error=="Revisa tus datos" &&
-  <Alert color="danger">Revisa email o contrasena!!!.</Alert>}
+  <Alert color="danger">Revisa email o contrasena!!!.</Alert>
+  }
+{error=="Revisa tus datos" &&
+              <div className='d-grid'><button onClick={()=>this.getPass()} className="btn-md btn btn-primary">Recupera contraseña</button></div>
 
+}  
+{error==="Email enviado a:" &&
+  <Alert color='success'>Contraseña enviada a:{emai}</Alert>
+}
+{error==="No contrasena" &&
+  <Alert color='warning'>Email no registrado</Alert>
+}
 {authen &&
 data.setEsta(authen)}
 {/*{

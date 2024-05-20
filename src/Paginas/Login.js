@@ -78,7 +78,10 @@ static contextType=InfoContext;
           this.setState({error:response})
         }})
         .catch((error)=>{
-          alert(JSON.stringify(error));
+          
+            alert("Servidor apagado, manda whats al admin para encenderlo: 5523847937");
+
+          
           console.log("err log",error);
         })
     }

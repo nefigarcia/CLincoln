@@ -56,6 +56,7 @@ const RegClase=(props)=>{
     setFormFields([...formFields,object])
   }
   const removeFields = (index) => {
+    console.log("ELIdia",index)
     let data = [...formFields];
     data.splice(index, 1)
     setFormFields(data)

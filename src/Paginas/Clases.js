@@ -1,5 +1,5 @@
-import React, {Component, useContext, useState} from 'react';
-import {FormGroup, Label, Input,  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody, Alert } from 'reactstrap';
+import React, {Component, useContext, useEffect, useState} from 'react';
+import {FormGroup,Form, Label, Input,  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody, Alert,ModalFooter } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoContext } from '../context';
 import { Link, Navigate } from "react-router-dom";
@@ -12,6 +12,49 @@ export const Clases=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
     const[activeTab,setActiveTab]=useState('1');
     const{daClases,leccionesDate}=useContext(InfoContext);
+    const[modgen,setModgen]=useState(false)
+    const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",horai2:"",horaf2:"",tiempoleccion:0,maestro:"",idclase:"",nivel:""})
+    const[formFields1,setFormFields1]=useState({idclase:0,lecciones:0,nivel:"",nombre:"",maestro:"",niveles:[{ lecciones:0,nivel:""}]})
+    const[alerta,setAlerta]=useState(false)
+    const[mensaje,setMensaje]=useState("")
+    const{id,dia,horai,horaf,horai2,horaf2,maestro,idclase,nivel,tiempoleccion}=formValue
+    const momen = extendMoment(Moment);
+
+    useEffect(()=>{
+      addLecc()
+    },[])
+
+    const addLecc=()=>{
+      var arr=[]
+      for(let daClases1 of daClases){
+        var object={idclase:daClases1.ID_CLASE,lecciones:0,nivel:"",nombre:daClases1.NOMBRE,maestro:daClases1.MAESTRO,niveles:[{ lecciones:0,nivel:""}]}
+        arr.push(object)
+      }
+      setFormFields1(arr)
+     
+    }
+   const addNivel=(i)=>{
+    console.log("nivel111",formFields1)
+      let object={
+        lecciones:0,nivel:""
+      };
+      var arr2= formFields1[i].niveles
+      arr2.push(object)
+      setFormFields1(formFields1.map((item,ii)=>
+        ii===i ? {...item, niveles:arr2} : item
+      ))
+    }
+
+    const removeFields = (i,index) => {
+      console.log("INDEXeliminar",index)
+      var data = formFields1[index].niveles;
+      data.splice(i, 1)
+      setFormFields1(formFields1.map((item,ii)=>
+        ii===index ? {...item, niveles:data}: item
+      ))
+    }
+
+    const togglgencal=()=>{setModgen(!modgen);}
     function toggle(tab){
         if(activeTab!==tab){
             setActiveTab(tab)
@@ -22,6 +65,94 @@ export const Clases=(props)=>{
             t.ID_CLASE===value.ID_CLASE
         ))
     )
+    const verificarCal=()=>{
+      console.log("daclases",daClases)
+      console.log("leccionesClases",leccionesDate)
+      var lecciones=[]
+      formFields1.map((f,i)=>{
+        f.niveles.map((fo,ii)=>{
+          lecciones.push({idclase:f.idclase,lecciones:fo.lecciones,nivel:fo.nivel,nombre:f.nombre,maestro:f.maestro,dia:"",hoi:"",hof:""})
+        })
+      })
+      //asignarLecc.map(i=>asignarLecc(lecciones,i)) 
+      var lec=[1,2,3,4,5]
+      console.log("LECCC",lecciones)
+
+      asignarLecc(lecciones,lecciones.length) 
+       
+    }
+    const asignarLecc=(lecciones,tar)=>{
+      const temp=[]
+      const res=[...lecciones]
+      let banlecc=0
+      var horares1=[momen(horai,'HH:mm'),momen(horaf,'HH:mm')]
+      var rangeres=momen.range(horares1);
+
+      var horaesc1=[momen(horai2,'HH:mm'),momen(horaf2,'HH:mm')]
+      var rangeesc=momen.range(horaesc1)
+      const dias=["Lunes","Martes","Miercoles","Jueves","Viernes"]
+
+      var horaf2s=horaf2.slice(0,-3)
+      var horai2s=horai2.slice(0,-3)
+      var horais=Number(horai2s.slice(1))
+
+      const buscar=(inx,tar)=>{
+        console.log("INDEX:",inx)
+        
+        if(inx===dias.length){        
+          console.log("block:",banlecc)
+          return
+        }
+        if(banlecc===lecciones.length){return}
+        var ran1=Math.floor(Math.random() * (horaf2s - horai2s +1))+ (horai2s.includes("0")?horais:Number(horai2s))
+        var ho1=moment(ran1,"HH:mm").format("HH:mm")
+        var ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
+
+        var ho=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
+        var horange=momen.range(ho)
+          if(horange.overlaps(rangeres)){
+             ran1=Math.floor(Math.random() * (horaf2s - horai2s +1))+ (horai2s.includes("0")?horais:Number(horai2s))
+              ho1=moment(ran1,"HH:mm").format("HH:mm")
+              ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm") 
+          }
+
+        res[banlecc].hoi=ho1
+        res[banlecc].hof=ho2
+       res[banlecc].dia=dias[inx] 
+       banlecc=banlecc+1
+       buscar(inx+1,tar);
+       buscar(0,tar)
+      }
+
+      buscar(0,tar)
+      console.log("ALGORITH:",res)
+      return res;
+    };
+   /* const asignarLecc=(lec,tar)=>{
+      const temp=[]
+      const res=[]
+        //console.log("LECCC",lecciones)
+      const buscar=(inx,tar)=>{
+        if(tar===0){
+          return res.push(temp.slice())
+        }
+        if(tar<0){
+          return
+        }
+        if(inx===lec.length){
+          return
+        }
+        temp.push(lec[inx]);
+        buscar(inx,tar- lec[inx]);
+        temp.pop();
+        buscar(inx+1,tar);
+      }
+      buscar(0,tar)
+     // console.log("ALGORITH:",res)
+      return res;
+    };*/
+    
+
     function clasesDias(){
       daClasesunic.map(item=>{
         return item.DIAS=[];
@@ -36,10 +167,219 @@ export const Clases=(props)=>{
       })
     }
     
+    const handleChange=(event)=>{console.log("FORMVALUE:",formValue)
+      const{name,value}=event.target
+      setFormValue((prevState)=>{
+        return{
+          ...prevState,
+          [name]:value
+        }
+      })
+    }
+
+    const handleFormChange1=(event,index,i)=>{
+      let data=[...formFields1]
+      data[index]["niveles"][i][event.target.name]=event.target.value
+      setFormFields1(data)
+    }
+    const handleSubmit=(e)=>{
+      
+      e.preventDefault(); console.log("HANDLEEEE")
+      let ni=false
+      formFields1.map((f,i)=>{console.log("NIVVVVV",f.niveles)
+        f.niveles.map(ii=>{if(ii.nivel==""){setMensaje("Llenar el campo Nivel ingresando un numero x o si hay multiplbes es necesario poner una coma, 1,3,2");
+         
+        ni=true; return}})
+      })
+      if(ni){return}
+      verificarCal()
+    }
     return(
         <div className='container'>
-            <h5>Clases</h5>
+            <h5>Clases</h5> 
+            <Button onClick={togglgencal} color='primary'>Generar Calendario con IA</Button>
             <hr/>
+           
+            <Modal isOpen={modgen} toggle={togglgencal} >
+        <ModalHeader toggle={togglgencal}>Generar Calendario usando IA</ModalHeader>
+        <ModalBody>
+        <Form onSubmit={handleSubmit}>
+        <Row md={2}><h4>Receso</h4>{console.log("hoi",horaf)}
+                <Col>
+                     <FormGroup>
+                        <Label for="Nombre">
+                          <>Inicio</>
+                        </Label>
+                        <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                        // bsSize="lg"
+                          type="time"
+                          name="horai"
+                          value={horai}
+                          onChange={handleChange}
+                        />
+                   </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="Nombre">
+                      <>Final</>
+                    </Label>
+                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                    // bsSize="lg"
+                      type="time"
+                      name="horaf"
+                      value={horaf}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>                 
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="Nombre">
+                      <>Leccion minutos </>
+                    </Label>
+                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                    // bsSize="lg"
+                      type="select"
+                      name="tiempoleccion"
+                      value={tiempoleccion}
+                      onChange={handleChange}
+                      > 
+                        <option>15</option>
+                        <option>20</option>
+                        <option>25</option>
+                        <option>30</option>
+                        <option>35</option>
+                        <option>40</option>
+                        <option>45</option>
+                        <option>50</option>
+                        <option>55</option>
+                        <option>60</option>
+                      </Input>
+                   
+                  </FormGroup>                 
+                </Col>
+                </Row>   
+                {horaf!=="" ? 
+                    <Row  md={2}><h4>Horario escuela</h4>
+                    <Col>
+                         <FormGroup>
+                            <Label for="Nombre">
+                              <>Hora inicio</>
+                            </Label>
+                            <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                            // bsSize="lg"
+                              type="time"
+                              name="horai2"
+                              value={horai2}
+                              onChange={handleChange}
+                            />
+                       </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <Label for="Nombre">
+                          <>Hora final</>
+                        </Label>
+                        <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
+                        // bsSize="lg"
+                          type="time"
+                          name="horaf2"
+                          value={horaf2}
+                          onChange={handleChange}
+                        />
+                      </FormGroup>
+                     
+                    </Col>
+                    </Row> :
+                    null      
+                   
+                }
+                {horaf2!=="" ?
+                  <> {console.log("???",formFields1)}
+                     {formFields1.map((form,index)=>{
+                      return <> <Label>{form.nombre}</Label>
+
+                         { form.niveles.map((f,i)=>
+                           {
+                            return ( 
+                              <Row md={2} key={i}>
+                              {console.log("????nom",form)}
+                                <Col>
+                                  
+                                  <FormGroup>
+                                    <Label for="Nombre">
+                                      #Lecciones
+                                      <span className='required' style={{color:"red"}}>*</span>
+                                    </Label>
+                                    <Input  style={{backgroundColor:"#fffde3"}}
+                                      id={i}
+                                      name='lecciones'
+                                      type="select"
+                                      value={f.lecciones}
+                                      onChange={event=>handleFormChange1(event,index,i)}
+                                    >
+                                      <option>1</option>
+                                      <option>2</option>
+                                      <option>3</option>
+                                      <option>4</option>
+                                      <option>5</option>
+                                      <option>6</option>
+                                    </Input>
+                                  </FormGroup>
+                                </Col>
+                                <Col>
+                                <FormGroup>
+                                    <Label for="Nombre">
+                                      Niveles
+                                      <span className='required' style={{color:"red"}}>*</span>
+                                    </Label>
+                                    <Input  style={{backgroundColor:"#fffde3"}}
+                                      id={i}
+                                      name='nivel'
+                                      type="text"
+                                      value={f.nivel}
+                                      onChange={event=>handleFormChange1(event,index,i)}
+                                    >
+                                    </Input>  
+                                  </FormGroup>  
+                                </Col>
+                                <a className='label d-flex justify-content-start' style={{color:"red"}} onClick={()=>removeFields(i,index)} >X</a>
+
+                            </Row>
+                            
+                            )
+                            }
+                          )}
+                       <a className='label d-flex justify-content-start' onClick={()=>addNivel(index)} >+ Agregar Nivel</a>
+
+                         </>
+                     
+                    })}
+                   </>
+                  : null
+                }
+                 {horaf2!==""  ?
+          <>
+             <ModalFooter>
+             {!mensaje=="" &&
+        <Alert color='warning'>{mensaje}</Alert>
+       }
+          <Button color="primary" >
+            Aceptar
+          </Button>{' '}
+          <Button color="secondary" onClick={toggle}>
+            Cancel
+          </Button>
+        </ModalFooter>
+          </> :null
+        }  
+              </Form>
+        </ModalBody>
+       
+       
+      </Modal>
+      
             <Nav tabs>
               <NavItem>
                 <NavLink
@@ -628,7 +968,7 @@ export const Modalleccion=()=>{
     setModal(!modal);
   }
  return(
-  <>
+  <>{console.log("DALECCION:",daLeccion)}
   <Modal isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>
           {moment(daLeccion.FECHA2).format("dddd") }

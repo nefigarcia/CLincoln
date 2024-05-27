@@ -3,9 +3,15 @@ import styled from 'styled-components'
 import { InfoConsumer, InfoContext } from '../context'
 import { Button, Col, Row, Label, Progress } from 'reactstrap'
 import DatePicker from "react-datepicker";
-import moment, { months } from 'moment';
+//import moment, { months } from 'moment';
 import { Clases } from './Clases';
 import { Progres } from '../components/Progres';
+import Moment from 'moment';
+import moment from 'moment';
+import { extendMoment } from 'moment-range';
+
+
+
 
 export const InicioEscuela=(props)=>{
     const apiUrl=process.env.REACT_APP_API
@@ -14,7 +20,7 @@ export const InicioEscuela=(props)=>{
     const [startDate, setStartDate] = useState(new Date());
     const[estado,setEstado]=useState(false);
     const mondays=[];
-    //const[arrlec,setArrlec]=useState([]);
+    const momen = extendMoment(Moment);
     const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <Button outline size='sm' className='pull-right' onClick={onClick} ref={ref}> 
     <small className='muted text-muted'>Fecha:</small>
@@ -28,7 +34,20 @@ export const InicioEscuela=(props)=>{
       });
       return diaclases;
    }
+   const blink=(hoi,hof)=>{
+    const range1=moment(hoi,"HH:mm")
+    const range2=moment(hof,"HH:mm")
+     const tim=momen(startDate,"HH:mm")
+    if(tim.isBetween(range1,range2)){
+        console.log("OVERLAPS")
+            return true;
+        }else if(tim>range2){
 
+          return  false
+        }else{
+            return false
+        }
+   }
    const registrar=async()=>{
     try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
         let dat={escuelaId:daEscuela.ID};
@@ -124,7 +143,16 @@ export const InicioEscuela=(props)=>{
        <Row className="p-2 bg-light border" key={index} md={4}>
         <Col>
         {mon.HORAI!==null?
-             <i>{mon.HORAI.slice(0,-10)}-{mon.HORAF.slice(0,-10)}</i>
+             <i>
+                {blink(mon.HORAI.slice(0,-10),mon.HORAF.slice(0,-10)) ?
+                 <span className='blink_me'> 
+                 </span>
+                    : <span className='blink_mer'> 
+                    </span>
+                }
+                
+                {mon.HORAI.slice(0,-10)}-{mon.HORAF.slice(0,-10)}
+            </i>
              :null
         }
        

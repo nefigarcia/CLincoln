@@ -130,4 +130,27 @@ label {
 .p-picklist-header{
   padding: 0;
 }
+.blink_me {
+  animation: blinker 1s linear infinite;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid green;
+  background-color: green;
+  border-radius: 100%;
+}
+.blink_mer {
+  animation: blinker 1s linear infinite;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid rgb(226, 202, 66);
+  background-color: rgb(247, 111, 113);
+  border-radius: 100%;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0.6;
+  }
+}
 

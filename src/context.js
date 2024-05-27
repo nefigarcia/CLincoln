@@ -33,6 +33,9 @@ const[progresoTool,setProgresotool]=useState(false);
 const[tipoTool,setTipo]=useState('');
 const[progresoTipo,setProgresoTipo]=useState(false)
 const[loadinglogo,setLoadinglogo]=useState(false);
+const[statusmock,setStatusmock]=useState("");
+const[mondays,setMondays]=useState([])
+const[arrres,setArrres]=useState([])
 
 const getDataCuenta=datEmCuent=>{
    
@@ -125,7 +128,10 @@ const cambiarEsta=esta=>{
            progresoTipo,setProgresoTipo,
            tipoTool,setTipo,
            loadinglogo,setLoadinglogo,
-           emailCuenta
+           emailCuenta,
+           statusmock,setStatusmock,
+           mondays,setMondays,
+           arrres,setArrres
         }}
         >
             {props.children}

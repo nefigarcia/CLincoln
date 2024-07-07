@@ -3,27 +3,21 @@ import {DropdownToggle, Form, FormGroup, Label, Input, FormText,Alert, DropdownI
 import classnames from 'classnames';
 import nousuario from '../Fotos/nousuario.jpg'
 import { InfoContext } from '../context';
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
-const Perfestudiante=()=>{
-    const {daEstudiante,setEstudiantes,daEscuela,setEstudiante,daGrupos,daCuenta}=useContext(InfoContext)
+const Perfgrupo=()=>{
+    const {daEstudiante,setEstudiantes,daEscuela,setEstudiante,daEstudiantes,grupo}=useContext(InfoContext)
     const [activeTab,setActivetab]=useState('1');
     const [modal,setModal]=useState(false)
     const [alerta,setAlerta]=useState(false)
-    const [formValue,setFormValue]=useState({ID:"",NOMBRE:"",APELLIDOS:"",EMAIL:"",TELEFONO:"",ID_GRUPO:0,REGSITRO:"",NACIMIENTO:"",DIRECCION:""})
+    const [formValue,setFormValue]=useState({ID:"",NOMBRE:"",APELLIDOS:"",EMAIL:"",TELEFONO:""})
     const [agregar,setAgregar]=useState(false)
-    const [alerMensaje,setAlermensaje]=useState(false)
+    const [mensaje,setMensaje]=useState("")
     const apiUrl=process.env.REACT_APP_API
 
-    const{ID,NOMBRE,APELLIDOS,EMAIL,TELEFONO,GRUPO,REGISTRO,NACIMIENTO,DIRECCION}=formValue
+    const{ID,NOMBRE,APELLIDOS,EMAIL,TELEFONO}=formValue
     useEffect(()=>{console.log("USEEFFECT",daEstudiante)
-      if(daEstudiante.length!=0){
-        setFormValue({ID:daEstudiante.ID,NOMBRE:daEstudiante.NOMBRE,APELLIDOS:daEstudiante.APELLIDOS,EMAIL:daEstudiante.EMAIL,TELEFONO:daEstudiante.TELEFONO,GRUPO:(daGrupos.find(({ID})=>ID==daEstudiante.ID_GRUPO))!=undefined ? daGrupos.find(({ID})=>ID==daEstudiante.ID_GRUPO).NOMBRE : "",REGISTRO:daEstudiante.REGISTRO,NACIMIENTO:daEstudiante.NACIMIENTO,DIRECCION:daEstudiante.DIRECCION})
-
-      }else{
-        setFormValue({ID:daCuenta.ID,NOMBRE:daCuenta.NOMBRE,APELLIDOS:daCuenta.APELLIDOS,EMAIL:daCuenta.EMAIL,TELEFONO:daCuenta.TELEFONO,GRUPO:(daGrupos.find(({ID})=>ID==daCuenta.ID_GRUPO))!=undefined ? daGrupos.find(({ID})=>ID==daCuenta.ID_GRUPO).NOMBRE : "",REGISTRO:daCuenta.REGISTRO,NACIMIENTO:daCuenta.NACIMIENTO,DIRECCION:daCuenta.DIRECCION})
-
-      }
+      setFormValue({ID:daEstudiante.ID,NOMBRE:daEstudiante.NOMBRE,APELLIDOS:daEstudiante.APELLIDOS,EMAIL:daEstudiante.EMAIL,TELEFONO:daEstudiante.TELEFONO,ID_GRUPO:daEstudiante.ID_GRUPO})
     },[])
 
     const toggl=()=>{
@@ -60,15 +54,10 @@ const Perfestudiante=()=>{
         }
        })
     }
-   const guardarLecc=()=>{
-
-   } 
-   const editLeccion=async()=>{
-    const gru=daGrupos.find(({NOMBRE})=>NOMBRE==GRUPO)!=undefined ?  daGrupos.find(({NOMBRE})=>NOMBRE==GRUPO).ID : 0
-
+   
+   const editLeccion=async(item)=>{
     try {
-      
-      let da={ID:formValue.ID,NOMBRE:formValue.NOMBRE,APELLIDOS:formValue.APELLIDOS,EMAIL:formValue.EMAIL,TELEFONO:formValue.TELEFONO,ID_GRUPO:gru}
+      let da={ID:item.ID, NOMBRE:item.NOMBRE, APELLIDOS:item.APELLIDOS,TELEFONO:item.TELEFONO,EMAIL:item.EMAIL,ID_GRUPO:grupo.ID}
       let res=await fetch(apiUrl+`/Putestu`,{
       method:'PUT',
       headers:{'Content-Type':'application/json'},
@@ -98,7 +87,11 @@ const Perfestudiante=()=>{
           const refestu=res.filter((i)=>{return i.ID_ESCUELA==daEscuela.ID})
           console.log("REFESTUDIANTES",refestu)
           setEstudiantes(refestu)
-          if(e==="edit"){
+          setMensaje("Estudiante agregado a salon")
+          setTimeout(() => {
+            setMensaje("");
+          }, 3000);
+         /* if(e==="edit"){
             const refest=refestu.find(i=>{return i.ID==daEstudiante.ID})
             console.log("REFESTU",refest)
             setModal(false)
@@ -107,37 +100,43 @@ const Perfestudiante=()=>{
           if(e==="delete"){
             setModal(false)
             
-          }
+          }*/
           
         })
     } catch (error) {
       
     }
    }
+   const estNogrupo=daEstudiantes.filter(i=>i.ID_GRUPO!=grupo.ID && i.ID_GRUPO==0)
+   const estAgregados=daEstudiantes.filter(i=>i.ID_GRUPO==grupo.ID)
     return(
         <div className='container'>
-            <h5>Perfil Estudiante <a href='#' onClick={()=>setModal(true)}>(Editar)</a></h5>
+            <h5> Grupo Configuracion <a href='#' onClick={()=>setModal(true)}>(Editar)</a></h5>
             <hr/>
-             {/* <div className='row-fluid profile-summary'>
-                <div className='thumbnail-bg' >
-                    <img src={nousuario}></img>
-                </div>
-                <div className='pull-left'>
-                    <p>hel</p>
-                </div>
-    </div> */}
+           
+            <Row>    
+                <Col md={3}>
+                    <div>Grupo <p><i>{grupo.NOMBRE}</i></p></div>     
+                </Col>
+            </Row>
             <Row>
-                <Col md={3}>
-                <div className='thumbnail-bg' >
-                    <img src={nousuario}></img>
-                </div>
-                </Col>
-                <Col md={3}>
-                    <div>{NOMBRE}</div>
-                    <p>{EMAIL}</p>
-                    <p>{TELEFONO}</p>
-                    <p><i>Grupo: {GRUPO}</i></p>
-                </Col>
+                <h6>Estudiantes para agregar</h6>
+                {estNogrupo.length>0 ?
+                    <> 
+                            <Table>
+                            {estNogrupo.map(i=>{
+                                return <tr>
+                                    <td>{i.NOMBRE}</td>
+                                    <td>{i.APELLIDOS}</td>
+                                    <Button onClick={()=>editLeccion(i)} size='sm' color='primary'>+</Button>
+                                </tr>
+                            } )}           
+                            </Table>
+                            
+                      
+                        
+                    </>:null
+                }
             </Row>
             <Row>
             <Nav tabs>
@@ -146,7 +145,7 @@ const Perfestudiante=()=>{
                   className={classnames({ active: activeTab === '1' })}
                   onClick={() => { ButtonToggle('1'); }}
                 >
-                  Perfil
+                  Estudiantes
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -161,46 +160,28 @@ const Perfestudiante=()=>{
 
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <Table>
-        <tbody className='border'>
-            <tr>
-                <td>
-                   <div ><div>Tel.</div><div>{TELEFONO}</div></div> 
-                </td>
-                <td>
-                <div ><div>Email</div><div>{EMAIL}</div></div> 
-                </td>
-            </tr>
-            <tr>
-                <td>
-                <div ><div>Registro</div><div>{REGISTRO}</div></div> 
-                </td>
-                <td>
-                <div ><div>Nacimiento</div><div>{NACIMIENTO}</div></div> 
-                </td>
-                <td>
-                <div ><div>Id Num.</div><div></div></div> 
-                </td>
-            </tr>
-            <tr>
-                <td>
-                <div ><div>Direccion</div><div>{DIRECCION}</div></div> 
-                </td>
-                <td>
-                <div ><div>Metodo Pago</div><div></div></div> 
-                </td>
-            </tr>
-            <tr>
-                <td>
-                <div ><div>Notas Generales</div><div></div></div> 
-                </td>
-                <td>
-                <div ><div>Notas Medicas</div><div></div></div> 
-                </td>
-            </tr>
-             
-                </tbody>       
-                </Table>
+               {estAgregados.length>0 ?
+                <>
+                 <Table striped>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Aapellidos</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {estAgregados.map(i=>{
+                            return <tr>
+                                     <td>{i.NOMBRE}</td>   
+                                     <td>{i.APELLIDOS}</td>
+                                     <td>{i.EMAIL}</td>
+                                   </tr>
+                        })}
+                    </tbody>
+                 </Table>
+                </>:null
+               }
               </TabPane>
               <TabPane tabId="2">
                 <Row>
@@ -293,22 +274,6 @@ const Perfestudiante=()=>{
                   </FormGroup>
                   </Col>
                </Row>
-               <Row md={1}>
-                  <Col>
-                  <FormGroup>
-                    <Label for="Grupo">
-                      <>Grupo</>
-                    </Label>
-                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
-                    // bsSize="lg"
-                      type="text"
-                      name="GRUPO"
-                      value={GRUPO}
-                      onChange={handleChange}
-                    />
-                  </FormGroup>
-                  </Col>
-               </Row>
             </div>
         </div>
 <Button disabled={agregar} size='sm' onClick={eliminarLecc}>Eliminar</Button>
@@ -317,6 +282,9 @@ const Perfestudiante=()=>{
 {" "}
 {alerta==="Estudiante eliminado" &&
 <Navigate to={'/PreRegistros'}/>  } 
+{mensaje==="Estudiante agregado a salon" && 
+    <Alert color='success'>{mensaje}</Alert>
+}
 </div>    
           </ModalBody>
          {/* <ModalFooter>
@@ -331,4 +299,4 @@ const Perfestudiante=()=>{
         </div>
     );
 }
-export default Perfestudiante;
+export default Perfgrupo;

@@ -12,13 +12,8 @@ import { extendMoment } from 'moment-range';
 const RegClase=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
   const momen = extendMoment(Moment);
-
-  const [dropDownValue,setDropDownValue]=useState();
-  const [open,setOpen]=useState(false);
-  const toggle=()=>setOpen(!open);
- // const [diaDiv,setdiaDiv]=useState(['0']);
-  //const [likes,setLikes]=useState(0);
-  const {daMaestros, daEstudiantes, daEscuela,setLoadinglogo,daClases}=useContext(InfoContext)
+ 
+  const {daMaestros, daEstudiantes, daEscuela,daClases}=useContext(InfoContext)
   const [estado,setEstado]=useState(false);
   const [source, setSource] = useState(daEstudiantes);
   const [target, setTarget] = useState([]);
@@ -31,6 +26,7 @@ const RegClase=(props)=>{
     fecha2: "",
     salon:"",
     target:"",
+    idmaestro:0,
     source:daEstudiantes,
     validacionvalores:false
   });
@@ -39,13 +35,7 @@ const RegClase=(props)=>{
   ])
   const [alerta,setAlerta]=useState(false)
   const[alerMensaje,setAlermensaje]=useState("")
- /* function addDia(){console.log("mas")
-    setLikes(likes+1)
-    let cloneDia=diaDiv;
-    cloneDia.push(likes);
-    setdiaDiv(cloneDia);
-
-  }*/
+ 
   const addFields=()=>{
     let object={
       dia:'',
@@ -63,9 +53,11 @@ const RegClase=(props)=>{
   }
   
 const registrar=async()=>{
-  let da={nombre:nombre,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID};
+  const idmaestro=daMaestros.find(i=>i.NOMBRE===maestro)
+      setFormValue({idmaestro:idmaestro.ID})
+  let da={nombre:nombre,maestro:maestro,salon:salon,fecha:formValue.fecha,fecha2:formValue.fecha2,escuelaid:daEscuela.ID,idmaestro:idmaestro.ID};
+  console.log("PROPclase",da)
   try {
-  //let res=await fetch("http://localhost:3001/Regclase",{
   let res=await fetch(apiUrl+`/Regclase`,{
       method:'POST',
       mode:'cors',
@@ -74,9 +66,11 @@ const registrar=async()=>{
   )
   .then(res=>{
     if(res.ok){
-      if(formFields){
+      if(formFields.length>0){
           reglecciones()
           .then();
+        }else{
+          setEstado(true)
         }
     }
   })
@@ -87,7 +81,6 @@ const registrar=async()=>{
 const regclaseid=async()=>{
   let da={target:target}
   try {
-    //let res=await fetch("http://localhost:3001/Claseid",{
     let res=await fetch(apiUrl+`/Claseid`,{
       method:'POST',
       mode:'cors',
@@ -106,7 +99,6 @@ const regclaseid=async()=>{
 const reglecciones=async()=>{
   let da={formFields:formFields}
   try {
-   //let res=await fetch("http://localhost:3001/Reglecciones",{
    let res=await fetch(apiUrl+`/Reglecciones`,{
       method:'POST',
       mode:'cors',
@@ -131,6 +123,7 @@ const reglecciones=async()=>{
         let ban=false
         let banniv=false
         var grup=" "
+  
         daClases.map(el => {
         
           formFields.map((v,i)=>{
@@ -189,6 +182,7 @@ const reglecciones=async()=>{
     }
     const handleChange = (event) => {
       const { name, value } = event.target;
+      
       setFormValue((prevState) => {
         return {
           ...prevState,
@@ -205,7 +199,7 @@ const reglecciones=async()=>{
       setSource(event.source);
       setTarget(event.target);
   }
-const { nombre, nivel, fecha,fecha2,maestro,salon} = formValue;
+const { nombre, nivel, fecha,fecha2,maestro,salon,idmaestro} = formValue;
 const itemTemplate = (item) => {
   return (
       <div className="product-item">
@@ -220,13 +214,13 @@ const itemTemplate = (item) => {
   );
 }
     return(
-<div className="container">
+<div className="container">{console.log("formfields",formFields)}
  <h5>Agregar Clase</h5>
  <hr/>
 <Form className='border ' onSubmit={handleSubmit}>
 <div className="p-2 bg-light border">Ingresa datos de clase</div>
 
-  <Row md={2}>
+  <Row md={2}>{console.log("proclase:",idmaestro)}
     <Col >
       <FormGroup>
         <Label for="Nombre">
@@ -259,9 +253,14 @@ const itemTemplate = (item) => {
           name="maestro"
           value={maestro}
           onChange={handleChange}      
-   >
-        {daMaestros.map((item)=>{
-          return <option key={item}>{item.NOMBRE}</option>
+   >      
+        {daMaestros.map((item,i)=>{
+          return (
+            <option key={i} onClick={()=>{console.log("IDMAES:",item.ID); setFormValue({idmaestro:item.ID})}} >
+              {item.NOMBRE}
+              </option>
+
+          )
     })} 
         </Input>
            </FormGroup>   
@@ -322,14 +321,14 @@ const itemTemplate = (item) => {
 
 {formFields.map((form,index)=>{
    return   ( 
-   <Row md={4} key={index}>
+    <>
+   <Row md={2} key={index}>
       <Col>
       <FormGroup>
         <Label for="Nombre">
           Dia de la clase
-          <span className='required' style={{color:"red"}}>*</span>
         </Label>
-        <Input  style={{backgroundColor:"#fffde3"}}
+        <Input  
           id={index}
           name='dia'
           type="select"
@@ -345,13 +344,31 @@ const itemTemplate = (item) => {
         </Input>
       </FormGroup>
     </Col>
-    <Col >        
+    
+        <Col >        
+        <FormGroup>
+        <Label for="Nombre">
+          <>Nivel</>
+        </Label>
+        <Input
+         // bsSize="lg"
+          type="text"
+          name="nivel"
+          value={form.nivel}
+          onChange={event=>handleFormChange(event,index)}
+        />
+           </FormGroup>
+        </Col>
+       
+
+      </Row>
+      <Row md={2}>
+        <Col >        
         <FormGroup>
         <Label for="Nombre">
           <>Hora inicio</>
-          <span className='required' style={{color:"red"}}>*</span>
         </Label>
-        <Input style={{backgroundColor:"#fffde3"}}
+        <Input 
          // bsSize="lg"
           type="time"
           name="horai"
@@ -365,9 +382,8 @@ const itemTemplate = (item) => {
         <FormGroup>
         <Label for="Nombre">
           <>Hora final</>
-          <span className='required' style={{color:"red"}}>*</span>
         </Label>
-        <Input style={{backgroundColor:"#fffde3"}}
+        <Input 
          // bsSize="lg"
           type="time"
           name="horaf"
@@ -376,26 +392,12 @@ const itemTemplate = (item) => {
         />
            </FormGroup>
         </Col>
-        <Col >        
-        <FormGroup>
-        <Label for="Nombre">
-          <>Nivel</>
-          <span className='required' style={{color:"red"}}>*</span>
-        </Label>
-        <Input style={{backgroundColor:"#fffde3"}}
-         // bsSize="lg"
-          type="text"
-          name="nivel"
-          value={form.nivel}
-          onChange={event=>handleFormChange(event,index)}
-        />
-           </FormGroup>
-        </Col>
         <Col sm={2}>
         <a className='label d-flex justify-content-start' style={{color:"red"}} onClick={()=>removeFields()} >X</a>
         </Col>
-
       </Row>
+      <hr/>
+      </>
        )
 }
 )}    

@@ -7,19 +7,19 @@ import classnames from 'classnames';
 const Ajustes=()=>{
     const apiUrl=process.env.REACT_APP_API;
 
-    const{daEscuela}=useContext(InfoContext)
+    const{daEscuela,daGrupos,setGrupos}=useContext(InfoContext)
     const[open,setOpen]=useState('1')
-    const[formValue,setFormValue]=useState({nombre:"",capacidad:""})
-    const[estado,setEstado]=useState(false)
+    const[formValue,setFormValue]=useState({nombre:"",capacidad:"",grupo:""})
+    const[mensaje,setMensaje]=useState("")
 
-    const{nombre,capacidad}=formValue;
+    const{nombre,capacidad,grupo}=formValue;
     function tog(tag){
         if(tag!=open){
             setOpen(tag)
         }
     }
     const registrar=async()=>{
-        let da={nombre:nombre,capacidad:capacidad};
+        let da={nombre:nombre,capacidad:capacidad,escuelaid:daEscuela.ID,grupo:grupo,tipo:open};
        try {
         //let res=await fetch("http://localhost:3001/Salon",{
         let res=await fetch(apiUrl+`/Salon`,{          
@@ -28,18 +28,26 @@ const Ajustes=()=>{
             body:JSON.stringify(da),
             headers:{'content-type':'application/json'},}
         )
-        .then(res=>{
-          if(res.ok){console.log("res",res)
-            setEstado(true);
-          }
+        .then(res=>res.json())
+            .then(res=>{
+                if(res.message==="Salon guardado"){
+                    setMensaje("Salon guardado");
+                }
+                if(res.message==="Grupo guardado"){
+                    setGrupos(res.body)
+                    setMensaje("Grupo guardado")
+                }
         })
        } catch (error) {
         
        }
       }
     function handleSubmit(e){
-        e.preventDefault();console.log("handle",nombre)
-        if(!(nombre && capacidad)){
+        e.preventDefault();
+        if(!(nombre && capacidad ) && open==='2'){
+            return;
+        }
+        if(!(grupo ) && open==='3'){
             return;
         }
         registrar()
@@ -69,6 +77,11 @@ const Ajustes=()=>{
          <NavItem>
            <NavLink  className={classnames({ active: open === '2' })} onClick={()=>tog('2')}>
              Salones
+        </NavLink>
+        </NavItem>
+        <NavItem>
+           <NavLink  className={classnames({ active: open === '3' })} onClick={()=>tog('3')}>
+             Grupos
         </NavLink>
         </NavItem>
         </Nav>
@@ -130,8 +143,37 @@ const Ajustes=()=>{
                 <Button>
                 Guardar
             </Button>
-            {estado &&
+            {mensaje==="Salon guardado" &&
             <Alert color='success'>Salon guardado!</Alert>}
+             </Form>
+                </TabPane>
+
+                <TabPane tabId={"3"}>
+                <Form className='border formas-registros' onSubmit={handleSubmit}>
+                <div className='p-2 bg-light border'>Grupo</div>
+                <Row>
+                    <Col>
+                    <FormGroup>
+                        <Label for="Nombre">
+                        Grupo 
+                        </Label>
+                        <Input  style={{backgroundColor:"#fffde3"}}
+                        id="grupo"
+                        name="grupo"
+                        placeholder="Obligatorio"
+                        type="text"
+                        value={formValue.grupo}
+                        onChange={handleChange}
+                        />
+                    </FormGroup>
+                    </Col>
+                   
+                </Row>
+                <Button>
+                Guardar
+            </Button>
+            {mensaje==="Grupo guardado" &&
+            <Alert color='success'>Grupo guardado! Grupos: {daGrupos.map(i=>i.NOMBRE)}</Alert>}
              </Form>
                 </TabPane>
             </TabContent>

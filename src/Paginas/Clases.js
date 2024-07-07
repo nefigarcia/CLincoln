@@ -2,7 +2,7 @@ import React, {Component, useContext, useEffect, useState} from 'react';
 import {FormGroup,Form, Label, Input,  TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table,Modal, ModalHeader, ModalBody, Alert,ModalFooter } from 'reactstrap';
 import classnames from 'classnames';
 import { InfoContext } from '../context';
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate,useNavigate } from "react-router-dom";
 import moment from 'moment';
 import { async } from 'q';
 import Moment from 'moment'
@@ -12,13 +12,14 @@ import { InicioEscuela } from './InicioEscuela';
 export const Clases=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
     const[activeTab,setActiveTab]=useState('1');
-    const{setClases,daClases,leccionesDate,setleccDate,statusmock,setStatusmock,arrres,setArrres}=useContext(InfoContext);
+    const{setClases,daClases,leccionesDate,setleccDate,statusmock,setStatusmock,arrres,setArrres,daCuenta,setClases2,leccionesDate2,daClases2}=useContext(InfoContext);
     const[modgen,setModgen]=useState(false)
     const[formValue,setFormValue]=useState({id:"",dia:"",horai:"10:30",horaf:"11:00",horai2:"",horaf2:"",tiempoleccion:0,maestro:"",idclase:"",nivel:""})
     const[formFields1,setFormFields1]=useState({idclase:0,lecciones:"1",nivel:"",nombre:"",maestro:"",niveles:[{ lecciones:"",nivel:""}]})
+    const[formRecesos,setFormRecesos]=useState([{horai:"10:30",horaf:"11:00"}])
     const[alerta,setAlerta]=useState(false)
     const[mensaje,setMensaje]=useState("")
-    const{id,dia,horai,horaf,horai2,horaf2,maestro,idclase,nivel,tiempoleccion}=formValue
+    const{id,dia,horai,horaf,horai2,horaf2,tiempoleccion}=formValue
     const momen = extendMoment(Moment);
     const[btnhide,setBtnhide]=useState(false)
     const mondays=[]
@@ -106,6 +107,11 @@ export const Clases=(props)=>{
       setStatusmock("")
       togglgencal()
     }
+    const cancelarLecc=()=>{
+      setClases(daClases2)
+      setleccDate(leccionesDate)
+      setStatusmock("")
+    }
     const guardarMocklecc=async()=>{
       let da={da:arrres}
       try {
@@ -139,6 +145,14 @@ export const Clases=(props)=>{
               if(res.ok){
                 setStatusmock("")
                 togglgencal()
+
+              var leccBorradas= daNivelesunic.filter((v,i,s)=>
+                  i===s.findIndex((t)=>(
+                    t.ID_CLASE===v.ID_CLASE
+                  ))
+                )
+                leccBorradas.map((i)=>{i.NIVEL=""; i.DIAS=[]})
+                setleccDate(leccBorradas)
               }
             })
         } catch (error) {
@@ -195,6 +209,8 @@ export const Clases=(props)=>{
       setStatusmock("Estas usando data momentanea, revisa el calendario generado y si te gusta, da click en Guardar")
       setleccDate(mondays)
       setClases(mockdaClases)
+      console.log("LECCGENERADAS",leccionesDate)
+
     }
     const verificarCal=()=>{
       console.log("daclases",daClases)
@@ -212,14 +228,33 @@ export const Clases=(props)=>{
     const asignarLecc=(lecciones,tar)=>{
       const res=[...lecciones]
       let banlecc=0
-      var horares1=[momen(horai,'HH:mm'),momen(horaf,'HH:mm')]
-      var rangeres=momen.range(horares1);
-      var recediff=moment.duration(moment(horaf,"HH:mm").diff( moment(horai,"HH:mm")))
-      var recemin=parseInt(recediff.asMinutes())%60
+      var horares1//=[momen(horai,'HH:mm'),momen(horaf,'HH:mm')]
+      var rangeres//=momen.range(horares1);
+      var horares2
+      var rangeres2
+      var recediff//=moment.duration(moment(horaf,"HH:mm").diff( moment(horai,"HH:mm")))
+      var recemin//=parseInt(recediff.asMinutes())%60
+      var recediff2
+      var recemin2
       const dias=["Lunes","Martes","Miercoles","Jueves","Viernes"]
       var horaf2s=horaf2
       var horai2s=horai2
-
+      var diacount=0
+      if(formRecesos.length<2){
+        horares1=[momen(formRecesos[0].horai,'HH:mm'),momen(formRecesos[0].horaf,'HH:mm')]
+        rangeres=momen.range(horares1);
+         recediff=moment.duration(moment(formRecesos[0].horaf,"HH:mm").diff( moment(formRecesos[0].horai,"HH:mm")))
+         recemin=parseInt(recediff.asMinutes())%60
+      }else{
+        horares1=[momen(formRecesos[0].horai,'HH:mm'),momen(formRecesos[0].horaf,'HH:mm')]
+        rangeres=momen.range(horares1);
+        horares2=[momen(formRecesos[1].horai,'HH:mm'),momen(formRecesos[1].horaf,'HH:mm')]
+        rangeres2=momen.range(horares2);
+        recediff=moment.duration(moment(formRecesos[0].horaf,"HH:mm").diff( moment(formRecesos[0].horai,"HH:mm")))
+        recemin=parseInt(recediff.asMinutes())%60
+        recediff2=moment.duration(moment(formRecesos[1].horaf,"HH:mm").diff( moment(formRecesos[1].horai,"HH:mm")))
+        recemin2=parseInt(recediff2.asMinutes())%60
+      }
       if(arrDiasNotNull[0]!=null){
         arrDiasNotNull.map(i=>{
           res.push(i)
@@ -227,6 +262,7 @@ export const Clases=(props)=>{
       }
       const buscar=(inx,tar)=>{
         console.log("INDEX:",inx)
+        var leccunic=false
         if(horai2s===horaf2s){horai2s=horai2; return}
         if(inx===dias.length){        
           console.log("block:",banlecc)
@@ -234,7 +270,6 @@ export const Clases=(props)=>{
         }
         if(banlecc===lecciones.length){return}
         console.log("LECCIONES",lecciones)
-
         //var ran1=Math.floor(Math.random() * (horaf2s - horai2s +1))+ (horai2s.includes("0")?horais:Number(horai2s))
         var ho1=moment(horai2s,"HH:mm").format("HH:mm")
         var ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
@@ -247,78 +282,131 @@ export const Clases=(props)=>{
              ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
             horai2s=ho2
             }
+          if(rangeres2!==undefined){
+            if(horange.overlaps(rangeres2)){
+              ho1=moment(ho1,"HH:mm").add(recemin2,'minutes').format("HH:mm")
+              ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
+             horai2s=ho2
+            }
+          }
+          if(res[banlecc.lecciones]!=0){
+            res[banlecc].hoi=ho1
+            res[banlecc].hof=ho2
+            res[banlecc].dia=dias[inx] 
+            leccunic=true
+          }
 
-          if(lecciones[banlecc].lecciones>1){
-              var ban=1; var band=inx+1; var cicl=false; var ho11=ho1; var ho22=ho2; var banwhile=1;
+          if(lecciones[banlecc].lecciones>1 || leccunic){
+              var ban=1; var band=diacount; var cicl=false; var ho11=ho1; var ho22=ho2; var banwhile=1;
               var checkniv=false; var check=false
               if(lecciones[banlecc].nivel.includes(",")){
                 checkniv=true
               }
-              
+              if(band>4){band=diacount-1}
+              if(leccunic){ban=0;}
+
               while(ban<lecciones[banlecc].lecciones){
-                var h1=[momen(ho11,"HH:mm"),momen(ho22,"HH:mm")]
+                var h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
                 var arr=structuredClone(lecciones[banlecc]);
-                arr.hoi=ho11; arr.hof=ho22; arr.dia=dias[band]
+
+                if(band>4){band=0}
+                arr.hoi=ho1; arr.hof=ho2; arr.dia=dias[band]
                 var horange1=momen.range(h1)
 
                 if(horange1.overlaps(rangeres)){
-                  ho11=moment(ho11,"HH:mm").add(recemin,'minutes').format("HH:mm");
-                  ho22=moment(ho11,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm");
-                  h1=[momen(ho11,"HH:mm"),momen(ho22,"HH:mm")]
+                  ho1=moment(ho1,"HH:mm").add(recemin,'minutes').format("HH:mm");
+                  ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm");
+                  h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
                   horange1=momen.range(h1)
+                }
+                if(rangeres2!==undefined){
+                  if(horange1.overlaps(rangeres2)){
+                    ho1=moment(ho1,"HH:mm").add(recemin2,'minutes').format("HH:mm");
+                    ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm");
+                    h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
+                    horange1=momen.range(h1)
+                  }
                 }
                console.log("WHILE")
                  for(var i=0;i<res.length;i++){ 
                   if(checkniv){
                     lecciones[banlecc].nivel.split(",").map(ni=>{
-                      if(res[i].nivel.includes(ni)){check=true}else{check=false}
+                      if(res[i].nivel.includes(ni)){check=true}
                     })
                   }else{
                     if(res[i].nivel.includes(lecciones[banlecc].nivel)){
                       check=true
-                    }else{check=false}
+                    }
                   }
                   if(arr.dia===res[i].dia ){
                     console.log("IF")
+                    if(banlecc==i && leccunic){continue}
                     var h2=[momen(res[i].hoi,"HH:mm"),momen(res[i].hof,"HH:mm")]
                     var h2range=momen.range(h2)
                     if((horange1.overlaps(h2range) && res[i].maestro===arr.maestro) || (horange1.overlaps(h2range) && check )){
                         console.log("Repite",i)
                         console.log("res",res[i])
                         band=band+1
-                        ho11=ho22
-                        ho22=moment(ho11,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
-                        if(ho11>horaf2){
-                          ho11=horai2
-                          ho22=moment(ho11,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
+                        ho1=ho2
+                        ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
+                        h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
+                        horange1=momen.range(h1)
+                        if(horange1.overlaps(rangeres)){
+                          ho1=moment(ho1,"HH:mm").add(recemin,'minutes').format("HH:mm");
+                          ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm");
+                          h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
+                          horange1=momen.range(h1)
+                        }
+                        if(rangeres2!=undefined){
+                          if(horange1.overlaps(rangeres2)){
+                            ho1=moment(ho1,"HH:mm").add(recemin2,'minutes').format("HH:mm");
+                            ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm");
+                            h1=[momen(ho1,"HH:mm"),momen(ho2,"HH:mm")]
+                            horange1=momen.range(h1)
+                          }
+                        }
+                       
+                        if(ho1>horaf2){
+                          ho1=horai2
+                          ho2=moment(ho1,"HH:mm").add(tiempoleccion,'minutes').format("HH:mm")
                         }
                         console.log("arr",arr)
                         cicl=true
                         banwhile=banwhile+1
                         if(band>4){band=0}
                         if(banwhile>70){console.log("NO GUARDADA",lecciones[banlecc]); cicl=false}
-
+                        check=false
                         break;
                     }
                     cicl=false
+                    check=false
                   }
                   cicl=false
+                  check=false
                 }
                  if(cicl)continue
-                res.push(arr)
-                band=band+1
-                ban=ban+1
-                console.log("BAN",ban)
+                 if(!leccunic){
+                  res.push(arr)
+                  band=band+1
+                  ban=ban+1
+                  console.log("BAN",ban)
+                 }else{
+                  res[banlecc].hoi=arr.hoi
+                  res[banlecc].hof=arr.hof
+                  res[banlecc].dia=arr.dia 
+                  band=band+1
+                  ban=ban+1
+                  leccunic=false
+                 }
               }
             }  
-        res[banlecc].hoi=ho1
-        res[banlecc].hof=ho2
-       res[banlecc].dia=dias[inx] 
+        
        //banrep=res[banlecc].lecciones
 
        banlecc=banlecc+1
+       diacount=diacount+1
       console.log("RESFINAL",res)
-       buscar(0,tar);
+       buscar(inx,tar);
        buscar(inx+1,tar);
        buscar(0,tar)
       }
@@ -332,12 +420,14 @@ export const Clases=(props)=>{
     };
   
     function clasesDias(){
+      console.log("daNivelesunic",daNivelesunic)
+      console.log("daClases",daClases)
       daNivelesunic.map(item=>{
         return item.DIAS=[];
       })
       daClases.forEach(function(element){
         daNivelesunic.forEach(function(ele){
-        if(ele.ID_CLASE==element.ID_CLASE){
+        if(ele.ID_CLASE==element.ID_CLASE && ele.NIVEL==element.NIVEL){
           ele.DIAS.push(element.DIA)
         }
        })
@@ -360,6 +450,23 @@ export const Clases=(props)=>{
       data[index]["niveles"][i][event.target.name]=event.target.value
       setFormFields1(data)
     }
+    const handleResChange=(event,index)=>{
+      let data=[...formRecesos]
+      data[index][event.target.name]=event.target.value;
+      setFormRecesos(data)
+    }
+    const addReceso=()=>{
+      let object={
+        horai:"",
+        horaf:""
+      }
+      setFormRecesos([...formRecesos,object])
+    }
+    const removeReceso=(index)=>{
+      let data=[...formRecesos]
+      data.splice(index,1)
+      setFormRecesos(data)
+    }
     const handleSubmit=(e)=>{
       
       e.preventDefault(); 
@@ -375,14 +482,18 @@ export const Clases=(props)=>{
     return(
         <div className='container'>
             <h5>Clases</h5> 
-            <Button onClick={preGenerarlecc} color='primary'>Generar Calendario con IA</Button>
-            {statusmock==="Estas usando data momentanea, revisa el calendario generado y si te gusta, da click en Guardar" &&
-              <Button color='success' onClick={()=>guardarMocklecc()}>Guardar</Button>
+            <Button size='sm' hidden={daCuenta.ROLES_ID!=1} onClick={preGenerarlecc} color='primary'>Generar Calendario con IA</Button>
+            {statusmock==="Estas usando data momentanea, revisa el calendario generado y si te gusta, da click en Guardar" ?
+             <>
+              <Button size='sm' color='success' onClick={()=>guardarMocklecc()}>Guardar</Button>
+              <Button size='sm' color='warning' onClick={()=>cancelarLecc()}>Cancelar</Button>
+              <Alert color='warning'>{statusmock}</Alert>
+  
+             </>:null
+             
 
             }
-            {statusmock==="Estas usando data momentanea, revisa el calendario generado y si te gusta, da click en Guardar" &&
-              <Alert color='warning'>{statusmock}</Alert>
-            }
+           
             {statusmock==="Tienes lecciones guardadas, dos opciones para poder continuar, 1. borrar las lecciones en boton BORRAR, 2. Generar lecciones incluyendo las detectadas, boton CONTINUAR" ?
               <>
                 <Alert color='warning'>{statusmock}</Alert>
@@ -396,7 +507,10 @@ export const Clases=(props)=>{
         <ModalHeader toggle={togglgencal}>Generar Calendario usando IA</ModalHeader>
         <ModalBody>
         <Form onSubmit={handleSubmit}>
-        <Row md={2}><h4>Receso</h4>
+        <h4>Recesos</h4>
+         {formRecesos.map((form,index)=>{
+          return (
+            <Row md={2} key={index}>
                 <Col>
                      <FormGroup>
                         <Label for="Nombre">
@@ -406,8 +520,8 @@ export const Clases=(props)=>{
                         // bsSize="lg"
                           type="time"
                           name="horai"
-                          value={horai}
-                          onChange={handleChange}
+                          value={form.horai}
+                          onChange={event=>handleResChange(event,index)}
                         />
                    </FormGroup>
                 </Col>
@@ -420,18 +534,30 @@ export const Clases=(props)=>{
                     // bsSize="lg"
                       type="time"
                       name="horaf"
-                      value={horaf}
-                      onChange={handleChange}
+                      value={form.horaf}
+                      onChange={event=>handleResChange(event,index)}
                     />
                   </FormGroup>                 
                 </Col>
-                <Col>
+                <Col sm={2}>
+                  <a className='label d-flex justify-content-start' style={{color:"red"}} onClick={()=>removeReceso(index)} >X</a>
+                  </Col>
+                </Row> 
+          )
+         }
+        ) } 
+         <a className='label d-flex justify-content-start' onClick={()=>addReceso()} >+ Agregar receso</a>
+
+                <hr/>
+                <Row >
+                <Col >
                   <FormGroup>
                     <Label for="Nombre">
                       <>Leccion minutos </>
                     </Label>
-                    <Input style={{backgroundColor:"#fffde3",fontSize:"13px"}}
-                    // bsSize="lg"
+                    <Input className='div-center' style={{width:"100px", backgroundColor:"#fffde3",fontSize:"13px",marginLeft:"auto",marginRight:"auto"}}
+                    // bsSize="sm"
+                    // size={3}
                       type="select"
                       name="tiempoleccion"
                       value={tiempoleccion}
@@ -451,9 +577,11 @@ export const Clases=(props)=>{
                    
                   </FormGroup>                 
                 </Col>
-                </Row>   <hr/>
+                  </Row>  <hr/>
                 {horaf!=="" ? 
-                    <Row  md={2}><h4>Horario escuela</h4>
+                    <>
+                    <h4>Horario escuela</h4>
+                    <Row  md={2}>
                     <Col>
                          <FormGroup>
                             <Label for="Nombre">
@@ -482,8 +610,12 @@ export const Clases=(props)=>{
                         />
                       </FormGroup>
                      
-                    </Col><hr/>
-                    </Row> :
+                    </Col>
+                    
+                    </Row> 
+                    <hr/>
+                    </>
+                     :
                     null      
                    
                 }
@@ -534,7 +666,9 @@ export const Clases=(props)=>{
                                     </Input>  
                                   </FormGroup>  
                                 </Col>
+                                <Col >
                                 <a className='label d-flex justify-content-start' style={{color:"red"}} onClick={()=>removeFields(i,index)} >X</a>
+                                </Col>
                             </Row>
                             
                             )
@@ -632,10 +766,8 @@ export const Clases=(props)=>{
 }
 
 export const Clasess=(props)=>{
-  const{setClase,daClases}=useContext(InfoContext);
-  const diasClases=(id)=>{daClases.filter(item=>{console.log("ID:",id)
-    return item.ID_CLASE==id;
-  })}
+  const{setClase}=useContext(InfoContext);
+  
   function setIdclase(id){
     setClase(props.clasesunic.find(item=>item.ID_CLASE===id))
     
@@ -669,22 +801,29 @@ export const Perfclase=(props)=>{
   const[editmodal,setEditmodal]=useState(false);
   const[alerta,setAlerta]=useState(false)
   const[modal,setModal]=useState(false);
+  const[modal2,setModal2]=useState(false);
+
   const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:"",nivel:""})
+  const[formValue2,setFormValue2]=useState({fecha:"",fecha2:""})
   const[activeTab,setActiveTab]=useState('1');
-  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,daLeccion,setLeccion}=useContext(InfoContext);
+  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,setLeccion,daCuenta}=useContext(InfoContext);
   const[alerMensaje,setAlermensaje]=useState("")
 
   const mondays=[]
   const momen = extendMoment(Moment);
+  const {fecha,fecha2}=formValue2
 
   const toggl=()=>{
     setModal(!modal)
+  }
+  const toggl2=()=>{
+    setModal2(!modal2)
   }
   const togglelecc=()=>{
     setEditmodal(!editmodal)
   }
   const lecciones=leccionesDate.filter(function(item){
-  return  item.ID_CLASE==daClase.ID_CLASE && item.DIA!=null
+  return  item.ID_CLASE==daClase.ID_CLASE && item.DIA!=null && item.NIVEL==daClase.NIVEL
   });
 
   const leccClase=daClases.filter(function(item){
@@ -699,7 +838,6 @@ export const Perfclase=(props)=>{
   const refreshlecciones=async()=>{
   try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
       let dat={escuelaId:daEscuela.ID};
-      //let res=await fetch("http://localhost:3001/Clases",{
       let res=await fetch(apiUrl+`/Clases`,{
   
           method:'POST',
@@ -708,7 +846,7 @@ export const Perfclase=(props)=>{
           headers:{'content-type':'application/json'},
       })
       .then(res=>res.json())
-      .then(res=>{
+      .then(res=>{console.log("REFRESH",res)
            try {
             res.forEach(function(item){
               var fi=new Date(item.FECHAI.replace(/-/g, '\/'));
@@ -761,9 +899,12 @@ export const Perfclase=(props)=>{
         
 
         setClases(res);
+        console.log("bug1",mondays.length)
+        console.log('bug2',leccionesDate)   
+        console.log("bug3",lecciones.length)
         
         alert("Operacion exitosa")
-        console.log("reslecc",res[0].ID)
+        console.log("reslecc",res.length)
        /* if(res[0].ID===null){
           setNextpagina(true)
         }*/
@@ -775,7 +916,6 @@ export const Perfclase=(props)=>{
 
 
   const eliminarLecc=async()=>{
-   //await fetch(`http://localhost:3001/Eliminarleccion/${formValue.id}`,{
    await fetch(apiUrl+`/Eliminarleccion/${formValue.id}`,{
    
       method:'DELETE'
@@ -789,7 +929,6 @@ export const Perfclase=(props)=>{
     })
   }
   const editLeccion=()=>{
-    const a=[];
     let ban=false
         let banniv=false
         var grup=" "
@@ -863,9 +1002,11 @@ export const Perfclase=(props)=>{
     
   }
   const regleccion=async()=>{
+    if(daClase.NIVEL==undefined){
+      daClase.NIVEL=formValue.nivel
+    }
     let da={formFields:formValue}
     try {
-      //let res=await fetch("http://localhost:3001/Agregarleccion",{
       let res=await fetch(apiUrl+`/Agregarleccion`,{
         method:'POST',
         mode:'cors',
@@ -886,10 +1027,9 @@ export const Perfclase=(props)=>{
     }
   }
   const updateLeccion=async()=>{
-    let da={id:formValue.id,dia:formValue.dia,nivel:formValue.nivel,horai:formValue.horai,horaf:formValue.horaf}
-    console.log("DA",da)
+    let da={id:formValue.id,dia:formValue.dia,nivel:formValue.nivel,horai:formValue.horai,horaf:formValue.horaf,fecha:fecha,fecha2:fecha2,idclase:daClase.ID_CLASE}
+    
     try {
-      //let res=await fetch("http://localhost:3001/Updateleccion",{
       let res=await fetch(apiUrl+`/Updateleccion`,{
 
           method:'PUT',
@@ -901,6 +1041,10 @@ export const Perfclase=(props)=>{
         if(res=="Edicion exitosa"){
           refreshlecciones();
           setModal(false)
+        }
+        if(res.message=="Clase actualizada"){
+          refreshlecciones();
+          setModal2(false)
         }
       })
     } catch (error) {
@@ -921,23 +1065,32 @@ const handleChange = (event) => {
     };
   });
 };   
+const handleChange2 = (event) => {
+  const { name, value } = event.target;
+  setFormValue2((prevState) => {
+    return {
+      ...prevState,
+      [name]: value,
+    };
+  });
+};   
   return(
-    <div className='container' style={{fontSize:'13px'}}>{console.log("hor",formValue.horai)}
+    <div className='container' style={{fontSize:'13px'}}>
        <h5>Clase</h5>
        <hr/>
        <Row md={2}>
         <Col>
-         <h6>{daClase.NOMBRE}</h6>
-         <div>{console.log("lecc",lecciones)}{console.log("leccClase",leccClase)}
+         <h6>{daClase.NOMBRE} <a href='#' hidden={daCuenta.ROLES_ID!=1} onClick={()=>{setModal2(true);setFormValue2({fecha:daClase.FECHAI,fecha2:daClase.FECHAF})}}>Editar Clase</a></h6>
+         <div>
           {lecciones.length>0 ?
           <>
              <i>{leccClase.map(item=>{return <>{item.DIA} {item.HORAI!==null?   item.HORAI.slice(0,-10):''}-{item.HORAF!==null? item.HORAF.slice(0,-10):''} </> })}</i>
           </>
           :null
-          }
-          {lecciones.length>0 ?
-      <a href='#' onClick={()=>togglelecc()} >(Editar)</a>
-      :   <a href='#' onClick={()=>{agregarLecc();setModal(true)}} >+Agregar leccion</a>
+          }{console.log('LECCIONESlength',lecciones.length)}
+          {lecciones.length>0  ?
+            <a href='#' hidden={daCuenta.ROLES_ID!=1} onClick={()=>togglelecc()} >(Editar Leccion)</a>
+            :   <a href='#' hidden={daCuenta.ROLES_ID!=1} onClick={()=>{agregarLecc();setModal(true)}} >+Agregar leccion</a>
 
           }
           
@@ -987,12 +1140,79 @@ const handleChange = (event) => {
          </>:null
         }
           
+          <Modal style={{fontSize:"13px", maxWidth:"380px"}} isOpen={modal2} toggle={toggl2} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
+          <ModalHeader toggle={toggl2}>
+          Editar Clase {daClase.NOMBRE}
+            <br/>
+           
+            </ModalHeader>
+          <ModalBody>
+          <div >
+    <h5><span className='text-center'>Datos</span></h5>
+   
+    <div className="card shadow " >
+           
+            <div className="card-body">
+                
+            <Row md={2}>
+              <Col >      
+              <FormGroup>
+              <Label>Fecha inicio
+              <span className='required' style={{color:"red"}}>*</span>
+              </Label>
+              <Input style={{backgroundColor:"#fffde3"}}
+                //bsSize="lg"
+                type="date"
+                name="fecha"
+                value={fecha}
+                onChange={handleChange2}
+        />
+                </FormGroup>
+            
+                
+              </Col>
+              <Col >
+              
+              <FormGroup>
+              <Label>Fecha termino
+              <span className='required' style={{color:"red"}}>*</span>
+              </Label>
+              <Input style={{backgroundColor:"#fffde3"}}
+              // bsSize="lg"
+                type="date"
+                name="fecha2"
+                value={fecha2}
+                onChange={handleChange2}
+              />
+                </FormGroup>
 
-            <Modal style={{fontSize:"13px", maxWidth:"380px"}} isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false)}}>
+              </Col>
+            </Row> 
+           
+            </div>
+        </div>
+<Button disabled={true} size='sm' onClick={eliminarLecc}>Eliminar</Button>
+{" "}
+<Button disabled={agregar} size='sm' onClick={updateLeccion}>Guardar</Button>
+{" "}
+{alerta &&
+<Alert color='warning'>Revisa el horario,  {alerMensaje}</Alert>}
+</div>    
+          </ModalBody>
+         {/* <ModalFooter>
+            <Button color="primary" onClick={toggle}>
+              Do Something
+            </Button>{' '}
+            <Button color="secondary" onClick={toggle}>
+              Cancel
+            </Button>
+      </ModalFooter>*/}
+        </Modal>
+
+            <Modal style={{fontSize:"13px", maxWidth:"380px"}} isOpen={modal} toggle={toggl} onClosed={()=>{setAlerta(false);setAgregar(false);setFormValue({horai:"",horaf:""})}}>
           <ModalHeader toggle={toggl}>
           Editar Dia y hora
             <br/>
-           
             </ModalHeader>
           <ModalBody>
           <div >
@@ -1159,12 +1379,13 @@ export const Modalleccion=()=>{
 
   const[modal,setModal]=useState(true);
   const{daLeccion}=useContext(InfoContext);
+  const navigate=useNavigate()
   const toggle=()=>{
     setModal(!modal);
   }
  return(
   <>{console.log("DALECCION:",daLeccion)}
-  <Modal isOpen={modal} toggle={toggle}>
+  <Modal isOpen={modal} toggle={toggle} onClosed={()=>{navigate(-1)}}>
           <ModalHeader toggle={toggle}>
           {moment(daLeccion.FECHA2).format("dddd") }
             {moment(daLeccion.FECHA2).format("DD-MM-YYYY")}
@@ -1175,7 +1396,7 @@ export const Modalleccion=()=>{
           <ModalBody>
 
           <div >
-    <h1><span className='text-center'>{daLeccion.NOMBRE}</span></h1>
+    <h1><span className='text-center'>{daLeccion.NOMBRE} {daLeccion.NIVEL}</span></h1>
    
     <div className="card shadow " >
            

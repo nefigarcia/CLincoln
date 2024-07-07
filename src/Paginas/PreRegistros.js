@@ -1,8 +1,8 @@
 import React,{Component} from 'react';
-import {Registros,RegistrosMaestros} from './Registros';
+import {Registros,RegistrosGrupos,RegistrosMaestros} from './Registros';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Table } from 'reactstrap';
 import classnames from 'classnames';
-import { InfoConsumer } from '../context';
+import { InfoConsumer, InfoContext } from '../context';
 
 class PreRegistros extends Component{
     constructor(props) {
@@ -13,6 +13,13 @@ class PreRegistros extends Component{
           activeTab: '1'
         };
       }
+      static contextType=InfoContext
+
+     componentDidMount(){
+      if(this.context.daCuenta.ROLES_ID==2){
+        this.toggle('3')
+      }
+     } 
     
       toggle(tab) {
         if (this.state.activeTab !== tab) {
@@ -25,7 +32,7 @@ class PreRegistros extends Component{
         return (
           <div>
             <Nav tabs>
-              <NavItem>
+              <NavItem hidden={this.context.daCuenta.ROLES_ID!=1}>
                 <NavLink
                   className={classnames({ active: this.state.activeTab === '1' })}
                   onClick={() => { this.toggle('1'); }}
@@ -33,12 +40,20 @@ class PreRegistros extends Component{
                   Estudiantes
                 </NavLink>
               </NavItem>
-              <NavItem>
+              <NavItem hidden={this.context.daCuenta.ROLES_ID!=1}>
                 <NavLink
                   className={classnames({ active: this.state.activeTab === '2' })}
                   onClick={() => { this.toggle('2'); }}
                 >
                   Maestros
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '3' })}
+                  onClick={() => { this.toggle('3'); }}
+                >
+                  Grupos
                 </NavLink>
               </NavItem>
             </Nav>
@@ -57,7 +72,7 @@ class PreRegistros extends Component{
         <tbody>
               <InfoConsumer>
                     {value=>{
-                        return value.daEstudiantes.map(item=>{console.log("estTes",value.daEstudiantes)
+                        return value.daEstudiantes.map(item=>{
                             return <Registros key={item.ID} item={item}/>;
                             
                         })
@@ -70,12 +85,12 @@ class PreRegistros extends Component{
               <TabPane tabId="2">
               <Table>
                 <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Telefono</th>
-          </tr>
-        </thead>
-        <tbody>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                  </tr>
+                </thead>
+                <tbody>
               <InfoConsumer>
                     {value=>{
                         return value.daMaestros.map(item=>{
@@ -87,6 +102,26 @@ class PreRegistros extends Component{
                 </tbody>       
                 </Table>
               </TabPane>
+
+              <TabPane tabId="3">
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                  </tr>
+                </thead>
+                <tbody>
+              <InfoConsumer>
+                    {value=>{
+                        return value.daGrupos.map(item=>{
+                            return <RegistrosGrupos key={item.ID} item={item}/>;
+                            
+                        })
+                    }}
+                </InfoConsumer> 
+                </tbody>       
+                </Table>
+              </TabPane>     
             </TabContent>
           </div>
         );

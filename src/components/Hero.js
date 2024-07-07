@@ -5,9 +5,8 @@ import { MDBBtn, MDBModalContent,MDBModalHeader,MDBModalTitle,MDBModalBody,MDBMo
 //import rectangle_1 from '../Fotos/Rectangle_1.jpg';
 //import rectangle_2 from '../Fotos/Rectangle_2.png';
 import cel1 from '../Fotos/cel1.png';
-import { Mod } from "../Paginas/Login";
-import { InfoConsumer } from "../context";
-import {Link, redirect} from 'react-router-dom';
+import { InfoConsumer, InfoContext } from "../context";
+import {Link} from 'react-router-dom';
 import admfoto from '../Fotos/registrodueno.png';
 import mafot from '../Fotos/regismaestro.png';
 import esfot from '../Fotos/regisestudiante.png';
@@ -15,8 +14,6 @@ import esfot from '../Fotos/regisestudiante.png';
 
 const Hero = ({appType, tagLine, description, mainActionText, extraActionText}) => {
   const [gridModal, setGridModal] = useState(false);
-    const toggleShow = () => setGridModal(!gridModal);
-    const {setRol}=useContext(InfoConsumer);
 
   return (
     <div id="product">
@@ -54,7 +51,7 @@ export const Prueba=()=>{
   const [gridModal, setGridModal] = useState(false);
     const toggleShow = () => setGridModal(!gridModal);
 
-    const {setRol}=useContext(InfoConsumer);
+    const {setRol}=useContext(InfoContext);
     //const {setEsta}=useAuth();
      
   return(
@@ -77,7 +74,7 @@ export const Prueba=()=>{
             <div className='container-fluid bd-example-row'>
                <ul className='list-unstyled list-icons clearfix'>
                    <li><Link to={"/Signup"}>
-                        <a  onClick={setRol(1)}  className='list-icons-container'>
+                        <a  onClick={()=>setRol(1)}  className='list-icons-container'>
                             <img src={admfoto}>
                             </img>
                             <p>Directivo escuela/Administrador</p>
@@ -85,7 +82,7 @@ export const Prueba=()=>{
                         </Link>
                     </li>
                      <li><Link to={"/Activacion"}>
-                     <a className='list-icons-container'>
+                     <a onClick={()=>setRol(2)} className='list-icons-container'>
                             <img src={mafot}>        
                             </img>
                             <p>Maestro</p>
@@ -94,7 +91,7 @@ export const Prueba=()=>{
                         
                     </li>
                     <li><Link to={"/Activacion"}>
-                    <a className='list-icons-container'>
+                    <a onClick={()=>setRol(3)} className='list-icons-container'>
                             <img src={esfot}>
                             </img>
                             <p>Estudiante</p>

@@ -10,7 +10,6 @@ import BottomLead from "../components/BottomLead";
 import { InfoConsumer, InfoContext } from "../context";
 
  function Inicio(){
-  const{setLoading}=useContext(InfoContext)
     //
     const data = {
         hero:{

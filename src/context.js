@@ -1,5 +1,5 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import {EstDa,CuentDa, EscuelasDa, MaestrosDa} from './Gets';
+import {EstDa,CuentDa, EscuelasDa, MaestrosDa, GruposDa} from './Gets';
 //const InfoContext=React.createContext();
 
 export const InfoContext = createContext();
@@ -7,9 +7,10 @@ export const InfoProvider=props=>{
     var estaMenu='True';
     var dataEscuelas=EscuelasDa();
     var dataEscuela=[];
-    var dataCuenta=[];
     var daEstudiantess=EstDa();
     var daMaestross=MaestrosDa();
+    var daGruposs=GruposDa();
+    var dataGrupos=[]
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
 const[cuentEmail,setCuentaEmail]=useState('');
@@ -25,9 +26,10 @@ const[daEstudiante,setEstudiante]=useState([]);
 const[daMaestros,setMaestros]=useState();
 const[daMaestro,setMaestro]=useState([]);
 const[daClases,setClases]=useState([]);
+const[daClases2,setClases2]=useState([]);
 const[daClase,setClase]=useState([]);
 const[leccionesDate,setleccDate]=useState([]);
-const[daClasesdias,setClasesdias]=useState([]);
+const[leccionesDate2,setleccDate2]=useState([]);
 const[daLeccion,setLeccion]=useState('');
 const[progresoTool,setProgresotool]=useState(false);
 const[tipoTool,setTipo]=useState('');
@@ -36,33 +38,54 @@ const[loadinglogo,setLoadinglogo]=useState(false);
 const[statusmock,setStatusmock]=useState("");
 const[mondays,setMondays]=useState([])
 const[arrres,setArrres]=useState([])
+const[daGrupos,setGrupos]=useState([])
+const[grupo,setGrupo]=useState([])
+
+console.log("roollllll",rol)
+console.log("daCuenta",daCuenta)
+
+useEffect(()=>{
+    if(rol===3){
+        getDataCuenta(null)
+    }
+},[daCuenta])
 
 const getDataCuenta=datEmCuent=>{
-   
+
+    if(rol==3 || rol==2){
+    dataGrupos= daGruposs.filter(i=>i.ID_ESCUELA===daCuenta.ID_ESCUELA)        
+       setGrupos(dataGrupos)
+        console.log("datagruposcontext",dataGrupos)
+    }
     if(datEmCuent!==null){
        getDataEscuela();
     }else{
       
         const estudiantesIdescuela=daEstudiantess.filter(function(item){
-            return item.ID_ESCUELA==dataEscuela.ID;
+            return item.ID_ESCUELA==daEscuela.ID;
          });
          const maestrosIdescuela=daMaestross.filter(function(item){
-             return item.ID_ESCUELA==dataEscuela.ID;
+             return item.ID_ESCUELA==daEscuela.ID;
          })     
          setEstudiantes(estudiantesIdescuela);
     setMaestros(maestrosIdescuela);
+    
     }
    
 }    
 const getDataEscuela=()=>{
     
-    dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ESCUELA_ID);
+    dataEscuela=dataEscuelas.find(({ID})=>ID===daCuenta.ID_ESCUELA);
+    console.log("DESCUELA",dataEscuela)
     const estudiantesIdescuela=daEstudiantess.filter(function(item){
        return item.ID_ESCUELA==dataEscuela.ID;
     });
     const maestrosIdescuela=daMaestross.filter(function(item){
         return item.ID_ESCUELA==dataEscuela.ID;
     })
+    dataGrupos= daGruposs.filter(i=>i.ID_ESCUELA===daCuenta.ID_ESCUELA)
+    console.log("daGrupos",dataGrupos)
+    setGrupos(dataGrupos)
     setEstudiantes(estudiantesIdescuela);
     setMaestros(maestrosIdescuela);
     setEscuela(dataEscuela);
@@ -70,14 +93,17 @@ const getDataEscuela=()=>{
 
     return daEscuela;
 }
-
 const setIdEstudiante=id=>{ 
 setEstudiante(daEstudiantes.find(item=>item.ID===id))
 }
 
 const setIdMaestro=id=>{
 setMaestro(daMaestros.find(item=>item.ID===id))
-
+}
+const setIdGrupo=id=>{
+    console.log("ID",id)
+    console.log("GRUPOS",daGrupos)
+    setGrupo(daGrupos.find(item=>item.ID===id))
 }
 
 const setEmaCuenta=ema=>{
@@ -91,6 +117,7 @@ const cambiarEsta=esta=>{
     estaMenu=esta
     setEsta(esta);
 }
+
     return(
         <InfoContext.Provider
         value={{
@@ -109,6 +136,7 @@ const cambiarEsta=esta=>{
             getDataEscuela,
             setIdEstudiante,
             setIdMaestro,
+            setIdGrupo,
             daMaestross,
             daEscuela,setEscuela,
             daCuenta,setCuenta,
@@ -121,8 +149,10 @@ const cambiarEsta=esta=>{
             daMaestros,setMaestros,
             daMaestro,setMaestro,
             daClases,setClases,
+            daClases2,setClases2,
             daClase,setClase,
             leccionesDate,setleccDate,
+            leccionesDate2,setleccDate2,
             daLeccion,setLeccion,
            progresoTool,setProgresotool,
            progresoTipo,setProgresoTipo,
@@ -131,7 +161,9 @@ const cambiarEsta=esta=>{
            emailCuenta,
            statusmock,setStatusmock,
            mondays,setMondays,
-           arrres,setArrres
+           arrres,setArrres,
+           daGrupos,setGrupos,
+           grupo,setGrupo
         }}
         >
             {props.children}

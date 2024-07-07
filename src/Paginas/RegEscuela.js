@@ -38,11 +38,9 @@ static contextType=InfoContext;
    async getEscuelas(){
     var dataCuenta=[];
     var dataEscuela=[];
-    var dataMaestros=[]
   
     const cont=this.context;
     try {
-      //const res=await fetch("http://localhost:3001/Escuelas")
       const res=await fetch(this.apiUrl+`/Escuelas`)
       .then((res)=>res.json())
       .then(res=>{
@@ -51,8 +49,7 @@ static contextType=InfoContext;
           console.log("BUG2",res.length)
 
           dataCuenta=cont.daCuentas.find(({EMAIL})=>EMAIL===cont.emailCuenta);
-          dataEscuela=res.find(({ID})=>ID===dataCuenta.ESCUELA_ID);
-          //dataMaestros=cont.daMaestross.filter(i=>i.ID_ESCUELA==dataEscuela[0].ID)
+          dataEscuela=res.find(({ID})=>ID===dataCuenta.ID_ESCUELA);
           console.log("BUG3",dataEscuela)
 
           if(dataEscuela!=null){
@@ -60,14 +57,11 @@ static contextType=InfoContext;
 
             cont.setCuenta(dataCuenta);
             cont.setEscuela(dataEscuela);
-           // cont.setMaestros(dataMaestros)
             cont.getDataCuenta(null);
            
-           // cont.getDataCuenta(null)
           }
         }
       })
-      //cont.setEscuelas(res)
      
     } catch (error) {
       console.log(error)
@@ -89,9 +83,9 @@ static contextType=InfoContext;
         });
     }
     async registrar(nombre,escuelaid){
+      var registro=Math.random().toString(36).slice(2)
       const cont=this.context
-        let dat={nombre:nombre,escuelaid:escuelaid};
-         //return fetch('http://localhost:3001/Regescuela',{
+        let dat={nombre:nombre,escuelaid:escuelaid,registro:registro};
          try {
         const res = await fetch(this.apiUrl + `/Regescuela`, {
           method: 'POST',

@@ -17,13 +17,7 @@ form{
  }
  
  
- .dropdown:hover .dropdown-menu {
-   display: block;
- }
- .navbar-toggler:hover .navbar-collapse .navbar:hover{
  
-   display: block;
- }
  
  .App {
   border: 2px solid #d3d3d3;
@@ -71,7 +65,9 @@ label {
   text-align: center;
 }
 
-
+.image {
+  vertical-align: middle;
+}
 /* PickListDemo.css */
 
 .picklist-demo .product-item {

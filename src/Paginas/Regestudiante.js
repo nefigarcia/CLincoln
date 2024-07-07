@@ -10,7 +10,6 @@ class regEstudiante extends Component{
         this.state={
             nombre:'',
             apellidos:'',
-            registro:'',
             nacimiento:'',
             tel:'',
             email:'',
@@ -39,39 +38,44 @@ class regEstudiante extends Component{
       this.setState({daEscuela:contex.daEscuela})
       
     }
-    getEst(){
-      
-    //fetch("http://localhost:3001/Estudiantes")
+    getEst(){     
     fetch(this.apiUrl+`/Estudiantes`)
     .then(res=>res.json())
     .then(res=>{
       if(res){
-        this.setState({daEstudiantes:res, dataChange:true},()=>{
+        const daestudiantesEscuela=res.filter(i=>
+           i.ID_ESCUELA==this.context.daEscuela.ID
+        )
+        this.context.setEstudiantes(daestudiantesEscuela)
+        this.setState({daEstudiantes:this.context.daEstudiantes, dataChange:true},()=>{
         })
         this.getEstudiante(this.state.email)
       }
     })
   }
+
   getEstudiante(email){
     const estudiante=this.state.daEstudiantes.find(item=>item.EMAIL===email)
     this.setState({daEstudiante:estudiante})
     this.setState({nextpagina:true})
+    this.context.setLoadinglogo(false)
   }
 handleSubmit(e){
     e.preventDefault();
     this.setState({submitted:true});
-    const{nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela}=this.state;
-    if(!(nombre && apellidos && registro && email)){
+    const{nombre,apellidos,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela}=this.state;
+    if(!(nombre && apellidos && email)){
       this.setState({validacionCampos:true})
         return;
     }
-    this.registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela.ID)
+    this.context.setLoadinglogo(true)
+    this.registrar(nombre,apellidos,nacimiento,tel,email,direccion,municipio,estado,cp,daEscuela.ID)
     .then(this.setState({log:true}));
 }
-registrar(nombre,apellidos,registro,nacimiento,tel,email,direccion,municipio,estado,cp,ID){
-    let dat={nombre:nombre,apellidos:apellidos,registro:registro,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp,ID_ESCUELA:ID};
+registrar(nombre,apellidos,nacimiento,tel,email,direccion,municipio,estado,cp,ID){
+    let dat={nombre:nombre,apellidos:apellidos,nacimiento:nacimiento,tel:tel,email:email,direccion:direccion,municipio:municipio,estado:estado,cp:cp,ID_ESCUELA:ID};
+    
     return fetch(this.apiUrl+`/Regestudiante`,{
-    //return fetch("http://localhost:3001/Regestudiante",{
         method:'POST',
         mode:'cors',
         body:JSON.stringify(dat),
@@ -134,20 +138,7 @@ handleChange(event){
   </Row>
   <hr/>
   <Row md={2}>
-    <Col >
-    <FormGroup>
-        <Label>Fecha registro
-        <span className='required' style={{color:"red"}}>*</span>
-        </Label>
-        <Input style={{backgroundColor:"#fffde3"}}
-          //bsSize="lg"
-          type="date"
-          name="registro"
-         // value={date}
-          onChange={this.handleChange}
-   />
-           </FormGroup>
-    </Col>
+   
     <Col >
     <FormGroup>
         <Label>Nacimiento

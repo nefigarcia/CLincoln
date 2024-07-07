@@ -5,18 +5,24 @@ import classnames from 'classnames';
 import {DropdownToggle, Form, FormGroup, Label, Input, FormText,Alert, DropdownItem, Dropdown, DropdownMenu, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Table,Card,CardTitle,CardText,ModalHeader, ModalBody,Modal  } from 'reactstrap';
 import { Navigate } from 'react-router-dom';
 const Perfmaestro=()=>{
-    const {daMaestro,setMaestros,setMaestro,daEscuela}=useContext(InfoContext)
+    const {daMaestro,setMaestros,setMaestro,daEscuela,daCuenta,setCuenta}=useContext(InfoContext)
     const [activeTab,setActivetab]=useState('1');
     const [modal,setModal]=useState(false)
     const [alerta,setAlerta]=useState("")
     const apiUrl=process.env.REACT_APP_API
-    const [formValue,setFormValue]=useState({ID:"",NOMBRE:"",APELLIDOS:"",EMAIL:"",TELEFONO:""})
-    const{ID,NOMBRE,APELLIDOS,EMAIL,TELEFONO}=formValue
+    const [formValue,setFormValue]=useState({ID:"",NOMBRE:"",APELLIDOS:"",EMAIL:"",TELEFONO:"",DIRECCION:"",NACIMIENTO:""})
+    const{ID,NOMBRE,APELLIDOS,EMAIL,TELEFONO,DIRECCION,NACIMIENTO}=formValue
 
-    useEffect(()=>{console.log("USEEFFECTMaestros:",daMaestro)
-      setFormValue({ID:daMaestro.ID,NOMBRE:daMaestro.NOMBRE,APELLIDOS:daMaestro.APELLIDOS,EMAIL:daMaestro.EMAIL,TELEFONO:daMaestro.TELEFONO})
+    useEffect(()=>{console.log("USEEFFECTMaestro:",daMaestro)
+      if(daMaestro.length==0){
+        setFormValue({ID:daCuenta.ID,NOMBRE:daCuenta.NOMBRE,APELLIDOS:daCuenta.APELLIDOS,EMAIL:daCuenta.EMAIL,TELEFONO:daCuenta.TELEFONO})
 
-    },[])
+      }else{
+        setFormValue({ID:daMaestro.ID,NOMBRE:daMaestro.NOMBRE,APELLIDOS:daMaestro.APELLIDOS,EMAIL:daMaestro.EMAIL,TELEFONO:daMaestro.TELEFONO})
+
+      }
+
+    },[daMaestro])
     const ButtonToggle=(tap)=>{
         if(activeTab!==tap){
             setActivetab(tap)
@@ -37,7 +43,19 @@ const Perfmaestro=()=>{
 
     const editLeccion=async()=>{
       try {
-        let da={ID:formValue.ID,NOMBRE:formValue.NOMBRE,APELLIDOS:formValue.APELLIDOS,EMAIL:formValue.EMAIL,TELEFONO:formValue.TELEFONO}
+        let da
+        if(daMaestro.length==0){
+          if(daCuenta.ROLES_ID==2){
+            da={ID:formValue.ID,NOMBRE:formValue.NOMBRE,APELLIDOS:formValue.APELLIDOS,EMAIL:formValue.EMAIL,TELEFONO:formValue.TELEFONO,PERFIL:false}
+
+          }else{
+            da={ID:formValue.ID,NOMBRE:formValue.NOMBRE,APELLIDOS:formValue.APELLIDOS,EMAIL:formValue.EMAIL,TELEFONO:formValue.TELEFONO,PERFIL:true}
+          }
+
+        }else{
+          da={ID:formValue.ID,NOMBRE:formValue.NOMBRE,APELLIDOS:formValue.APELLIDOS,EMAIL:formValue.EMAIL,TELEFONO:formValue.TELEFONO,PERFIL:false}
+
+        }
         let res=await fetch(apiUrl+`/Putmaes`,{
         method:'PUT',
         headers:{'Content-Type':'application/json'},
@@ -50,6 +68,10 @@ const Perfmaestro=()=>{
             .then(()=>{
               console.log("finisched refreschEStu")
             })
+          }
+          if(res.message==='Cuenta actualizada'){
+            setCuenta(res.body[0])
+            setModal(false)
           }
          
         })
@@ -85,10 +107,18 @@ const Perfmaestro=()=>{
               console.log("REFESTUDIANTES",refestu)
               setMaestros(refestu)
               if(e==="edit"){
-                const refest=refestu.find(i=>{return i.ID==daMaestro.ID})
-                console.log("REFESTU",refest)
-                setModal(false)
-                setMaestro(refest)
+                if(daMaestro.length!=0){
+                  const refest=refestu.find(i=>{return i.ID==daMaestro.ID})
+                  console.log("REFESTU",refest)
+                  setModal(false)
+                  setMaestro(refest)
+                }else{
+                  const refest=refestu.find(i=>{return i.ID==daCuenta.ID})
+                  console.log("REFESTU",refest)
+                  setModal(false)
+                  setCuenta(refest)
+                }
+                
               }
               if(e==="delete"){
                 setModal(false)
@@ -103,7 +133,7 @@ const Perfmaestro=()=>{
 
     return(
         <div className='container'>
-            <h5>Perfil Maestro <a href='#' onClick={()=>setModal(true)}>(Editar)</a></h5>
+            <h5>{daMaestro.length!=0 || daCuenta.ROLES_ID==2? "Perfil Maestra": "Perfil Admin"} <a href='#' onClick={()=>setModal(true)}>(Editar)</a></h5>
             <hr/>
             <Row>
                 <Col md={3}>
@@ -111,10 +141,10 @@ const Perfmaestro=()=>{
                     <img src={nousuario}></img>
                 </div>
                 </Col>
-                <Col md={3}>
-                    <div>{daMaestro.NOMBRE}</div>
-                    <p>{daMaestro.EMAIL}</p>
-                    <p>{daMaestro.TEL}</p>
+                <Col md={3}>{console.log("damaestro",daMaestro)}
+                    <div>{NOMBRE}</div>
+                    <p>{EMAIL}</p>
+                    <p>{TELEFONO}</p>
                 </Col>
             </Row>
             <Row>
@@ -143,33 +173,33 @@ const Perfmaestro=()=>{
         <tbody className='border'>
             <tr>
                 <td>
-                   <div ><div>Tel.</div><div>{daMaestro.TELEFONO}</div></div> 
+                   <div ><div>Tel.</div><div>{TELEFONO}</div></div> 
                 </td>
                 <td>
-                <div ><div>Email</div><div>{daMaestro.EMAIL}</div></div> 
+                <div ><div>Email</div><div>{EMAIL}</div></div> 
                 </td>
             </tr>
             <tr>
                 <td>
-                <div ><div>Nacimiento</div><div>{daMaestro.NACIMIENTO}</div></div> 
+                <div ><div>Nacimiento</div><div>{NACIMIENTO}</div></div> 
                 </td>
-                <td>
+                <td hidden={daMaestro.length==0}>
                 <div ><div>Id Num.</div><div></div></div> 
                 </td>
             </tr>
             <tr>
                 <td>
-                <div ><div>Direccion</div><div>{daMaestro.DIRECCION}</div></div> 
+                <div ><div>Direccion</div><div>{DIRECCION}</div></div> 
                 </td>
-                <td>
+                <td hidden={daMaestro.length==0}>
                 <div ><div>Metodo Pago</div><div></div></div> 
                 </td>
             </tr>
             <tr>
-                <td>
+                <td hidden={daMaestro.length==0}>
                 <div ><div>Notas Generales</div><div></div></div> 
                 </td>
-                <td>
+                <td hidden={daMaestro.length==0}>
                 <div ><div>Notas Medicas</div><div></div></div> 
                 </td>
             </tr>
@@ -201,7 +231,7 @@ const Perfmaestro=()=>{
 
             <Modal style={{fontSize:"13px", maxWidth:"380px"}} toggle={toggl} isOpen={modal} >
           <ModalHeader toggle={toggl}>
-          Editar Estudiante
+          Editar Maestro
             <br/>
            
             </ModalHeader>
@@ -278,7 +308,7 @@ const Perfmaestro=()=>{
                </Row>
             </div>
         </div>
-<Button  size='sm' onClick={eliminarLecc}>Eliminar</Button>
+<Button disabled={daCuenta.ROLES_ID==1 ? false:true} size='sm' onClick={eliminarLecc}>Eliminar</Button>
 {" "}
 <Button  size='sm' onClick={()=>editLeccion()}>Guardar</Button>
 {" "}

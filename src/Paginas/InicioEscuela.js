@@ -3,24 +3,32 @@ import styled from 'styled-components'
 import { InfoConsumer, InfoContext } from '../context'
 import { Button, Col, Row, Label, Progress } from 'reactstrap'
 import DatePicker from "react-datepicker";
-import moment, { months } from 'moment';
+//import moment, { months } from 'moment';
 import { Clases } from './Clases';
 import { Progres } from '../components/Progres';
+import Moment from 'moment';
+import moment from 'moment';
+import { extendMoment } from 'moment-range';
+import { Link } from 'react-router-dom';
+
+
+
 
 export const InicioEscuela=(props)=>{
     const apiUrl=process.env.REACT_APP_API
-    const{daEscuela,daClases,setClases}=useContext(InfoContext);
-    const{leccionesDate,setleccDate,setClasesdias}=useContext(InfoContext);
+    const{daEscuela,daClases,setClases,daCuenta,daGrupos,setLeccion,daClases2,setClases2}=useContext(InfoContext);
+    const{leccionesDate,setleccDate,leccionesDate2,setleccDate2}=useContext(InfoContext);
     const [startDate, setStartDate] = useState(new Date());
-    const[estado,setEstado]=useState(false);
     const mondays=[];
-    //const[arrlec,setArrlec]=useState([]);
+    const momen = extendMoment(Moment);
+
     const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <Button outline size='sm' className='pull-right' onClick={onClick} ref={ref}> 
     <small className='muted text-muted'>Fecha:</small>
    <span>{value}</span>
    </Button>
      ));
+
      const arrlec= arrmon();
    function arrmon(){
     const diaclases=leccionesDate.filter(function(item) {
@@ -28,11 +36,23 @@ export const InicioEscuela=(props)=>{
       });
       return diaclases;
    }
+   const blink=(hoi,hof)=>{
+    const range1=moment(hoi,"HH:mm")
+    const range2=moment(hof,"HH:mm")
+     const tim=momen(startDate,"HH:mm")
+    if(tim.isBetween(range1,range2)){
+        console.log("OVERLAPS")
+            return true;
+        }else if(tim>range2){
 
+          return  false
+        }else{
+            return false
+        }
+   }
    const registrar=async()=>{
-    try {//console.log("inife:",new Date(f.replace(/-/g, '\/')))
+    try {
         let dat={escuelaId:daEscuela.ID};
-        //let res=await fetch("http://localhost:3001/Clases",{
         let res=await fetch(apiUrl+`/Clases`,{
     
             method:'POST',
@@ -41,7 +61,41 @@ export const InicioEscuela=(props)=>{
             headers:{'content-type':'application/json'},
         })
         .then(res=>res.json())
-        .then(res=>{console.log("cla",res)
+        .then(res=>{
+            const ar1=structuredClone(res)
+            const ar=[]
+            var arma=[]
+            console.log("ar1",res)
+
+            if(daCuenta.ROLES_ID==2){
+             arma= ar1.filter(i=>i.ID_MAESTRO==daCuenta.ID)
+             res=arma
+            }
+            if(daCuenta.ROLES_ID==3){
+               var sta= daCuenta.ID_GRUPO
+               console.log("STA",sta)
+               console.log("STAGRU",daGrupos)
+                var gru=daGrupos.find(({ID})=>ID==sta)
+                console.log("GRU",gru)
+
+              ar1.map(i=>{
+                    if(i.NIVEL!=undefined? i.NIVEL.includes(',') : false){
+                        i.NIVEL.split(',').map(n=>{
+                            if(gru.NOMBRE.includes(n)){
+                                ar.push(i)
+                            }
+                        })
+                     }else{                      
+                            if(i.NIVEL!=undefined? gru.NOMBRE.includes(i.NIVEL) : false){
+                              ar.push(i)
+                            }
+                     }
+                })
+                res=structuredClone(ar)
+
+            }
+
+            console.log("struc",res)
             try {
                 res.forEach(function(item){
                     var fi=new Date(item.FECHAI.replace(/-/g, '\/'));
@@ -88,19 +142,17 @@ export const InicioEscuela=(props)=>{
                 });
                
       setleccDate(mondays);
+      setleccDate2(mondays);
+
       console.log("LECCIONESDATE:",leccionesDate)
-          //setArrlec(diaclases);
           setClases(res)  
+          setClases2(res)  
+
           console.log("DACLASES:",daClases)
             } catch (error) {
                 console.log("error en:",error)
             }
-           // setClases(res);
-
-            //setleccDate(mondays);
-           // setArreglos({clas:res,mon:mondays})
-           // console.log("daclases:",daClases);                   
-            //console.log("leccDate:",mondays)
+          
         })
     } catch (error) {
         console.log("er:",error)
@@ -119,12 +171,24 @@ export const InicioEscuela=(props)=>{
     /> 
     {leccionesDate.length>0 ?
      <>   
-    {arrlec.map((mon,index)=>{   {console.log("arrlec",arrlec)}
+    {arrlec.map((mon,index)=>{  
      return <>
        <Row className="p-2 bg-light border" key={index} md={4}>
         <Col>
         {mon.HORAI!==null?
-             <i>{mon.HORAI.slice(0,-10)}-{mon.HORAF.slice(0,-10)}</i>
+            <Link to='/Modalleccion'>
+                <i onClick={()=>setLeccion(mon)}>
+                {blink(mon.HORAI.slice(0,-10),mon.HORAF.slice(0,-10)) ?
+                 <span className='blink_me'> 
+                 </span>
+                    : <span className='blink_mer'> 
+                    </span>
+                }
+                
+                {mon.HORAI.slice(0,-10)}-{mon.HORAF.slice(0,-10)}
+            </i>
+            </Link>
+             
              :null
         }
        

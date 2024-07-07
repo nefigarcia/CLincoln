@@ -30,3 +30,13 @@ export function RegistrosMaestros(props){
         </tr>
               );
 }
+export function RegistrosGrupos(props){
+  const{setIdGrupo}=useContext(InfoContext)
+  return(
+    <tr>
+      <Link to='/PerfGrupo' >
+          <td onClick={()=>setIdGrupo(props.item.ID)}>{props.item.NOMBRE}</td>
+          </Link>
+    </tr>
+  )
+}

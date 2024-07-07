@@ -53,15 +53,15 @@ const NavApp = (props) => {
       setIsOpen(false)
     }
   }
-const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,daMaestros}=useContext(InfoContext);
+const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,setMaestro,daMaestros,rol}=useContext(InfoContext);
 const[toolTip,setTool]=useState(true)
 const[sty,setSty]=useState(false)
 const toggtool=()=>setSty(!sty);
 var gen;
-
+//const perfil=setMaestro([])
 const pp=pr();
 function pr(){
-  if(esta){
+  if(esta && daCuenta.ROLES_ID==1){
     var lo=document.getElementById('me').style.inset;
     console.log("loooo",lo);
  if(lo=='0px 0px auto auto'){
@@ -74,13 +74,13 @@ function pr(){
   }
   
 }
+
 function revclase(){
   setMaestrosrev(true)
   console.log("sddsd")
    }
 return(
           <div>
-         {console.log("GEN",gen)}
         <Navbar color="light" light >
           <NavbarBrand  href="/">{esta ? daEscuela.NOMBRE.includes(" ")?daEscuela.NOMBRE.split(" ")[1]:daEscuela.NOMBRE  :"Rosystems"} </NavbarBrand>
           <Nav>{console.log("too",toolTip, progresoTool,sty)}
@@ -101,38 +101,39 @@ return(
            </Tooltip>
            </>:null
            }*/}
-          
-            <Dropdown id="sh" hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar} onClick={addToggle}>
-              <DropdownToggle id='tool'><BsPlusLg/>        
-                </DropdownToggle>
-              <DropdownMenu id='me'>     
-                <DropdownItem header>Agregar ...</DropdownItem>
-                <DropdownItem ><FaCreditCard/>Pagos</DropdownItem>
-                <DropdownItem disabled >Personal </DropdownItem>
-                <DropdownItem divider />
-                <Link  to="/Regestudiante">
-               <DropdownItem id="est" title='estu' ><AiOutlineUserAdd />Estudiante</DropdownItem>     
-                </Link>        
-        
-                <Link to="/Regmaestro">
-                <DropdownItem><IoIosPersonAdd/>Profesor</DropdownItem>
-                </Link>{console.log("ESTA",esta)}{console.log("DAMAESTROS",daMaestros)}
-                {esta==true && daMaestros.length>0 ?
-                  <>
-                  <Link to="/RegClase">
-                  <DropdownItem disabled={daMaestros.length>0 ? true:false}><BsBookFill/>Clase</DropdownItem>
-                  </Link>
-                  </>:<>
-                  <DropdownItem >
-                    <div onClick={()=>{revclase();}}>
-                    <BsBookFill/>Clase
-                      </div></DropdownItem>
-                  </>  
-              }
-                
-                <DropdownItem><FaArchive/>Staff</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            {daCuenta.ROLES_ID==1 ?
+               <Dropdown id="sh" hidden={!esta}  isOpen={collapsed} toggle={toggleNavbar} onClick={addToggle} >
+               <DropdownToggle id='tool'><BsPlusLg/>        
+                 </DropdownToggle>
+               <DropdownMenu id='me'>     
+                 <DropdownItem header>Agregar ...</DropdownItem>
+                 <DropdownItem ><FaCreditCard/>Pagos</DropdownItem>
+                 <DropdownItem disabled >Personal </DropdownItem>
+                 <DropdownItem divider />
+                 <Link  to="/Regestudiante">
+                <DropdownItem id="est" title='estu' ><AiOutlineUserAdd />Estudiante</DropdownItem>     
+                 </Link>        
+         
+                 <Link to="/Regmaestro">
+                 <DropdownItem><IoIosPersonAdd/>Profesor</DropdownItem>
+                 </Link>
+                 {esta==true && daMaestros.length>0 ?
+                   <>
+                   <Link to="/RegClase">
+                   <DropdownItem disabled={daMaestros.length>0 ? true:false}><BsBookFill/>Clase</DropdownItem>
+                   </Link>
+                   </>:<>
+                   <DropdownItem >
+                     <div onClick={()=>{revclase();}}>
+                     <BsBookFill/>Clase
+                       </div></DropdownItem>
+                   </>  
+               }             
+                 <DropdownItem><FaArchive/>Staff</DropdownItem>
+               </DropdownMenu>
+             </Dropdown> : null
+            }
+           
              
             <i className="fas fa-caret-up"> {daCuenta.NOMBRE} </i>
             <Dropdown hidden={!esta}  isOpen={collapsedd} toggle={toggleNavbarr}>
@@ -142,7 +143,21 @@ return(
                 <DropdownItem header>
                 <i className="fas fa-caret-up">Perfil    {daCuenta.NOMBRE}</i>
                 </DropdownItem>
-                <DropdownItem>Mi perfil</DropdownItem>
+                {rol==1 || rol==2 ?
+                  <>
+                     <Link to={"/PerfMaestro"}>
+                      <DropdownItem  onClick={()=>{if(rol==1){setMaestro([])}}}>Mi perfil</DropdownItem>
+                      </Link>
+                  </>:
+                 <>
+                   <Link to={"/PerfEstudiante"}>
+                      <DropdownItem >Mi perfil</DropdownItem>
+                      </Link>
+                 </>
+
+                }
+                
+                
                 <Link to={"/Ajustes"}>
                 <DropdownItem >Escuela configuracion </DropdownItem>
                 </Link>

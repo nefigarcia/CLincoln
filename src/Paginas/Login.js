@@ -42,7 +42,7 @@ static contextType=InfoContext;
  apiUrl=process.env.REACT_APP_API
 
 
-    login(emai,passwor){
+    async login(emai,passwor){
       const cont=this.context;
       cont.setLoadinglogo(true)
       let da={email:emai,contrasena:passwor};
@@ -53,8 +53,7 @@ static contextType=InfoContext;
             headers:{'content-type':'application/json'}
         };
 
-      //return fetch("http://localhost:3001/Login",requestOpt)
-      return fetch(this.apiUrl+`/Login` ,requestOpt)
+      await fetch(this.apiUrl+`/Login` ,requestOpt)
         .then(response=>response.json())
         .then(response=>{
           cont.setLoadinglogo(false)
@@ -63,11 +62,14 @@ static contextType=InfoContext;
               var item=response.find(item=>{
               return item.EMAIL;
           });
+          console.log("item",item)
           if(item.NOMBRE.includes(" ")){
             const nom=item.NOMBRE.split(" ")
             item.NOMBRE=nom[0]
-          }
+          }          console.log("item2",response)
+
           contex.setCuenta(item)
+          contex.setRol(item.ROLES_ID)
           if(response){
             this.setState({authen:true,emailCuen:item},()=>
             console.log("login then",this.state.authen),
@@ -78,7 +80,10 @@ static contextType=InfoContext;
           this.setState({error:response})
         }})
         .catch((error)=>{
-          alert(JSON.stringify(error));
+          
+            alert("Servidor apagado, manda whats al admin para encenderlo: 5523847937");
+
+          
           console.log("err log",error);
         })
     }
@@ -137,7 +142,7 @@ static contextType=InfoContext;
     }
 
     render(){
-      const{error,submitted,emai,passwor,authen,emailCuen}=this.state;
+      const{error,emai,passwor,authen,emailCuen}=this.state;
         return(
     <InfoConsumer>
       {data=>{
@@ -204,10 +209,7 @@ static contextType=InfoContext;
 }
 {authen &&
 data.setEsta(authen)}
-{/*{
- authen &&
- data.setCuenta(emailCuen)
-}*/}
+
 {
  authen &&
  data.getDataCuenta(emailCuen)
@@ -229,7 +231,7 @@ export const Mod=()=>{
     const [gridModal, setGridModal] = useState(false);
     const toggleShow = () => setGridModal(!gridModal);
 
-    const {rol,setRol,eata,setEsta}=useContext(InfoConsumer);
+    const {setRol}=useContext(InfoContext);
     //const {setEsta}=useAuth();
      
   return(
@@ -252,27 +254,27 @@ export const Mod=()=>{
             <div className='container-fluid bd-example-row'>
                <ul className='list-unstyled list-icons clearfix'>
                    <li><Link to={"/Signup"}>
-                        <a  onClick={setRol(1)}  className='list-icons-container'>
-                            <img src={admfoto}>
-                            </img>
-                            <p>Directivo escuela/Administrador</p>
+                        <a  onClick={()=> setRol(1)}  >       
+                              <img className='image' src={admfoto}>
+                            </img>    
+                            Directivo/Administrador             
                         </a>
                         </Link>
                     </li>
                      <li><Link to={"/Activacion"}>
-                     <a className='list-icons-container'>
+                     <a onClick={()=> setRol(2)} className='list-icons-container'>  
                             <img src={mafot}>        
-                            </img>
-                            <p>Maestro</p>
+                            </img>  
+                            Maestro   
                         </a>
                         </Link>
                         
                     </li>
                     <li><Link to={"/Activacion"}>
-                    <a className='list-icons-container'>
+                    <a onClick={()=> setRol(3)} className='list-icons-container'>               
                             <img src={esfot}>
                             </img>
-                            <p>Estudiante</p>
+                            Estudiante
                         </a>
                         </Link>
                         

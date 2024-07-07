@@ -20,8 +20,7 @@ static contextType=InfoContext;
     this.state.loading=loading;
   }
     render(){
-      //this.getEscuelas();
-      const{loading,daEstudiantes,daEscuelas}=this.state; 
+      const{loading}=this.state; 
         return(
             <div className="container">
               <h5>Portal</h5>

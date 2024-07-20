@@ -81,12 +81,12 @@ export const InicioEscuela=(props)=>{
               ar1.map(i=>{
                     if(i.NIVEL!=undefined? i.NIVEL.includes(',') : false){
                         i.NIVEL.split(',').map(n=>{
-                            if(gru.NOMBRE.includes(n)){
+                            if(gru.NOMBRE===n){
                                 ar.push(i)
                             }
                         })
                      }else{                      
-                            if(i.NIVEL!=undefined? gru.NOMBRE.includes(i.NIVEL) : false){
+                            if(i.NIVEL!=undefined? gru.NOMBRE===i.NIVEL : false){
                               ar.push(i)
                             }
                      }

@@ -136,12 +136,12 @@ const reglecciones=async()=>{
               var range2=momen.range(ho2)
               if(el.NIVEL.includes(",")){
                 el.NIVEL.split(",").map(ni=>{
-                  if(v.nivel.includes(ni))
+                  if(v.nivel===ni)
                   grup=ni
                   banniv=true
                 })
               }else{
-                if(v.nivel.includes(el.NIVEL)){
+                if(v.nivel===el.NIVEL){
                   grup=nivel
                   banniv=true
                   

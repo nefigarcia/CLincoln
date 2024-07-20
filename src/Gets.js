@@ -1,6 +1,4 @@
-import { useContext } from "react";
 import { useState, useEffect } from "react";
-import { InfoContext } from "./context";
 
 const apiUrl=process.env.REACT_APP_API;
 
@@ -13,6 +11,8 @@ const getEscuelas=()=>fetch(apiUrl+`/Escuelas`).then(res=>res.json());
 const getMaestros=()=>fetch(apiUrl+`/Maestros`).then(res=>res.json());
 
 const getGrupos=()=>fetch(apiUrl+`/Grupos`).then(res=>res.json());
+
+const getExamenes=()=>fetch(apiUrl+'/Examenes').then(res=>res.json());
 
 
 export function EstDa(){
@@ -49,4 +49,10 @@ export function GruposDa(ID_ESCUELA){
     useEffect(()=>{
         getGrupos(ID_ESCUELA).then(data=>setDa(data))
     },[]); return da;
+}
+export function ExamenesDa(){
+    const [da,setDa]=useState([])
+    useEffect(()=>{
+        getExamenes().then(data=>setDa(data))
+    },[]); return da
 }

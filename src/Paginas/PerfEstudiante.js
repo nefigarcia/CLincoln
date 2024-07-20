@@ -24,7 +24,7 @@ const Perfestudiante=()=>{
         setFormValue({ID:daCuenta.ID,NOMBRE:daCuenta.NOMBRE,APELLIDOS:daCuenta.APELLIDOS,EMAIL:daCuenta.EMAIL,TELEFONO:daCuenta.TELEFONO,GRUPO:(daGrupos.find(({ID})=>ID==daCuenta.ID_GRUPO))!=undefined ? daGrupos.find(({ID})=>ID==daCuenta.ID_GRUPO).NOMBRE : "",REGISTRO:daCuenta.REGISTRO,NACIMIENTO:daCuenta.NACIMIENTO,DIRECCION:daCuenta.DIRECCION})
 
       }
-    },[])
+    },[daEstudiante])
 
     const toggl=()=>{
       setModal(!modal)
@@ -157,6 +157,14 @@ const Perfestudiante=()=>{
                   Clases
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === '3' })}
+                  onClick={() => {ButtonToggle('3'); }}
+                >
+                  Examenes
+                </NavLink>
+              </NavItem>
             </Nav>
 
             <TabContent activeTab={activeTab}>
@@ -203,6 +211,17 @@ const Perfestudiante=()=>{
                 </Table>
               </TabPane>
               <TabPane tabId="2">
+                <Row>
+                  <Col sm="6">
+                    <Card body>
+                      <CardTitle>En proceso</CardTitle>
+                      <CardText>En desarrollo.</CardText>
+                      <Button>Proximamente</Button>
+                    </Card>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tabId="3">
                 <Row>
                   <Col sm="6">
                     <Card body>

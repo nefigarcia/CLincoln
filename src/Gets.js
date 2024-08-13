@@ -14,6 +14,7 @@ const getGrupos=()=>fetch(apiUrl+`/Grupos`).then(res=>res.json());
 
 const getExamenes=()=>fetch(apiUrl+'/Examenes').then(res=>res.json());
 
+const getExamrealizados=()=>fetch(apiUrl+'/Examrealizados').then(res=>res.json());
 
 export function EstDa(){
     const [da,setDa]=useState([]);
@@ -54,5 +55,11 @@ export function ExamenesDa(){
     const [da,setDa]=useState([])
     useEffect(()=>{
         getExamenes().then(data=>setDa(data))
+    },[]); return da
+}
+export function ExamrealizadosDa(){
+    const[da,setDa]=useState([])
+    useEffect(()=>{
+        getExamrealizados().then(data=>setDa(data))
     },[]); return da
 }

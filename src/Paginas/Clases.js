@@ -814,16 +814,19 @@ export const Perfclase=(props)=>{
   const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:"",nivel:""})
   const[formValue2,setFormValue2]=useState({fecha:"",fecha2:""})
   const[activeTab,setActiveTab]=useState('1');
-  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,setLeccion,daCuenta,daExamenes,setExamenes}=useContext(InfoContext);
+  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,setLeccion,daCuenta,daExamenes,setExamenes,daExamrealizados,setExamrealizados}=useContext(InfoContext);
   const[alerMensaje,setAlermensaje]=useState("")
   const[preguntas,setPreguntas]=useState([{titulo:"", tipo:"Abierta",respuesta:"",opciones:[{uno:"",checked:false},{uno:"",checked:false},{uno:"",checked:false}]}])
   const[quiz,setQuiz]=useState({id_clase:0,id_escuela:0,nivel:"",nombre:""})
   const[examen,setExamen]=useState("")
   const[examenalum,setExamenalum]=useState("")
+  const[respuesta,setRespuesta]=useState(null)
   const[stmensaje,setStmensaje]=useState("")
   const[mensaje,setMensaje]=useState("")
   const[verresultados,setResultados]=useState(false)
-  const[resultado,setResultado]=useState({preguntas:0,correctas:0,incorrectas:0,resultado:0})
+  const[resultado,setResultado]=useState({tot:0,correctas:0,incorrectas:0,score:0})
+  const[currentQuestion,setCurrentQuestion]=useState(0)
+  const[respIdx,setResIdx]=useState(null)
   const mondays=[]
   const momen = extendMoment(Moment);
   const {fecha,fecha2}=formValue2
@@ -854,36 +857,61 @@ export const Perfclase=(props)=>{
       ar[i].RESPUESTA=""
     }
     setExamenalum(ar)
-    toggleEmpezar()
+    setResultados(false)
+    toggleEmpezar();
+    setResultado((prev)=>{
+    return {
+       ...prev,
+      tot:v.length,
+      correctas:0,
+      incorrectas:0,
+      score:0}
+    });
     const dis=document.getElementById(i)
     dis.disabled=true
   }
   const revisarInputsexam=()=>{
-    for(let i=0;i<examenalum.length;i++){
-      if(!examenalum[i].RESPUESTA){
-        
-        return;
-      }
+    console.log("REVISARINPUTEXAM")
+   setResIdx(null);
+   setResultado((prev)=>
+    respuesta ?
+    {
+      ...prev,
+      correctas:prev.correctas + 1,
+      score:((prev.correctas+1)*10)/prev.tot
     }
-    resultadofinal();
-  }
+    : {
+      ...prev,
+      incorrectas:prev.incorrectas + 1,
+    }
+  );
+  if(currentQuestion!==examenalum.length -1){
+    setCurrentQuestion((prev)=>prev + 1);
+  }else{
+    setCurrentQuestion(0);
+    setResultados(true);
+    saveRespuestasAlumn();
 
-  const resultadofinal=()=>{
-    var tot=examen.length
-    var correct=0;
-    var inco=0;
-    var cal;
-      for(let i=0;i<tot;i++){
-        if(examen[i].RESPUESTA==examenalum[i].RESPUESTA){
-          correct=correct+1;
-        }else{
-          inco=inco+1
-        }
+  }
+  };
+
+  const saveRespuestasAlumn=async()=>{
+    console.log("RESULTADOEST:",resultado)
+      var result={resultado:resultado,respuestas:examenalum,id_estudiante:daCuenta.ID}
+      try {
+        await fetch(apiUrl+'/Regestrespuestas',{
+          method:'POST',
+          mode:'cors',
+          body:JSON.stringify(result),
+          headers:{'content-type':'application/json'}
+        })
+          .then(res=>res.json())
+          .then(res=>{
+
+          })
+      } catch (error) {
+        
       }
-      cal=correct*100/tot
-      setResultado({preguntas:tot,correctas:correct,incorrectas:inco,resultado:cal})
-      setResultados(true)
-      setExamenalum("")
     }
   
   const lecciones=leccionesDate.filter(function(item){
@@ -900,13 +928,25 @@ export const Perfclase=(props)=>{
     return item.ID_CLASE===daClase.ID_CLASE && item.NIVEL===daClase.NIVEL
   })
   const examenesNivellll=examenesNivelll.reduce(function(total,num){
-    console.log("EXDAT");
+    console.log("EXDAT",examenesNivelll);
     (total[num.ID]=total[num.ID]|| []).push(num);
     return total
   },{})
-
+  
+  const examrealalumno=daExamrealizados.filter(i=>i.ID_ESTUDIANTE===daCuenta.ID)
+  const examrealizados=(Object.values(examenesNivellll)).map((v,i)=>{
+    if(examrealalumno.find(({ID_EXAMEN})=>ID_EXAMEN===v[0].ID_EXAMEN)){
+      console.log("SIIIIII")
+      v[0].realizado=true
+      return v
+    }else{
+      v[0].realizado=false
+      return v
+    }
+  })
   const exame=examen;
-  const examenalu=examenalum;
+  let examenalu=examenalum;
+  //const{TITULO,RESPUESTA,OPCION1,OPCION2,OPCION3,TIPO}=examenalu[currentQuestion]
   const leccionId=(ID)=>{
     const lecc=leccClase.find(item=>item.ID===ID);
     setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO,nivel:lecc.NIVEL})
@@ -1159,6 +1199,16 @@ const regExamen=async()=>{
   }
 }
 
+const onAnswerClick=(res)=>{
+  setResIdx(currentQuestion)
+  if((examen[currentQuestion].RESPUESTA).toLowerCase()===(examenalum[currentQuestion].RESPUESTA).toLowerCase()){
+    setRespuesta(true)
+  }else{
+    setRespuesta(false)
+  }
+ console.log("PRERES",examenalum)
+}
+
 const revisarQuiz=()=>{
   if(!quiz.nombre){
     setMensaje("Completa campos")
@@ -1215,13 +1265,20 @@ const handleChangePreguntasop2=(e,index,i)=>{
 }
 const handleChangeExamAlumn=(e,i)=>{
   let data=[...examenalum]
-  //
-   if(data[i]["TIPO"]=="Abierta"){
+  setResIdx(i)
+
+   if(data[currentQuestion]["TIPO"]=="Abierta"){
     data[i][e.target.name]=e.target.value;
    }else{
-    data[i]["RESPUESTA"]=data[i][e.target.name]
+    data[currentQuestion]["RESPUESTA"]=e
    }
-  console.log("OPCIONnnnnnnnn",data[i]["RESPUESTA"])
+
+   if(examen[currentQuestion].RESPUESTA===data[currentQuestion].RESPUESTA){
+    setRespuesta(true)
+  }else{
+    setRespuesta(false)
+  }
+
   setExamenalum(data)
 }
 const addPregunta=()=>{
@@ -1691,46 +1748,46 @@ const addPregunta=()=>{
       <div className='card shadow'>
         <div className='card body'>
         <div className='container'>
-           {examenalu!=""?
+         
+           {examenalum!="" && !verresultados?
             <>
-             {examenalu.map((v,i)=>{
-                  return(
-                   
-                      <FormGroup>
-                        <Label>{i+1}. {v.TITULO}</Label><br/>
-                        {v.TIPO==='Abierta' ? 
-                         <>
-                          <Input
+             <span className='active-question-no'>{currentQuestion + 1}</span>
+             <span className='total-question'>/{examenalu.length}</span>
+             <h1>{examenalu[currentQuestion].TITULO}</h1>
+              {examenalu[currentQuestion].TIPO==="Abierta" ? 
+              <>
+               <Input
                            placeholder='Respuesta'
                            type='text'
                            name='RESPUESTA'
-                           value={v.RESPUESTA}
-                           onChange={(e)=>handleChangeExamAlumn(e,i)}
+                           value={examenalu[currentQuestion].RESPUESTA}
+                           onChange={(e)=>handleChangeExamAlumn(e,0)}
                           />
-                         </>:
-                         <>
-                          <Input
-                           type='checkbox' name='OPCION1' value={examenalum.OPCION1} onChange={(e)=>handleChangeExamAlumn(e,i)}
-                          />{' '}
-                           <Label check>{v.OPCION1}</Label><br/>
-                           <Input
-                           type='checkbox' name='OPCION2' value={examenalum.OPCION2} onChange={(e)=>handleChangeExamAlumn(e,i)}
-                          />{' '}
-                           <Label check>{v.OPCION2}</Label><br/> 
-                           <Input
-                           type='checkbox' name='OPCION3' value={examenalum.OPCION3} onChange={(e)=>handleChangeExamAlumn(e,i)}
-                          />{' '}
-                           <Label check>{v.OPCION3}</Label><br/>
-                         </>
-                           
-                        }
-                      </FormGroup>              
-                  )
-                  
-                })}
+              </>:<>
+                    <ul className='ulq'>
+                      <li className='liq' style={respIdx===1 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION1,1)}>{examenalu[currentQuestion].OPCION1}</li>
+                      <li className='liq' style={respIdx===2 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION2,2)}>{examenalu[currentQuestion].OPCION2}</li>
+                      <li className='liq' style={respIdx===3 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION3,3)}>{examenalu[currentQuestion].OPCION3}</li>
+                    </ul>
+                  </>}
             </>:
             <>
-             <Row md={1}>
+              <div>
+                <h3>Resultados</h3>
+                <p>
+                  Preguntas total: <span>{examenalum.length}</span>
+                </p>
+                <p>
+                  Preguntas correctas: <span>{resultado.correctas}</span>
+                </p>
+                <p>
+                  Preguntas incorrectas: <span>{resultado.incorrectas}</span>
+                </p>
+                <p>
+                  Resultado: <span>{resultado.score}</span>
+                </p>
+              </div>
+            {/*  <Row md={1}>
               <Col>
                <p> Total preguntas: <span>{resultado.preguntas}</span></p> 
               </Col>
@@ -1749,7 +1806,7 @@ const addPregunta=()=>{
               <Col>
                <p>Puntaje: <span>{resultado.resultado}</span></p> 
               </Col>
-             </Row>
+      </Row>*/}
             </>
            }
                 
@@ -1758,7 +1815,7 @@ const addPregunta=()=>{
       </div>
     </ModalBody>
     <ModalFooter>
-       <Button hidden={verresultados} onClick={()=>revisarInputsexam()} size='sm'>Finalizar</Button>    
+       <Button hidden={verresultados} disabled={respIdx===null} onClick={revisarInputsexam} size='sm'>{currentQuestion===examenalu.length - 1 ? "Finalizar":"Siguiente"}</Button>    
     </ModalFooter>
   </Modal>     
        <Nav tabs>
@@ -1826,16 +1883,16 @@ const addPregunta=()=>{
             </TabContent>
             <TabPane tabId={"3"}>
               <Table>
-                <thead>{console.log("EXAMENESNIVEL",examenesNivelll)}
+                <thead>{console.log("EXAMENESNIVEL",examrealizados)}
                   <a onClick={()=>{setModalex(true);setStmensaje("crear")}}>+ Crear examen</a>
                
                 </thead>
                 <tbody>
-                {(Object.values(examenesNivellll)).map((v,i)=>{
+                {(Object.values(examrealizados)).map((v,i)=>{
                  return <tr >
                     <th>{v[0].NOMBRE}</th>
-                    <td><Button onClick={()=>{setModalvisexa(true);setExamen(v);}} size='sm' color='primary'>Visualizar</Button></td>
-                    <td><Button hidden={daCuenta.ROLES_ID===1} id={i}  onClick={()=>setExamAlumnull(v,i)} color='success' size='sm'>{verresultados ? "Finalizado" : "Realizar"}</Button></td>
+                    <td><Button hidden={daCuenta.ROLES_ID!==1} onClick={()=>{setModalvisexa(true);setExamen(v);}} size='sm' color='primary'>Visualizar</Button></td>
+                    <td><Button disabled={v[0].realizado} hidden={daCuenta.ROLES_ID===1} id={i}  onClick={()=>setExamAlumnull(v,i)} color='success' size='sm'>{verresultados ? "Finalizado" : "Realizar"}</Button></td>
                     <td>{v[0].NIVEL}</td>
                   </tr>
                 })}  

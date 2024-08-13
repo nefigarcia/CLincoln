@@ -1,5 +1,5 @@
 import React,{Component, useState,useEffect, useContext,createContext} from 'react';
-import {EstDa,CuentDa, EscuelasDa, MaestrosDa, GruposDa, ExamenesDa} from './Gets';
+import {EstDa,CuentDa, EscuelasDa, MaestrosDa, GruposDa, ExamenesDa, ExamrealizadosDa} from './Gets';
 //const InfoContext=React.createContext();
 
 export const InfoContext = createContext();
@@ -12,6 +12,7 @@ export const InfoProvider=props=>{
     var daGruposs=GruposDa();
     var dataGrupos=[]
     var daExameness=ExamenesDa();
+    var daExamrealizadoss=ExamrealizadosDa();
 const[esta,setEsta]=useState(false);
 const[rol,setRol]=useState('');
 const[cuentEmail,setCuentaEmail]=useState('');
@@ -42,6 +43,7 @@ const[arrres,setArrres]=useState([])
 const[daGrupos,setGrupos]=useState([])
 const[grupo,setGrupo]=useState([])
 const[daExamenes,setExamenes]=useState([])
+const[daExamrealizados,setExamrealizados]=useState([])
 
 console.log("roollllll",rol)
 console.log("daCuenta",daCuenta)
@@ -50,6 +52,7 @@ console.log("daExameness",daExameness)
 
 useEffect(()=>{
     setExamenes(daExameness);
+    setExamrealizados(daExamrealizadoss)
     if(rol===3){
         getDataCuenta(null)
     }
@@ -169,7 +172,8 @@ const cambiarEsta=esta=>{
            daGrupos,setGrupos,
            grupo,setGrupo,
            daExameness,
-           daExamenes,setExamenes
+           daExamenes,setExamenes,
+           daExamrealizados,setExamrealizados
         }}
         >
             {props.children}

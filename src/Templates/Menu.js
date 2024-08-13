@@ -53,7 +53,7 @@ const NavApp = (props) => {
       setIsOpen(false)
     }
   }
-const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,setMaestro,daMaestros,rol}=useContext(InfoContext);
+const {esta,tipoTool,setTipo,daCuenta,dataChange,daEscuela,progresoTool,setProgresotool,progresoTipo,setMaestro,daMaestros,rol,setEstudiante}=useContext(InfoContext);
 const[toolTip,setTool]=useState(true)
 const[sty,setSty]=useState(false)
 const toggtool=()=>setSty(!sty);
@@ -151,7 +151,7 @@ return(
                   </>:
                  <>
                    <Link to={"/PerfEstudiante"}>
-                      <DropdownItem >Mi perfil</DropdownItem>
+                      <DropdownItem onClick={()=>setEstudiante([])} >Mi perfil</DropdownItem>
                       </Link>
                  </>
 

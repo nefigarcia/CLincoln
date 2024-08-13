@@ -8,11 +8,12 @@ import { async } from 'q';
 import Moment from 'moment'
 import { extendMoment } from 'moment-range';
 import { InicioEscuela } from './InicioEscuela';
+import { ExamenesDa } from '../Gets';
 
 export const Clases=(props)=>{
   const apiUrl=process.env.REACT_APP_API;
     const[activeTab,setActiveTab]=useState('1');
-    const{setClases,daClases,leccionesDate,setleccDate,statusmock,setStatusmock,arrres,setArrres,daCuenta,setClases2,leccionesDate2,daClases2}=useContext(InfoContext);
+    const{setClases,daClases,leccionesDate,setleccDate,statusmock,setStatusmock,arrres,setArrres,daCuenta,setClases2,leccionesDate2,daClases2,daExameness}=useContext(InfoContext);
     const[modgen,setModgen]=useState(false)
     const[formValue,setFormValue]=useState({id:"",dia:"",horai:"10:30",horaf:"11:00",horai2:"",horaf2:"",tiempoleccion:0,maestro:"",idclase:"",nivel:""})
     const[formFields1,setFormFields1]=useState({idclase:0,lecciones:"1",nivel:"",nombre:"",maestro:"",niveles:[{ lecciones:"",nivel:""}]})
@@ -331,10 +332,10 @@ export const Clases=(props)=>{
                  for(var i=0;i<res.length;i++){ 
                   if(checkniv){
                     lecciones[banlecc].nivel.split(",").map(ni=>{
-                      if(res[i].nivel.includes(ni)){check=true}
+                      if(res[i].nivel===ni){check=true}
                     })
                   }else{
-                    if(res[i].nivel.includes(lecciones[banlecc].nivel)){
+                    if(res[i].nivel===(lecciones[banlecc].nivel)){
                       check=true
                     }
                   }
@@ -420,8 +421,7 @@ export const Clases=(props)=>{
     };
   
     function clasesDias(){
-      console.log("daNivelesunic",daNivelesunic)
-      console.log("daClases",daClases)
+     
       daNivelesunic.map(item=>{
         return item.DIAS=[];
       })
@@ -706,8 +706,8 @@ export const Clases=(props)=>{
        
       </Modal>
       
-            <Nav tabs>{console.log("daClases",daClases)}
-              <NavItem>{console.log("leccUnicas",daNivelesunic)}
+            <Nav tabs>
+              <NavItem>
                 <NavLink
                   className={classnames({ active: activeTab === '1' })}
                   onClick={() => {toggle('1'); }}
@@ -765,17 +765,22 @@ export const Clases=(props)=>{
     );
 }
 
+
+
 export const Clasess=(props)=>{
-  const{setClase}=useContext(InfoContext);
+  const{setClase,daExameness,daExamenes}=useContext(InfoContext);
   
-  function setIdclase(id){
-    setClase(props.clasesunic.find(item=>item.ID_CLASE===id))
+  function setIdclase(i){
+    console.log("ITEMCLASE",i)
+    console.log("daexamenesclase",daExamenes)
+     
+    setClase(i)
     
   }
     return(
         <tr>
           <Link to='/Perfclase' >
-          <td onClick={()=>setIdclase(props.item.ID_CLASE)}>{props.item.NOMBRE.slice(0,3)} {props.item.NIVEL}</td>
+          <td onClick={()=>setIdclase(props.item)}>{props.item.NOMBRE.slice(0,3)} {props.item.NIVEL}</td>
           </Link>
           <td>{props.item.MAESTRO}</td>
           <td>{props.item.FECHAI}</td>
@@ -802,13 +807,26 @@ export const Perfclase=(props)=>{
   const[alerta,setAlerta]=useState(false)
   const[modal,setModal]=useState(false);
   const[modal2,setModal2]=useState(false);
+  const[modalex,setModalex]=useState(false)
+  const[modalVisexa,setModalvisexa]=useState(false)
+  const[modalEmpezar,setModalempezar]=useState(false)
 
   const[formValue,setFormValue]=useState({id:"",dia:"",horai:"",horaf:"",maestro:"",idclase:"",nivel:""})
   const[formValue2,setFormValue2]=useState({fecha:"",fecha2:""})
   const[activeTab,setActiveTab]=useState('1');
-  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,setLeccion,daCuenta}=useContext(InfoContext);
+  const{daEscuela,daClase,daClases,setClases, leccionesDate,setleccDate,setLeccion,daCuenta,daExamenes,setExamenes,daExamrealizados,setExamrealizados}=useContext(InfoContext);
   const[alerMensaje,setAlermensaje]=useState("")
-
+  const[preguntas,setPreguntas]=useState([{titulo:"", tipo:"Abierta",respuesta:"",opciones:[{uno:"",checked:false},{uno:"",checked:false},{uno:"",checked:false}]}])
+  const[quiz,setQuiz]=useState({id_clase:0,id_escuela:0,nivel:"",nombre:""})
+  const[examen,setExamen]=useState("")
+  const[examenalum,setExamenalum]=useState("")
+  const[respuesta,setRespuesta]=useState(null)
+  const[stmensaje,setStmensaje]=useState("")
+  const[mensaje,setMensaje]=useState("")
+  const[verresultados,setResultados]=useState(false)
+  const[resultado,setResultado]=useState({tot:0,correctas:0,incorrectas:0,score:0})
+  const[currentQuestion,setCurrentQuestion]=useState(0)
+  const[respIdx,setResIdx]=useState(null)
   const mondays=[]
   const momen = extendMoment(Moment);
   const {fecha,fecha2}=formValue2
@@ -822,14 +840,113 @@ export const Perfclase=(props)=>{
   const togglelecc=()=>{
     setEditmodal(!editmodal)
   }
+  const toggleEx=()=>{
+    setModalex(!modalex)
+  }
+  const toggleVisexa=()=>{
+    setModalvisexa(!modalVisexa)
+  }
+  const toggleEmpezar=()=>{
+    setModalempezar(!modalEmpezar)
+  }
+
+  const setExamAlumnull=(v,i)=>{
+    var ar=structuredClone(v)
+    setExamen(v)
+    for(let i=0;i<ar.length;i++){
+      ar[i].RESPUESTA=""
+    }
+    setExamenalum(ar)
+    setResultados(false)
+    toggleEmpezar();
+    setResultado((prev)=>{
+    return {
+       ...prev,
+      tot:v.length,
+      correctas:0,
+      incorrectas:0,
+      score:0}
+    });
+    const dis=document.getElementById(i)
+    dis.disabled=true
+  }
+  const revisarInputsexam=()=>{
+    console.log("REVISARINPUTEXAM")
+   setResIdx(null);
+   setResultado((prev)=>
+    respuesta ?
+    {
+      ...prev,
+      correctas:prev.correctas + 1,
+      score:((prev.correctas+1)*10)/prev.tot
+    }
+    : {
+      ...prev,
+      incorrectas:prev.incorrectas + 1,
+    }
+  );
+  if(currentQuestion!==examenalum.length -1){
+    setCurrentQuestion((prev)=>prev + 1);
+  }else{
+    setCurrentQuestion(0);
+    setResultados(true);
+    saveRespuestasAlumn();
+
+  }
+  };
+
+  const saveRespuestasAlumn=async()=>{
+    console.log("RESULTADOEST:",resultado)
+      var result={resultado:resultado,respuestas:examenalum,id_estudiante:daCuenta.ID}
+      try {
+        await fetch(apiUrl+'/Regestrespuestas',{
+          method:'POST',
+          mode:'cors',
+          body:JSON.stringify(result),
+          headers:{'content-type':'application/json'}
+        })
+          .then(res=>res.json())
+          .then(res=>{
+
+          })
+      } catch (error) {
+        
+      }
+    }
+  
   const lecciones=leccionesDate.filter(function(item){
   return  item.ID_CLASE==daClase.ID_CLASE && item.DIA!=null && item.NIVEL==daClase.NIVEL
   });
 
-  const leccClase=daClases.filter(function(item){
-    return item.ID_CLASE==daClase.ID_CLASE
+  
+  const leccClase=daClases.filter(item=>{
+    if(item.NIVEL===daClase.NIVEL && item.ID_CLASE===daClase.ID_CLASE){console.log("ITEM ",daClase)}
+   return item.ID_CLASE===daClase.ID_CLASE && item.NIVEL===daClase.NIVEL
   })
   
+  const examenesNivelll=daExamenes.filter(item=>{
+    return item.ID_CLASE===daClase.ID_CLASE && item.NIVEL===daClase.NIVEL
+  })
+  const examenesNivellll=examenesNivelll.reduce(function(total,num){
+    console.log("EXDAT",examenesNivelll);
+    (total[num.ID]=total[num.ID]|| []).push(num);
+    return total
+  },{})
+  
+  const examrealalumno=daExamrealizados.filter(i=>i.ID_ESTUDIANTE===daCuenta.ID)
+  const examrealizados=(Object.values(examenesNivellll)).map((v,i)=>{
+    if(examrealalumno.find(({ID_EXAMEN})=>ID_EXAMEN===v[0].ID_EXAMEN)){
+      console.log("SIIIIII")
+      v[0].realizado=true
+      return v
+    }else{
+      v[0].realizado=false
+      return v
+    }
+  })
+  const exame=examen;
+  let examenalu=examenalum;
+  //const{TITULO,RESPUESTA,OPCION1,OPCION2,OPCION3,TIPO}=examenalu[currentQuestion]
   const leccionId=(ID)=>{
     const lecc=leccClase.find(item=>item.ID===ID);
     setFormValue({id:lecc.ID,dia:lecc.DIA,horai:lecc.HORAI.slice(0,-10),horaf:lecc.HORAF.slice(0,-10),maestro:lecc.MAESTRO,nivel:lecc.NIVEL})
@@ -1056,6 +1173,52 @@ export const Perfclase=(props)=>{
         setActiveTab(tab)
     }
 }
+
+const regExamen=async()=>{
+  let da={examen:quiz,preguntas:preguntas}
+  console.log("QUIZPREG",da)
+
+  try {
+    await fetch(apiUrl+`/Regexamen`,{
+      method:'POST',
+      mode:'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body:JSON.stringify(da)
+    })
+      .then((res)=>res.json())
+      .then(res=>{console.log("RESEXAMEN",res)
+        if(res.message==="Examen guardado"){
+          setExamenes(res.body);
+          setMensaje("")
+          toggleEx()
+        }
+        console.log("REGISTRADOEX")
+      })
+  } catch (error) {
+    
+  }
+}
+
+const onAnswerClick=(res)=>{
+  setResIdx(currentQuestion)
+  if((examen[currentQuestion].RESPUESTA).toLowerCase()===(examenalum[currentQuestion].RESPUESTA).toLowerCase()){
+    setRespuesta(true)
+  }else{
+    setRespuesta(false)
+  }
+ console.log("PRERES",examenalum)
+}
+
+const revisarQuiz=()=>{
+  if(!quiz.nombre){
+    setMensaje("Completa campos")
+    return
+  }
+  setQuiz({nombre:quiz.nombre,id_clase:daClase.ID_CLASE,nivel:daClase.NIVEL,id_escuela:daEscuela.ID})
+
+  setMensaje("")
+  setStmensaje("Visualizar")
+}
 const handleChange = (event) => {
   const { name, value } = event.target;
   setFormValue((prevState) => {
@@ -1074,6 +1237,59 @@ const handleChange2 = (event) => {
     };
   });
 };   
+const handleChangeQuiz =(event) =>{
+  const{name,value}=event.target;
+  setQuiz((prevState)=>{
+    return {
+      ...prevState,
+      [name]:value,
+    }
+  })
+}
+const handleChangePreguntas=(event,index)=>{
+  let data=[...preguntas]
+  data[index][event.target.name]=event.target.value;
+  setPreguntas(data)
+}
+const handleChangePreguntasop=(e,index,i)=>{
+  let data=[...preguntas]
+  data[index]["opciones"][i][e.target.name]=e.target.value
+  setPreguntas(data)
+}
+const handleChangePreguntasop2=(e,index,i)=>{
+  let data=[...preguntas]
+  data[index]["opciones"][i][e.target.name]=e.target.checked
+  data[index]["respuesta"]=data[index]["opciones"][i]["uno"]
+  console.log("HANDLEOPCION",  data[index]["opciones"][i]["uno"])
+  setPreguntas(data)
+}
+const handleChangeExamAlumn=(e,i)=>{
+  let data=[...examenalum]
+  setResIdx(i)
+
+   if(data[currentQuestion]["TIPO"]=="Abierta"){
+    data[i][e.target.name]=e.target.value;
+   }else{
+    data[currentQuestion]["RESPUESTA"]=e
+   }
+
+   if(examen[currentQuestion].RESPUESTA===data[currentQuestion].RESPUESTA){
+    setRespuesta(true)
+  }else{
+    setRespuesta(false)
+  }
+
+  setExamenalum(data)
+}
+const addPregunta=()=>{
+  let Object={
+    titulo:"",
+    tipo:"Abierta",
+    respuesta:"",
+    opciones:[{uno:"",checked:false},{uno:"",checked:false},{uno:"",checked:false}]
+  }
+  setPreguntas([...preguntas,Object])
+}
   return(
     <div className='container' style={{fontSize:'13px'}}>
        <h5>Clase</h5>
@@ -1314,6 +1530,294 @@ const handleChange2 = (event) => {
       </ModalFooter>*/}
         </Modal>
 
+{/* Modal for Examenes */}
+      <Modal isOpen={modalex} toggle={toggleEx}>
+        {stmensaje==="crear" ?
+           <ModalHeader>Creacion de Examen <br/>
+             {daClase.NOMBRE} {' '} {daClase.NIVEL}
+           </ModalHeader>:
+           <ModalHeader>Examen a guardar</ModalHeader>
+        }
+        <ModalBody>
+         <Form>
+          <Row sm={1}>
+            <Col>
+             <FormGroup>
+              <Input
+                placeholder='Nombre de Examen'
+                type='text'
+                name='nombre'
+                value={quiz.nombre}
+                onChange={e=>handleChangeQuiz(e)}
+              />
+             </FormGroup>
+            </Col>
+          </Row>
+          {preguntas.map((value,index)=>{
+            return(
+              <>
+               {stmensaje==="crear" ?
+                <>
+                  <Row md={1} key={index}>
+                  <Col>
+                    <FormGroup>
+                    <Label>Pregunta</Label>
+                      <Input
+                      placeholder='Ingresa pregunta'
+                       type='text'
+                       name='titulo'
+                       value={value.titulo} 
+                       onChange={e=>handleChangePreguntas(e,index)}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                   <FormGroup>
+                     <Input
+                      name='tipo'
+                      value={value.tipo}
+                      type="select"
+                      onChange={e=>handleChangePreguntas(e,index)}
+                     >
+                      <option>Abierta</option>
+                      <option>Opciones</option>
+                     </Input>
+                   </FormGroup>
+                  </Col>
+                </Row>
+                {value.tipo==="Abierta" ?
+                 <Row>
+                 <Col>
+                  <FormGroup>
+                   <Input
+                    placeholder='Escribe respuesta'
+                    name='respuesta'
+                    value={value.respuesta}
+                    onChange={e=>handleChangePreguntas(e,index)}
+
+                   />
+                  </FormGroup>
+                 </Col>
+               </Row>:
+                  <>
+                   {value.opciones.map((v,i)=>{
+                    return(
+                      <>
+                         <Row md={1} key={i}>{console.log("OPCIONES",v)}
+                          <Col>
+                            <FormGroup>
+                            <Input
+                              placeholder= {v.uno}
+                              name="uno"
+                              value={v.uno}
+                              onChange={e=>handleChangePreguntasop(e,index,i)}
+                            />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </>
+                    )
+                   
+                   })}
+                     
+
+                  </>
+               
+                }
+                <hr/>
+                </>: 
+                 <>
+                  <Row md={1} key={index}>
+                    <Col>
+                     {index + 1} {value.titulo} <br/>
+                     {value.respuesta}
+                     <FormGroup hidden={value.tipo==='Abierta'}>
+                     
+                      {value.opciones.map((val,ind)=>{
+                        return(
+                          <>
+                           <Input type='checkbox'
+                            name='checked'
+                            value={val.checked}
+                            onChange={e=>handleChangePreguntasop2(e,index,ind)}
+                           />
+                          {' '}
+                          <Label check>{val.uno}</Label><br/>
+                          </>                        
+                        )
+                      })}
+                     </FormGroup>
+                    </Col>
+                  </Row>
+                 </>
+              }
+                
+              </>
+            )
+          })}
+          {stmensaje==="crear" &&
+           <a disabled={true} className='label d-flex justify-content-start' onClick={()=>addPregunta()} >+ Pregunta</a>
+          }
+
+         </Form>
+        </ModalBody>
+        {mensaje==="Completa campos" &&
+          <Alert color='warning'>{mensaje}</Alert>
+        }
+        <ModalFooter>
+          {stmensaje==="crear" ?
+             <Button color="primary" onClick={()=>{revisarQuiz()}}>
+             Aceptar
+           </Button>:
+           <Button color='success' onClick={()=>regExamen()}>Guardar</Button>
+          }
+           {' '}
+            <Button color="secondary" onClick={toggleEx}>
+              Cancelar
+            </Button>
+      </ModalFooter>
+      </Modal>
+
+  {/* -------------------- Modal Visualizar examen ------------------------------*/}
+    <Modal isOpen={modalVisexa} toggle={toggleVisexa}>
+      <ModalHeader>
+         {exame!="" && exame[0].NOMBRE}
+      </ModalHeader>
+      <ModalBody>         
+        {exame!="" ?
+          <>{console.log("EXAME",exame)}
+           <div className='card shadow'>
+             <div className='card body'>
+              {daCuenta.ROLES_ID===1 || daCuenta.ROLES_ID===2 ?
+               <>
+                {exame.map((v,i)=>{
+                return(
+                  <>
+                   <ol>
+                    <li  >{i+1}.-{v.TITULO}</li>
+                     {v.TIPO==='Abierta' ?
+                      <p>{v.RESPUESTA}</p>:
+                        <>
+                        <Input type='checkbox'
+                         name='opcion1'
+                         checked={v.RESPUESTA===v.OPCION1 ? true:false}
+                         //value={v.RESPUESTA===v.OPCION1 ? true:false}
+                        />{' '}
+                        <Label check>{v.OPCION1}</Label><br/>
+                        <Input type='checkbox'
+                           checked={v.RESPUESTA===v.OPCION2 ? true:false}
+                           name='opcion2'
+                           //value={v.RESPUESTA===v.OPCION2 ? true:false}
+                         />{' '}
+                        <Label check>{v.OPCION2}</Label><br/>
+                        <Input type='checkbox'
+                           name='opcion3'
+                           checked={v.RESPUESTA===v.OPCION3 ? true:false}
+                           //value={v.RESPUESTA===v.OPCION3 ? true:false}
+                         />{' '}
+                        <Label check>{v.OPCION3}</Label><br/>
+                        </>
+                     }
+                    
+                   </ol>
+                  </>
+                )
+               })}
+               </> :
+              null
+              }
+               
+             </div>
+           </div>
+          </>:null            
+        }    
+      </ModalBody>
+      <ModalFooter>
+        <Button size='sm' color='success'>Finalizar</Button>
+      </ModalFooter>
+    </Modal>
+       
+  {/*-----------------EMPEZAR EXAMEN ALUMNO----------------------------------*/}
+  <Modal isOpen={modalEmpezar} toggle={toggleEmpezar}>
+    <ModalHeader>
+
+    </ModalHeader>
+    <ModalBody>
+      <div className='card shadow'>
+        <div className='card body'>
+        <div className='container'>
+         
+           {examenalum!="" && !verresultados?
+            <>
+             <span className='active-question-no'>{currentQuestion + 1}</span>
+             <span className='total-question'>/{examenalu.length}</span>
+             <h1>{examenalu[currentQuestion].TITULO}</h1>
+              {examenalu[currentQuestion].TIPO==="Abierta" ? 
+              <>
+               <Input
+                           placeholder='Respuesta'
+                           type='text'
+                           name='RESPUESTA'
+                           value={examenalu[currentQuestion].RESPUESTA}
+                           onChange={(e)=>handleChangeExamAlumn(e,0)}
+                          />
+              </>:<>
+                    <ul className='ulq'>
+                      <li className='liq' style={respIdx===1 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION1,1)}>{examenalu[currentQuestion].OPCION1}</li>
+                      <li className='liq' style={respIdx===2 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION2,2)}>{examenalu[currentQuestion].OPCION2}</li>
+                      <li className='liq' style={respIdx===3 ? {background:"#150080", border:"1px solid #d08642",color:"#ffffff"}:null} onClick={()=>handleChangeExamAlumn(examenalu[currentQuestion].OPCION3,3)}>{examenalu[currentQuestion].OPCION3}</li>
+                    </ul>
+                  </>}
+            </>:
+            <>
+              <div>
+                <h3>Resultados</h3>
+                <p>
+                  Preguntas total: <span>{examenalum.length}</span>
+                </p>
+                <p>
+                  Preguntas correctas: <span>{resultado.correctas}</span>
+                </p>
+                <p>
+                  Preguntas incorrectas: <span>{resultado.incorrectas}</span>
+                </p>
+                <p>
+                  Resultado: <span>{resultado.score}</span>
+                </p>
+              </div>
+            {/*  <Row md={1}>
+              <Col>
+               <p> Total preguntas: <span>{resultado.preguntas}</span></p> 
+              </Col>
+             </Row>
+             <Row md={1}>
+              <Col>
+               <p>Correctas: <span>{preguntas.correctas}</span></p>  
+              </Col>
+             </Row>
+             <Row md={1}>
+              <Col>
+               <p>Incorrectas: <span>{preguntas.incorrectas}</span></p> 
+              </Col>
+             </Row>
+             <Row md={1}>
+              <Col>
+               <p>Puntaje: <span>{resultado.resultado}</span></p> 
+              </Col>
+      </Row>*/}
+            </>
+           }
+                
+                  </div>
+        </div>
+      </div>
+    </ModalBody>
+    <ModalFooter>
+       <Button hidden={verresultados} disabled={respIdx===null} onClick={revisarInputsexam} size='sm'>{currentQuestion===examenalu.length - 1 ? "Finalizar":"Siguiente"}</Button>    
+    </ModalFooter>
+  </Modal>     
        <Nav tabs>
               <NavItem>
                 <NavLink
@@ -1331,16 +1835,24 @@ const handleChange2 = (event) => {
                   Eventos
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: activeTab === '3' })}
+                  onClick={() => { toggle('3'); }}
+                >
+                  Examenes
+                </NavLink>
+              </NavItem>
             </Nav>
 
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
                 <Table>
                 <thead>
-          <tr>
-             
-          </tr>
-        </thead>
+                  <tr>
+                    
+                  </tr>
+                </thead>
         <tbody>
            {lecciones.map(item=>{
              return <tr >
@@ -1369,6 +1881,24 @@ const handleChange2 = (event) => {
                 </Table>
               </TabPane>
             </TabContent>
+            <TabPane tabId={"3"}>
+              <Table>
+                <thead>{console.log("EXAMENESNIVEL",examrealizados)}
+                  <a onClick={()=>{setModalex(true);setStmensaje("crear")}}>+ Crear examen</a>
+               
+                </thead>
+                <tbody>
+                {(Object.values(examrealizados)).map((v,i)=>{
+                 return <tr >
+                    <th>{v[0].NOMBRE}</th>
+                    <td><Button hidden={daCuenta.ROLES_ID!==1} onClick={()=>{setModalvisexa(true);setExamen(v);}} size='sm' color='primary'>Visualizar</Button></td>
+                    <td><Button disabled={v[0].realizado} hidden={daCuenta.ROLES_ID===1} id={i}  onClick={()=>setExamAlumnull(v,i)} color='success' size='sm'>{verresultados ? "Finalizado" : "Realizar"}</Button></td>
+                    <td>{v[0].NIVEL}</td>
+                  </tr>
+                })}  
+                </tbody>
+              </Table>
+            </TabPane>
             {nextpagina &&
             <Navigate to={"/Escuela"}/>}
     </div>

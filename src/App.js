@@ -1,5 +1,4 @@
 import React, { useContext }  from 'react';
-
 import './App.css';
 import Menu from './Templates/Menu';
 import Regestudiante from './Paginas/Regestudiante';
